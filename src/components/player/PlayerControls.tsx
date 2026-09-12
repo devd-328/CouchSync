@@ -62,12 +62,12 @@ export function PlayerControls({
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-4 pt-10 flex flex-col gap-2 z-30 transition-opacity duration-300">
+    <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/95 via-black/70 to-transparent p-4 pt-10 flex flex-col gap-2 z-30 transition-opacity duration-300">
       {/* Timeline Scrubber */}
       <div className={`relative group/timeline flex items-center w-full h-4 ${canControl ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}>
         <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden relative group-hover/timeline:h-2 transition-all">
           <div
-            className="h-full bg-gradient-to-r from-cyan-400 via-indigo-400 to-violet-500 rounded-full transition-all"
+            className="h-full bg-linear-to-r from-cyan-400 via-indigo-400 to-violet-500 rounded-full transition-all"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

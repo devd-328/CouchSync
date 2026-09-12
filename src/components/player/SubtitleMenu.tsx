@@ -118,7 +118,7 @@ export function SubtitleMenu({ onSubtitleTrackChange }: SubtitleMenuProps) {
           ) : (
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/10">
-                <span className="truncate max-w-[180px] font-mono text-[11px] text-gray-300">
+                <span className="truncate max-w-45 font-mono text-[11px] text-gray-300">
                   {fileName}
                 </span>
                 <button

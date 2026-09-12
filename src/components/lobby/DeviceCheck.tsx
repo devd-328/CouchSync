@@ -31,7 +31,7 @@ export function DeviceCheck({
   return (
     <div className="flex flex-col gap-4">
       {/* Camera Preview Box */}
-      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-950 border border-white/10 shadow-2xl group">
+      <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-slate-950 border border-white/10 shadow-2xl group">
         {stream && !isCamOff ? (
           <video
             ref={videoRef}
@@ -70,7 +70,7 @@ export function DeviceCheck({
                 className={`flex-1 rounded-xs transition-all duration-75 ${
                   isMuted
                     ? 'bg-gray-700 h-1'
-                    : 'bg-gradient-to-t from-emerald-500 to-cyan-400 shadow-[0_0_6px_rgba(0,230,118,0.4)]'
+                    : 'bg-linear-to-t from-emerald-500 to-cyan-400 shadow-[0_0_6px_rgba(0,230,118,0.4)]'
                 }`}
                 style={{
                   height: isMuted ? '3px' : `${Math.max(10, val)}%`,

@@ -185,15 +185,15 @@ export default function HomePage() {
   };
 
   return (
-    <main className="relative min-h-screen flex flex-col justify-between bg-gradient-to-b from-[#07090E] via-[#0B0F1A] to-[#07090E] p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+    <main className="relative min-h-screen flex flex-col justify-between bg-linear-to-b from-[#07090E] via-[#0B0F1A] to-[#07090E] p-4 sm:p-6 lg:p-8 overflow-x-hidden">
       {/* Dynamic ambient glow orbs */}
-      <div className="absolute top-1/6 left-1/5 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/5 right-1/4 w-[600px] h-[600px] bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/6 left-1/5 w-125 h-125 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/5 right-1/4 w-150 h-150 bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Top Navbar */}
       <header className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between py-3">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-violet-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,242,254,0.45)] border border-white/20">
+          <div className="w-11 h-11 rounded-2xl bg-linear-to-tr from-cyan-400 via-blue-500 to-violet-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,242,254,0.45)] border border-white/20">
             <Clapperboard className="w-5 h-5 text-white drop-shadow-md" />
           </div>
           <div>
@@ -252,14 +252,14 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center pt-6 pb-4 sm:pt-10 sm:pb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-cyan-300 mb-4 backdrop-blur-md shadow-inner">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/4 border border-white/10 text-xs text-cyan-300 mb-4 backdrop-blur-md shadow-inner">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
           <span>Synchronized HLS • YouTube • Screen Share • P2P Video</span>
         </div>
 
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
           Your Virtual Cinema &amp; <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-500 drop-shadow-[0_0_35px_rgba(0,242,254,0.3)]">
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-400 to-violet-500 drop-shadow-[0_0_35px_rgba(0,242,254,0.3)]">
             Hangout Lounge
           </span>
         </h2>
@@ -327,7 +327,7 @@ export default function HomePage() {
                   className={`flex items-center gap-2 p-2.5 rounded-xl border text-left transition ${
                     selectedMode === 'hls'
                       ? 'bg-cyan-500/20 border-cyan-400/50 text-white shadow-[0_0_15px_rgba(0,242,254,0.2)]'
-                      : 'bg-white/[0.03] border-white/10 text-gray-400 hover:bg-white/[0.06] hover:text-gray-200'
+                      : 'bg-white/3 border-white/10 text-gray-400 hover:bg-white/6 hover:text-gray-200'
                   }`}
                 >
                   <Film className="w-4 h-4 text-cyan-400 shrink-0" />
@@ -343,7 +343,7 @@ export default function HomePage() {
                   className={`flex items-center gap-2 p-2.5 rounded-xl border text-left transition ${
                     selectedMode === 'youtube'
                       ? 'bg-rose-500/20 border-rose-400/50 text-white shadow-[0_0_15px_rgba(244,63,94,0.2)]'
-                      : 'bg-white/[0.03] border-white/10 text-gray-400 hover:bg-white/[0.06] hover:text-gray-200'
+                      : 'bg-white/3 border-white/10 text-gray-400 hover:bg-white/6 hover:text-gray-200'
                   }`}
                 >
                   <Tv className="w-4 h-4 text-rose-400 shrink-0" />
@@ -359,7 +359,7 @@ export default function HomePage() {
                   className={`flex items-center gap-2 p-2.5 rounded-xl border text-left transition ${
                     selectedMode === 'screenshare'
                       ? 'bg-violet-500/20 border-violet-400/50 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]'
-                      : 'bg-white/[0.03] border-white/10 text-gray-400 hover:bg-white/[0.06] hover:text-gray-200'
+                      : 'bg-white/3 border-white/10 text-gray-400 hover:bg-white/6 hover:text-gray-200'
                   }`}
                 >
                   <MonitorUp className="w-4 h-4 text-violet-400 shrink-0" />
@@ -375,7 +375,7 @@ export default function HomePage() {
                   className={`flex items-center gap-2 p-2.5 rounded-xl border text-left transition ${
                     selectedMode === 'trivia'
                       ? 'bg-amber-500/20 border-amber-400/50 text-white shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                      : 'bg-white/[0.03] border-white/10 text-gray-400 hover:bg-white/[0.06] hover:text-gray-200'
+                      : 'bg-white/3 border-white/10 text-gray-400 hover:bg-white/6 hover:text-gray-200'
                   }`}
                 >
                   <Gamepad2 className="w-4 h-4 text-amber-400 shrink-0" />
@@ -392,7 +392,7 @@ export default function HomePage() {
           <div className="mt-6">
             <button
               onClick={handleCreateRoom}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-600 hover:from-cyan-300 hover:via-blue-400 hover:to-violet-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,242,254,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-linear-to-r from-cyan-400 via-blue-500 to-violet-600 hover:from-cyan-300 hover:via-blue-400 hover:to-violet-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,242,254,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Launch Cinema Room</span>
@@ -452,7 +452,7 @@ export default function HomePage() {
               </div>
 
               {recentRooms.length === 0 ? (
-                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center text-xs text-gray-500">
+                <div className="p-4 rounded-xl bg-white/2 border border-white/5 text-center text-xs text-gray-500">
                   No recent rooms yet. Create or join one to see it here!
                 </div>
               ) : (
@@ -461,7 +461,7 @@ export default function HomePage() {
                     <div
                       key={room.id}
                       onClick={() => handleRejoinRecent(room)}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 transition cursor-pointer group/item"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-white/3 hover:bg-white/8 border border-white/5 hover:border-white/20 transition cursor-pointer group/item"
                     >
                       <div className="min-w-0 flex-1 pr-2">
                         <div className="text-xs font-semibold text-gray-200 group-hover/item:text-cyan-300 transition truncate">
@@ -494,7 +494,7 @@ export default function HomePage() {
           <div className="mt-6">
             <button
               onClick={handleJoinRoom}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:via-indigo-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_25px_rgba(139,92,246,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-linear-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:via-indigo-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_25px_rgba(139,92,246,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
             >
               <Radio className="w-4 h-4" />
               <span>Connect to Room</span>
@@ -506,25 +506,25 @@ export default function HomePage() {
 
       {/* Feature Highlights Grid (Kosmi Style) */}
       <div className="relative z-10 w-full max-w-5xl mx-auto py-6 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/[0.02] flex flex-col gap-1.5">
+        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
           <Zap className="w-5 h-5 text-cyan-400" />
           <div className="text-xs font-bold text-white">Sub-Second Sync</div>
           <div className="text-[11px] text-gray-400">Lockstep play/pause &amp; speed matching</div>
         </div>
 
-        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/[0.02] flex flex-col gap-1.5">
+        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
           <Camera className="w-5 h-5 text-emerald-400" />
           <div className="text-xs font-bold text-white">P2P Video &amp; Voice</div>
           <div className="text-[11px] text-gray-400">Auto audio ducking &amp; push-to-talk</div>
         </div>
 
-        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/[0.02] flex flex-col gap-1.5">
+        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
           <MonitorUp className="w-5 h-5 text-violet-400" />
           <div className="text-xs font-bold text-white">Screen Sharing</div>
           <div className="text-[11px] text-gray-400">Stream desktop, tabs &amp; apps native</div>
         </div>
 
-        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/[0.02] flex flex-col gap-1.5">
+        <div className="p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
           <Gamepad2 className="w-5 h-5 text-amber-400" />
           <div className="text-xs font-bold text-white">Movie Trivia &amp; Polls</div>
           <div className="text-[11px] text-gray-400">Multiplayer hangout games during breaks</div>

@@ -54,7 +54,7 @@ export function WebRTCCall({
     <div className="flex flex-col gap-3">
       {/* Remote Partner Video Card */}
       <div
-        className={`relative aspect-[4/3] rounded-2xl overflow-hidden glass-panel transition-all duration-300 ${
+        className={`relative aspect-4/3 rounded-2xl overflow-hidden glass-panel transition-all duration-300 ${
           isPartnerSpeaking ? 'speaking-border border-cyan-400 shadow-[0_0_20px_rgba(0,242,254,0.4)]' : 'border-white/10'
         }`}
       >
@@ -66,7 +66,7 @@ export function WebRTCCall({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900">
             <div className="w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-xl font-bold text-cyan-300 shadow-inner">
               {partnerName.charAt(0).toUpperCase()}
             </div>

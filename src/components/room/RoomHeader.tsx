@@ -54,7 +54,7 @@ export function RoomHeader({
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-400 to-violet-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-tr from-cyan-400 to-violet-600 flex items-center justify-center">
             <Clapperboard className="w-4 h-4 text-white" />
           </div>
           <div>

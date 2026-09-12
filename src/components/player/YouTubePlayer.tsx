@@ -177,7 +177,7 @@ export function YouTubePlayer({
   return (
     <div className="relative w-full h-full flex flex-col bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
       {/* YouTube Iframe */}
-      <div className="relative flex-1 w-full h-full min-h-[360px] bg-black">
+      <div className="relative flex-1 w-full h-full min-h-90 bg-black">
         <iframe
           ref={iframeRef}
           src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3`}
@@ -227,7 +227,7 @@ export function YouTubePlayer({
       </div>
 
       {/* Player Controls Bar */}
-      <div className="relative z-20 p-3 bg-gradient-to-t from-black/95 via-black/80 to-transparent border-t border-white/10 flex flex-col gap-2">
+      <div className="relative z-20 p-3 bg-linear-to-t from-black/95 via-black/80 to-transparent border-t border-white/10 flex flex-col gap-2">
         {/* Timeline Scrubber */}
         <div className="flex items-center gap-2">
           <span className="text-[11px] font-mono text-gray-400 w-10 text-right">
@@ -296,7 +296,7 @@ export function YouTubePlayer({
             </div>
           </div>
 
-          <div className="text-xs text-gray-400 font-medium truncate max-w-[200px]">
+          <div className="text-xs text-gray-400 font-medium truncate max-w-50">
             {videoTitle || 'YouTube Synced'}
           </div>
         </div>

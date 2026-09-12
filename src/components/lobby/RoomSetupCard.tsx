@@ -102,7 +102,7 @@ export function RoomSetupCard({
         <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
           Featured Stream
         </label>
-        <div className="flex items-center gap-3 p-2.5 rounded-xl glass-panel border-white/10 bg-white/[0.02]">
+        <div className="flex items-center gap-3 p-2.5 rounded-xl glass-panel border-white/10 bg-white/2">
           <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -110,7 +110,7 @@ export function RoomSetupCard({
               alt={selectedVideo.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-1">
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent flex items-end p-1">
               <span className="text-[9px] font-mono text-cyan-300 bg-black/60 px-1 rounded-xs">
                 HLS Ready
               </span>
@@ -206,7 +206,7 @@ export function RoomSetupCard({
       {/* Join Action Button */}
       <button
         onClick={onJoinRoom}
-        className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-600 hover:from-cyan-300 hover:via-blue-400 hover:to-violet-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,242,254,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+        className="w-full mt-2 py-3 rounded-xl bg-linear-to-r from-cyan-400 via-blue-500 to-violet-600 hover:from-cyan-300 hover:via-blue-400 hover:to-violet-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,242,254,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
       >
         <span>Join Watch Party</span>
         <ChevronRight className="w-4 h-4" />

@@ -175,7 +175,7 @@ export function MovieTrivia({
   const timerPercentage = (timeLeft / 15) * 100;
 
   return (
-    <div className="relative w-full h-full min-h-[420px] flex flex-col justify-between bg-gradient-to-b from-[#0F1424] via-[#0A0D18] to-[#0F1424] rounded-2xl p-6 border border-white/10 shadow-2xl overflow-hidden">
+    <div className="relative w-full h-full min-h-105 flex flex-col justify-between bg-linear-to-b from-[#0F1424] via-[#0A0D18] to-[#0F1424] rounded-2xl p-6 border border-white/10 shadow-2xl overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute -top-12 -left-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -221,8 +221,8 @@ export function MovieTrivia({
         <div
           className={`h-full transition-all duration-1000 ease-linear rounded-full ${
             timeLeft <= 5
-              ? 'bg-gradient-to-r from-rose-500 to-amber-500'
-              : 'bg-gradient-to-r from-amber-400 to-cyan-400'
+              ? 'bg-linear-to-r from-rose-500 to-amber-500'
+              : 'bg-linear-to-r from-amber-400 to-cyan-400'
           }`}
           style={{ width: `${timerPercentage}%` }}
         />
@@ -302,7 +302,7 @@ export function MovieTrivia({
           {hasAnswered && (
             <button
               onClick={handleNextQuestion}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-cyan-500 hover:from-amber-400 hover:to-cyan-400 text-white text-xs font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)] transition flex items-center gap-1.5 transform hover:scale-[1.02]"
+              className="px-4 py-2 rounded-xl bg-linear-to-r from-amber-500 to-cyan-500 hover:from-amber-400 hover:to-cyan-400 text-white text-xs font-bold shadow-[0_0_20px_rgba(245,158,11,0.3)] transition flex items-center gap-1.5 transform hover:scale-[1.02]"
             >
               <span>Next Question</span>
               <ArrowRight className="w-3.5 h-3.5" />

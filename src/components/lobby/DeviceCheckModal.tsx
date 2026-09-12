@@ -89,7 +89,7 @@ export function DeviceCheckModal({
         {/* Done Button */}
         <button
           onClick={onClose}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(0,242,254,0.3)] transition flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-xl bg-linear-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(0,242,254,0.3)] transition flex items-center justify-center gap-2"
         >
           <CheckCircle2 className="w-4 h-4" />
           <span>Looks Good — Continue</span>

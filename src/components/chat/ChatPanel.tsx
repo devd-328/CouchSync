@@ -48,7 +48,7 @@ export function ChatPanel({
   return (
     <div className="flex flex-col h-full rounded-2xl glass-panel border-white/10 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/[0.02]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/2">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-cyan-400" />
           <h3 className="text-sm font-semibold text-gray-200">Room Chat</h3>
@@ -71,7 +71,7 @@ export function ChatPanel({
       </div>
 
       {/* Messages Feed & Floating Emoji Margin */}
-      <div className="relative flex-1 flex min-h-[220px] max-h-[360px] overflow-hidden">
+      <div className="relative flex-1 flex min-h-55 max-h-90 overflow-hidden">
         {/* Messages Scroll Area */}
         <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2.5">
           {messages.length === 0 ? (
@@ -92,9 +92,9 @@ export function ChatPanel({
                   <span className="text-[10px] text-gray-600">{msg.timestamp}</span>
                 </div>
                 <div
-                  className={`px-3 py-2 rounded-2xl max-w-[85%] break-words leading-relaxed ${
+                  className={`px-3 py-2 rounded-2xl max-w-[85%] wrap-break-word leading-relaxed ${
                     msg.isSelf
-                      ? 'bg-gradient-to-r from-cyan-600/80 to-blue-600/80 text-white rounded-tr-xs shadow-[0_2px_12px_rgba(0,242,254,0.15)]'
+                      ? 'bg-linear-to-r from-cyan-600/80 to-blue-600/80 text-white rounded-tr-xs shadow-[0_2px_12px_rgba(0,242,254,0.15)]'
                       : 'bg-white/10 text-gray-200 rounded-tl-xs border border-white/5'
                   }`}
                 >
@@ -133,7 +133,7 @@ export function ChatPanel({
       </div>
 
       {/* Input Field */}
-      <form onSubmit={handleSend} className="p-2.5 border-t border-white/10 bg-white/[0.02] flex items-center gap-2">
+      <form onSubmit={handleSend} className="p-2.5 border-t border-white/10 bg-white/2 flex items-center gap-2">
         <input
           type="text"
           value={inputText}
@@ -144,7 +144,7 @@ export function ChatPanel({
         <button
           type="submit"
           disabled={!inputText.trim()}
-          className="p-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition"
+          className="p-2 rounded-xl bg-linear-to-r from-cyan-500 to-violet-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition"
         >
           <Send className="w-3.5 h-3.5" />
         </button>

@@ -202,7 +202,7 @@ export function RoomPollComponent({
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white rounded-xl font-bold text-xs shadow-lg transition"
+              className="w-full py-2.5 bg-linear-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white rounded-xl font-bold text-xs shadow-lg transition"
             >
               Launch Poll to Room
             </button>
