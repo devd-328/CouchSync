@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-base: #0B0D14;
+  --bg-surface: #121622;
+  --bg-surface-glass: rgba(18, 22, 34, 0.78);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #00F2FE;
+  --accent-violet: #7F00FF;
+  --accent-emerald: #00E676;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Ambient Theater Themes */
+.theme-obsidian {
+  --bg-base: #0B0D14;
+  --bg-surface: #121622;
+  --bg-surface-glass: rgba(18, 22, 34, 0.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.theme-cyberpunk {
+  --bg-base: #08091A;
+  --bg-surface: #13112E;
+  --bg-surface-glass: rgba(19, 17, 46, 0.85);
+  --accent-cyan: #00F0FF;
+  --accent-violet: #FF007F;
+}
+
+.theme-retro {
+  --bg-base: #140C0A;
+  --bg-surface: #241410;
+  --bg-surface-glass: rgba(36, 20, 16, 0.85);
+  --accent-cyan: #FFB300;
+  --accent-violet: #FF7043;
+}
+
+.theme-oled {
+  --bg-base: #000000;
+  --bg-surface: #0A0A0A;
+  --bg-surface-glass: rgba(10, 10, 10, 0.95);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-base);
+  color: #F3F4F6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease;
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+}
+
+.glass-pill {
+  background: rgba(15, 20, 32, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glowing speaking pulse */
+@keyframes speaking-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.3), inset 0 0 10px rgba(0, 242, 254, 0.2);
+    border-color: rgba(0, 242, 254, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 18px 2px rgba(0, 242, 254, 0.8), inset 0 0 15px rgba(0, 242, 254, 0.4);
+    border-color: #00F2FE;
+  }
+}
+
+.speaking-border {
+  animation: speaking-pulse 1.2s infinite ease-in-out;
+}
+
+/* Floating Reactions */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-320px) scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-float-up {
+  animation: floatUp 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(10, 12, 20, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Custom range inputs */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  height: 6px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00F2FE;
+  box-shadow: 0 0 8px #00F2FE;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
 }
