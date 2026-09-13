@@ -12,6 +12,7 @@ import {
   Minimize2,
   Lock,
   Gauge,
+  FolderOpen,
 } from 'lucide-react';
 import { formatTime } from '@/lib/formatters';
 import { ControlMode } from '@/types/sync';
@@ -35,6 +36,7 @@ interface PlayerControlsProps {
   onToggleMute: () => void;
   onToggleFullscreen: () => void;
   onSkip: (seconds: number) => void;
+  onOpenSelectMovie?: () => void;
 }
 
 const SPEED_OPTIONS = [0.75, 1.0, 1.25, 1.5, 2.0];
@@ -57,6 +59,7 @@ export function PlayerControls({
   onToggleMute,
   onToggleFullscreen,
   onSkip,
+  onOpenSelectMovie,
 }: PlayerControlsProps) {
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const validDuration = isFinite(duration) && duration > 0 ? duration : 0;
@@ -179,6 +182,20 @@ export function PlayerControls({
 
         {/* Right Info & Controls */}
         <div className="flex items-center gap-2 sm:gap-3 text-xs font-medium tracking-wider">
+          {/* Select Movie / Upload from PC Button */}
+          {onOpenSelectMovie && (
+            <button
+              type="button"
+              onClick={onOpenSelectMovie}
+              aria-label="Select movie or upload from PC"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/30 hover:border-cyan-400 text-cyan-200 text-[11px] font-semibold transition cursor-pointer shadow-[0_0_8px_rgba(0,242,254,0.15)] shrink-0"
+              title="Select movie file from PC (.mp4, .mkv) or change stream"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
+              <span className="hidden md:inline">Select Movie</span>
+            </button>
+          )}
+
           {/* Subtitle Menu */}
           <SubtitleMenu onSubtitleTrackChange={onSubtitleTrackChange} />
 

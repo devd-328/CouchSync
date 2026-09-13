@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
-import { Play, Loader2, Lock, History, MicOff } from 'lucide-react';
+import { Play, Loader2, Lock, History, MicOff, FolderOpen, Upload } from 'lucide-react';
 import { PlayerControls } from './PlayerControls';
 import { SyncStatusBadge } from './SyncStatusBadge';
 import { FloatingReactions } from '../reactions/FloatingReactions';
@@ -16,6 +16,7 @@ import { MovieTrivia } from '../games/MovieTrivia';
 interface VideoPlayerProps {
   src: string;
   poster?: string;
+  videoTitle?: string;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   isPlaying: boolean;
   currentTime: number;
@@ -57,6 +58,8 @@ interface VideoPlayerProps {
   onChangeYouTubeVideo?: (id: string, title?: string) => void;
   onSendTriviaAction?: (action: TriviaAction) => void;
   onCloseTrivia?: () => void;
+  onOpenSelectMovie?: () => void;
+  onSelectLocalFile?: (file: File) => void;
 }
 
 function CornerPipBubbles({
@@ -147,6 +150,7 @@ export function VideoPlayer({
   isHost = false,
   remotePlaybackAction = null,
   remoteTriviaAction = null,
+  videoTitle,
   onTogglePlay,
   onSeek,
   onSpeedChange,
@@ -158,6 +162,8 @@ export function VideoPlayer({
   onChangeYouTubeVideo,
   onSendTriviaAction,
   onCloseTrivia,
+  onOpenSelectMovie,
+  onSelectLocalFile,
 }: VideoPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -165,12 +171,41 @@ export function VideoPlayer({
   const [showControls, setShowControls] = useState(true);
   const [showLockToast, setShowLockToast] = useState(false);
   const [subtitleTrackUrl, setSubtitleTrackUrl] = useState<string | null>(null);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
   // Brief fade when switching media source types (250ms)
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prevSourceRef = useRef<MediaSourceType>(mediaSource);
 
   const hideControlsTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lockToastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handlePlayerDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (canControl) {
+      setIsDraggingFile(true);
+    }
+  }, [canControl]);
+
+  const handlePlayerDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingFile(false);
+  }, []);
+
+  const handlePlayerDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingFile(false);
+    if (!canControl) return;
+
+    const file = e.dataTransfer.files?.[0];
+    if (file && (file.type.startsWith('video/') || /\.(mp4|mkv|webm)$/i.test(file.name))) {
+      if (onSelectLocalFile) {
+        onSelectLocalFile(file);
+      }
+    }
+  }, [canControl, onSelectLocalFile]);
 
   // Sync fullscreen state with document events
   useEffect(() => {
@@ -365,8 +400,29 @@ export function VideoPlayer({
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
+      onDragOver={handlePlayerDragOver}
+      onDragLeave={handlePlayerDragLeave}
+      onDrop={handlePlayerDrop}
       className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 group select-none transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
     >
+      {/* Interactive Drag & Drop Overlay */}
+      {isDraggingFile && (
+        <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border-3 border-dashed border-cyan-400 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+          <div className="w-18 h-18 rounded-3xl bg-cyan-500/25 border border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_30px_rgba(0,242,254,0.5)] mb-4">
+            <Upload className="w-9 h-9 animate-bounce" />
+          </div>
+          <h3 className="text-xl font-bold text-white text-center">
+            Drop Movie File Here to Play
+          </h3>
+          <p className="text-xs text-cyan-200 mt-1.5 text-center max-w-sm">
+            Instant playback directly from your PC with zero upload time and $0 cloud cost
+          </p>
+          <span className="mt-3 text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+            Supports .mp4 • .mkv • .webm
+          </span>
+        </div>
+      )}
+
       {/* Native Video Element with Subtitle Track */}
       <video
         ref={videoRef}
@@ -403,8 +459,8 @@ export function VideoPlayer({
         />
       )}
 
-      {/* Top Left: Sync Status Pill */}
-      <div className="absolute top-4 left-4 z-30 pointer-events-auto transition-opacity duration-300">
+      {/* Top Left: Sync Status Pill & Movie Quick Switch */}
+      <div className="absolute top-4 left-4 z-30 pointer-events-auto flex items-center gap-2 transition-opacity duration-300">
         <SyncStatusBadge
           partnerName={partnerName}
           partnerStatus={partnerStatus}
@@ -412,6 +468,25 @@ export function VideoPlayer({
           isPartnerBuffering={isPartnerBuffering}
           isConnected={participants.some((p) => p.id !== currentUserId)}
         />
+        {mediaSource === 'hls' && onOpenSelectMovie && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenSelectMovie();
+            }}
+            className={`glass-pill px-3 py-1.5 rounded-xl border border-white/15 hover:border-cyan-400/50 bg-black/60 hover:bg-black/80 text-xs text-gray-200 hover:text-cyan-200 flex items-center gap-2 transition shadow-lg cursor-pointer ${
+              showControls || !isPlaying ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+            }`}
+            title="Click to select or upload a different movie from PC"
+          >
+            <FolderOpen className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span className="font-semibold max-w-[120px] sm:max-w-[180px] truncate">{videoTitle || 'Movie'}</span>
+            <span className="text-[10px] text-cyan-300 font-bold bg-cyan-500/20 px-1.5 py-0.5 rounded border border-cyan-400/30">
+              Change
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Resume from where you left off prompt */}
@@ -498,6 +573,7 @@ export function VideoPlayer({
           onToggleMute={() => setIsMuted(!isMuted)}
           onToggleFullscreen={toggleFullscreen}
           onSkip={handleSkip}
+          onOpenSelectMovie={onOpenSelectMovie}
         />
       </div>
     </div>

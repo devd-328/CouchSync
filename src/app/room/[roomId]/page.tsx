@@ -528,6 +528,22 @@ export default function RoomPage({
     broadcastMessage({ type: 'poll-close', pollId });
   };
 
+  const handleLocalFileSelect = (file: File) => {
+    const blobUrl = URL.createObjectURL(file);
+    const newVideo: VideoMedia = {
+      id: `local-${Date.now()}`,
+      title: file.name,
+      src: blobUrl,
+      poster: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&auto=format&fit=crop&q=80',
+      category: 'Local Movie File',
+      isLocalFile: true,
+    };
+    setCurrentVideo(newVideo);
+    if (mediaSource !== 'hls') {
+      handleSelectSource('hls');
+    }
+  };
+
   // Smart Audio Ducking calculation
   const effectiveMovieVolume =
     isAudioDuckingEnabled && isPartnerSpeaking
@@ -553,6 +569,7 @@ export default function RoomPage({
         onSelectLayout={setRoomLayout}
         onToggleScreenShare={handleToggleScreenShare}
         onOpenSettings={() => setShowSettingsModal(true)}
+        onOpenSelectMovie={() => setShowSettingsModal(true)}
       />
 
       {/* Main Theater Layout */}
@@ -562,6 +579,7 @@ export default function RoomPage({
           <VideoPlayer
             src={currentVideo.src}
             poster={currentVideo.poster}
+            videoTitle={currentVideo.title}
             videoRef={videoRef}
             isPlaying={isPlaying}
             currentTime={currentTime}
@@ -603,6 +621,8 @@ export default function RoomPage({
             onChangeYouTubeVideo={handleChangeYouTubeVideo}
             onSendTriviaAction={handleSendTriviaAction}
             onCloseTrivia={() => handleSelectSource('hls')}
+            onOpenSelectMovie={() => setShowSettingsModal(true)}
+            onSelectLocalFile={handleLocalFileSelect}
           />
 
           {/* Dual Volume Mixer + Volume Mixer Hint */}
@@ -859,7 +879,12 @@ export default function RoomPage({
         isOpen={showSettingsModal}
         currentVideoSrc={currentVideo.src}
         onClose={() => setShowSettingsModal(false)}
-        onSelectVideo={setCurrentVideo}
+        onSelectVideo={(vid) => {
+          setCurrentVideo(vid);
+          if (mediaSource !== 'hls') {
+            handleSelectSource('hls');
+          }
+        }}
       />
 
       {/* Mandatory Name Gate Modal for direct URL visits */}

@@ -17,6 +17,7 @@ import {
   Gamepad2,
   Square,
   CheckCircle2,
+  FolderOpen,
 } from 'lucide-react';
 import { ControlMode, ThemeMode, MediaSourceType, RoomLayoutMode } from '@/types/sync';
 import { ThemeSelector } from './ThemeSelector';
@@ -38,6 +39,7 @@ interface RoomHeaderProps {
   onSelectLayout: (layout: RoomLayoutMode) => void;
   onToggleScreenShare: () => void;
   onOpenSettings: () => void;
+  onOpenSelectMovie?: () => void;
 }
 
 /** Source selector button definitions — mirrors the homepage ACTIVITIES array */
@@ -101,7 +103,10 @@ export function RoomHeader({
   onSelectLayout,
   onToggleScreenShare,
   onOpenSettings,
+  onOpenSelectMovie,
 }: RoomHeaderProps) {
+  const triggerMoviePicker = onOpenSelectMovie || onOpenSettings;
+
   return (
     <header className="w-full flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
       {/* Left: Back Link & Room Info */}
@@ -141,7 +146,7 @@ export function RoomHeader({
         </div>
       </div>
 
-      {/* Right: Permissions Control, Source Selector, Layout, Theme, Members, Settings */}
+      {/* Right: Permissions Control, Source Selector, Choose Movie Button, Layout, Theme, Members */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Host Mode Control Toggle / Status */}
         {isHost ? (
@@ -200,10 +205,21 @@ export function RoomHeader({
               : currentSource === mode;
             const colors = SOURCE_COLORS[mode];
 
+            const handleSourceClick = () => {
+              if (isScreenShareBtn) {
+                onToggleScreenShare();
+              } else if (mode === 'hls' && isActive) {
+                // If already on movie, clicking it opens the movie picker
+                triggerMoviePicker();
+              } else {
+                onSelectSource(mode);
+              }
+            };
+
             return (
               <button
                 key={mode}
-                onClick={isScreenShareBtn ? onToggleScreenShare : () => onSelectSource(mode)}
+                onClick={handleSourceClick}
                 aria-label={
                   isScreenShareBtn && isScreenSharing
                     ? 'Stop screen sharing'
@@ -214,6 +230,8 @@ export function RoomHeader({
                     ? isScreenSharing
                       ? 'Stop Screen Sharing'
                       : 'Share Screen to Room'
+                    : mode === 'hls' && isActive
+                    ? 'Click to change movie or upload from PC'
                     : ariaLabel
                 }
                 className={`card-hover flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
@@ -242,6 +260,19 @@ export function RoomHeader({
             );
           })}
         </div>
+
+        {/* PROMINENT "UPLOAD / SELECT MOVIE" HERO BUTTON */}
+        <button
+          type="button"
+          onClick={triggerMoviePicker}
+          aria-label="Upload movie from PC or choose video"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-linear-to-r from-cyan-500/25 via-blue-500/25 to-indigo-500/25 hover:from-cyan-500/35 hover:via-blue-500/35 hover:to-indigo-500/35 border border-cyan-400/50 hover:border-cyan-400 text-cyan-200 text-xs font-bold shadow-[0_0_14px_rgba(0,242,254,0.25)] hover:shadow-[0_0_20px_rgba(0,242,254,0.4)] transition-all cursor-pointer group shrink-0"
+          title="Choose a movie file (.mp4, .mkv, .webm) from PC or select an online stream"
+        >
+          <FolderOpen className="w-4 h-4 text-cyan-300 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="hidden sm:inline">Upload / Select Movie</span>
+          <span className="sm:hidden">Movie File</span>
+        </button>
 
         {/* Room Layout Switcher */}
         <div
@@ -276,12 +307,13 @@ export function RoomHeader({
           <span>{Math.max(1, participantsCount)} in room</span>
         </div>
 
-        {/* Settings */}
+        {/* Room Options */}
         <button
+          type="button"
           onClick={onOpenSettings}
-          aria-label="Video and room settings"
-          className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-300 hover:text-white transition"
-          title="Video & Room Settings"
+          aria-label="Room options and settings"
+          className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-400 hover:text-white transition cursor-pointer"
+          title="Room Options & Settings"
         >
           <Settings className="w-4 h-4" />
         </button>
