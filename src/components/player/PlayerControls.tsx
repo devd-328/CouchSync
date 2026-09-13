@@ -59,7 +59,8 @@ export function PlayerControls({
   onSkip,
 }: PlayerControlsProps) {
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const validDuration = isFinite(duration) && duration > 0 ? duration : 0;
+  const progressPercent = validDuration > 0 ? (currentTime / validDuration) * 100 : 0;
 
   return (
     <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/95 via-black/70 to-transparent p-4 pt-10 flex flex-col gap-2 z-30 transition-opacity duration-300">
@@ -74,7 +75,7 @@ export function PlayerControls({
         <input
           type="range"
           min={0}
-          max={duration || 100}
+          max={validDuration || 100}
           step={0.5}
           disabled={!canControl}
           value={currentTime}
@@ -224,7 +225,9 @@ export function PlayerControls({
           <div className="text-gray-300 font-mono text-[11px] sm:text-xs">
             <span>{formatTime(currentTime)}</span>
             <span className="text-gray-500 mx-1">/</span>
-            <span className="text-gray-400">{formatTime(duration)}</span>
+            <span className="text-gray-400">
+              {validDuration > 0 ? formatTime(validDuration) : '--:--'}
+            </span>
           </div>
 
           {/* Fullscreen Toggle */}

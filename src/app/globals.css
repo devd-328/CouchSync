@@ -120,6 +120,30 @@ body {
   animation: floatUp 2.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Floating Fullscreen Chat Toast (Phase 3) */
+@keyframes chat-toast-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  8% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+.animate-chat-toast {
+  animation: chat-toast-in-out 5s ease forwards;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -161,4 +185,11 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.25);
+}
+
+/* Next.js dev indicator / issue badge suppression */
+nextjs-portal,
+[data-nextjs-toast],
+#nextjs-dev-overlay {
+  display: none !important;
 }

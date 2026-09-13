@@ -34,6 +34,7 @@ import {
   saveRecentRoom,
   removeRecentRoom,
   RecentRoom,
+  isValidNickname,
 } from '@/lib/session';
 import { DEFAULT_VIDEO } from '@/lib/sample-media';
 import { DeviceCheckModal } from '@/components/lobby/DeviceCheckModal';
@@ -70,13 +71,16 @@ export default function HomePage() {
   const router = useRouter();
 
   // User & Room state
-  const [userName, setUserName] = useState('Alex');
+  const [userName, setUserName] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
   const [createRoomName, setCreateRoomName] = useState('Neon Premiere');
   const [selectedMode, setSelectedMode] = useState<MediaSourceType>('hls');
   const [joinInput, setJoinInput] = useState('');
   const [joinError, setJoinError] = useState('');
   const [recentRooms, setRecentRooms] = useState<RecentRoom[]>([]);
+
+  // Pending action to execute once nickname is confirmed via modal
+  const [pendingAction, setPendingAction] = useState<((name: string) => void) | null>(null);
 
   // Navigation transition
   const [isNavigating, setIsNavigating] = useState(false);
@@ -89,7 +93,11 @@ export default function HomePage() {
 
   useEffect(() => {
     const session = loadUserSession();
-    if (session.userName) setUserName(session.userName);
+    if (session.userName && isValidNickname(session.userName)) {
+      setUserName(session.userName);
+    } else {
+      setUserName('');
+    }
     setRecentRooms(getRecentRooms());
 
     // Random initial room name
@@ -145,12 +153,13 @@ export default function HomePage() {
     setCreateRoomName(randomName);
   };
 
-  const handleCreateRoom = () => {
+  const executeCreateRoom = (validName?: string) => {
+    const finalName = validName || userName;
     const newRoomId = generateId('room').replace('room-', '');
     const cleanName = createRoomName.trim() || 'Cosmic Cinema';
 
     saveUserSession({
-      userName,
+      userName: finalName,
       roomName: cleanName,
       video: DEFAULT_VIDEO,
       isMicMuted,
@@ -162,15 +171,17 @@ export default function HomePage() {
     navigateWithFade(`/room/${newRoomId}?initialMode=${selectedMode}`);
   };
 
-  const handleJoinRoom = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setJoinError('');
-
-    if (!joinInput.trim()) {
-      setJoinError('Please enter a room code or invite URL');
+  const handleCreateRoom = () => {
+    if (!isValidNickname(userName)) {
+      setPendingAction(() => (name: string) => executeCreateRoom(name));
+      handleOpenDeviceModal();
       return;
     }
+    executeCreateRoom();
+  };
 
+  const executeJoinRoom = (validName?: string) => {
+    const finalName = validName || userName;
     let parsedId = joinInput.trim();
 
     // Extract room ID if user pasted a full URL (e.g., http://localhost:3000/room/xyz123)
@@ -188,7 +199,7 @@ export default function HomePage() {
     }
 
     saveUserSession({
-      userName,
+      userName: finalName,
       isMicMuted,
       isCamOff,
       isHost: false,
@@ -198,14 +209,42 @@ export default function HomePage() {
     navigateWithFade(`/room/${parsedId}`);
   };
 
-  const handleRejoinRecent = (room: RecentRoom) => {
+  const handleJoinRoom = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setJoinError('');
+
+    if (!joinInput.trim()) {
+      setJoinError('Please enter a room code or invite URL');
+      return;
+    }
+
+    if (!isValidNickname(userName)) {
+      setPendingAction(() => (name: string) => executeJoinRoom(name));
+      handleOpenDeviceModal();
+      return;
+    }
+
+    executeJoinRoom();
+  };
+
+  const executeRejoinRecent = (room: RecentRoom, validName?: string) => {
+    const finalName = validName || userName;
     saveUserSession({
-      userName,
+      userName: finalName,
       isMicMuted,
       isCamOff,
       isHost: false,
     });
     navigateWithFade(`/room/${room.id}`);
+  };
+
+  const handleRejoinRecent = (room: RecentRoom) => {
+    if (!isValidNickname(userName)) {
+      setPendingAction(() => (name: string) => executeRejoinRecent(room, name));
+      handleOpenDeviceModal();
+      return;
+    }
+    executeRejoinRecent(room);
   };
 
   const handleRemoveRecent = (e: React.MouseEvent, id: string) => {
@@ -261,27 +300,49 @@ export default function HomePage() {
                 onChange={(e) => setUserName(e.target.value)}
                 onBlur={() => {
                   setIsEditingName(false);
-                  saveUserSession({ userName });
+                  const trimmed = userName.trim();
+                  if (isValidNickname(trimmed)) {
+                    setUserName(trimmed);
+                    saveUserSession({ userName: trimmed });
+                  } else {
+                    const session = loadUserSession();
+                    setUserName(session.userName || '');
+                  }
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     setIsEditingName(false);
-                    saveUserSession({ userName });
+                    const trimmed = userName.trim();
+                    if (isValidNickname(trimmed)) {
+                      setUserName(trimmed);
+                      saveUserSession({ userName: trimmed });
+                    } else {
+                      const session = loadUserSession();
+                      setUserName(session.userName || '');
+                    }
                   }
                 }}
-                className="w-24 bg-white/10 text-white px-1.5 py-0.5 rounded text-xs focus:outline-none border border-cyan-400/50"
+                placeholder="Name (3-25)"
+                className="w-28 bg-white/10 text-white px-1.5 py-0.5 rounded text-xs focus:outline-none border border-cyan-400/50"
               />
             ) : (
               <button
                 onClick={() => setIsEditingName(true)}
                 aria-label="Edit nickname"
                 title="Click to edit your nickname"
-                className="group flex items-center gap-1 font-semibold text-white hover:text-cyan-300 transition"
+                className="group flex items-center gap-1 font-semibold text-white hover:text-cyan-300 transition cursor-pointer"
               >
                 <span className="border-b border-dashed border-transparent group-hover:border-cyan-400/60 transition">
-                  {userName || 'Set Name'}
+                  {userName ? (
+                    userName
+                  ) : (
+                    <span className="text-amber-300 font-bold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      Set Nickname
+                    </span>
+                  )}
                 </span>
-                <Pencil className="w-2.5 h-2.5 text-gray-500 opacity-0 group-hover:opacity-100 transition" />
+                <Pencil className="w-2.5 h-2.5 text-gray-500 opacity-60 group-hover:opacity-100 transition" />
               </button>
             )}
           </div>
@@ -653,13 +714,26 @@ export default function HomePage() {
       {/* Cam & Mic Check Modal */}
       <DeviceCheckModal
         isOpen={showDeviceModal}
-        onClose={() => setShowDeviceModal(false)}
+        onClose={() => {
+          setShowDeviceModal(false);
+          setPendingAction(null);
+        }}
         stream={stream}
         isMuted={isMicMuted}
         isCamOff={isCamOff}
         onToggleMic={handleToggleMic}
         onToggleCam={handleToggleCam}
         userName={userName}
+        isMandatory={!isValidNickname(userName)}
+        onSaveName={(name) => {
+          setUserName(name);
+          saveUserSession({ userName: name });
+          if (pendingAction) {
+            const act = pendingAction;
+            setPendingAction(null);
+            act(name);
+          }
+        }}
       />
     </main>
   );

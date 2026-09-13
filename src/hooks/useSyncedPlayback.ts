@@ -8,12 +8,14 @@ interface UseSyncedPlaybackOptions {
   userId: string;
   isHost: boolean;
   onBroadcastAction: (action: PlaybackAction) => void;
+  videoSrc?: string;
 }
 
 export function useSyncedPlayback({
   userId,
   isHost,
   onBroadcastAction,
+  videoSrc,
 }: UseSyncedPlaybackOptions) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const broadcastActionRef = useRef(onBroadcastAction);
@@ -31,13 +33,29 @@ export function useSyncedPlayback({
   // Echo prevention lock
   const isHandlingRemoteAction = useRef<boolean>(false);
 
+  // Reset playback position and duration when video source changes (e.g. choosing local file)
+  const prevSrcRef = useRef(videoSrc);
+  useEffect(() => {
+    if (prevSrcRef.current !== videoSrc) {
+      prevSrcRef.current = videoSrc;
+      setCurrentTime(0);
+      setDuration(0);
+      setIsPlaying(false);
+      setIsBuffering(false);
+      isHandlingRemoteAction.current = false;
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [videoSrc]);
+
   // 1. Play Handler
   const handleLocalPlay = useCallback(() => {
+    setIsPlaying(true);
     if (isHandlingRemoteAction.current) return;
     if (!videoRef.current) return;
 
     const time = videoRef.current.currentTime;
-    setIsPlaying(true);
     broadcastActionRef.current({
       type: 'play',
       time,
@@ -48,11 +66,11 @@ export function useSyncedPlayback({
 
   // 2. Pause Handler
   const handleLocalPause = useCallback(() => {
+    setIsPlaying(false);
     if (isHandlingRemoteAction.current) return;
     if (!videoRef.current) return;
 
     const time = videoRef.current.currentTime;
-    setIsPlaying(false);
     broadcastActionRef.current({
       type: 'pause',
       time,
@@ -251,12 +269,32 @@ export function useSyncedPlayback({
     const video = videoRef.current;
     if (!video) return;
 
-    const onTimeUpdate = () => setCurrentTime(video.currentTime);
-    const onDurationChange = () => setDuration(video.duration || 0);
+    const onTimeUpdate = () => {
+      if (video) setCurrentTime(video.currentTime);
+    };
+    const onDurationChange = () => {
+      if (video && isFinite(video.duration) && video.duration > 0) {
+        setDuration(video.duration);
+      }
+    };
+    const onLoadedMetadata = () => {
+      if (video) {
+        if (isFinite(video.duration) && video.duration > 0) {
+          setDuration(video.duration);
+        }
+        setCurrentTime(video.currentTime || 0);
+      }
+    };
+    const onPlaying = () => {
+      setIsPlaying(true);
+      setIsBuffering(false);
+    };
     const onEnded = () => setIsPlaying(false);
 
     video.addEventListener('timeupdate', onTimeUpdate);
     video.addEventListener('durationchange', onDurationChange);
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
+    video.addEventListener('playing', onPlaying);
     video.addEventListener('ended', onEnded);
     video.addEventListener('play', handleLocalPlay);
     video.addEventListener('pause', handleLocalPause);
@@ -266,6 +304,8 @@ export function useSyncedPlayback({
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('durationchange', onDurationChange);
+      video.removeEventListener('loadedmetadata', onLoadedMetadata);
+      video.removeEventListener('playing', onPlaying);
       video.removeEventListener('ended', onEnded);
       video.removeEventListener('play', handleLocalPlay);
       video.removeEventListener('pause', handleLocalPause);
@@ -291,8 +331,10 @@ export function useSyncedPlayback({
       if (!video) return;
       if (video.paused) {
         video.play().catch(() => {});
+        setIsPlaying(true);
       } else {
         video.pause();
+        setIsPlaying(false);
       }
     },
     handleRemoteAction,

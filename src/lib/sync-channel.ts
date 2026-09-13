@@ -26,6 +26,8 @@ export function subscribeToRoom(
   };
 
   if (isSupabaseConfigured && supabase) {
+    let isSubscribed = false;
+
     const channel = supabase.channel(`room:${roomId}`, {
       config: {
         broadcast: { self: false },
@@ -51,13 +53,16 @@ export function subscribeToRoom(
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED' && !isUnsubscribed) {
+          isSubscribed = true;
           await channel.track(currentUser);
+        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          isSubscribed = false;
         }
       });
 
     return {
       sendMessage: (msg: SyncMessage) => {
-        if (!isUnsubscribed) {
+        if (!isUnsubscribed && isSubscribed) {
           channel.send({
             type: 'broadcast',
             event: 'sync-event',
@@ -66,10 +71,11 @@ export function subscribeToRoom(
         }
       },
       updatePresence: async (user: RoomParticipant) => {
-        if (!isUnsubscribed) await channel.track(user);
+        if (!isUnsubscribed && isSubscribed) await channel.track(user);
       },
       unsubscribe: () => {
         isUnsubscribed = true;
+        isSubscribed = false;
         channel.unsubscribe();
       },
     };

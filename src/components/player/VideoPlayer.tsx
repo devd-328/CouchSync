@@ -2,11 +2,12 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
-import { Play, Loader2, Lock, History } from 'lucide-react';
+import { Play, Loader2, Lock, History, MicOff } from 'lucide-react';
 import { PlayerControls } from './PlayerControls';
 import { SyncStatusBadge } from './SyncStatusBadge';
 import { FloatingReactions } from '../reactions/FloatingReactions';
-import { FloatingEmoji, ControlMode, MediaSourceType, PlaybackAction, TriviaAction } from '@/types/sync';
+import { FloatingChatOverlay, FloatingChatMessage } from '../chat/FloatingChatOverlay';
+import { FloatingEmoji, ControlMode, MediaSourceType, PlaybackAction, TriviaAction, RoomParticipant } from '@/types/sync';
 import { formatTime } from '@/lib/formatters';
 import { YouTubePlayer } from './YouTubePlayer';
 import { ScreenSharePlayer } from './ScreenSharePlayer';
@@ -26,6 +27,7 @@ interface VideoPlayerProps {
   partnerName?: string;
   syncLatency: number;
   reactions: FloatingEmoji[];
+  floatingChatMessages?: FloatingChatMessage[];
   movieVolume: number;
   canControl?: boolean;
   controlMode?: ControlMode;
@@ -38,6 +40,9 @@ interface VideoPlayerProps {
   isLocalScreenPresenter?: boolean;
   currentUserId?: string;
   currentUserName?: string;
+  participants?: RoomParticipant[];
+  remoteStreams?: Map<string, MediaStream>;
+  speakingPeers?: Set<string>;
   isHost?: boolean;
   remotePlaybackAction?: PlaybackAction | null;
   remoteTriviaAction?: TriviaAction | null;
@@ -54,6 +59,61 @@ interface VideoPlayerProps {
   onCloseTrivia?: () => void;
 }
 
+function CornerPipBubbles({
+  participants,
+  currentUserId,
+  remoteStreams,
+  speakingPeers,
+}: {
+  participants: RoomParticipant[];
+  currentUserId: string;
+  remoteStreams: Map<string, MediaStream>;
+  speakingPeers: Set<string>;
+}) {
+  const remotePeers = participants.filter((p) => p.id !== currentUserId);
+  if (remotePeers.length === 0) return null;
+
+  return (
+    <div className="absolute top-4 right-4 z-30 flex items-center gap-2 pointer-events-none">
+      {remotePeers.map((peer) => {
+        const stream = remoteStreams.get(peer.id);
+        const isSpeaking = speakingPeers.has(peer.id);
+        return (
+          <div
+            key={peer.id}
+            className={`relative w-22 h-16 rounded-xl overflow-hidden glass-panel border shadow-2xl bg-black/85 transition-all ${
+              isSpeaking
+                ? 'speaking-border border-cyan-400 shadow-[0_0_16px_rgba(0,242,254,0.6)]'
+                : 'border-white/20'
+            }`}
+          >
+            {stream && peer.isCamOn ? (
+              <video
+                autoPlay
+                playsInline
+                ref={(el) => {
+                  if (el && stream) el.srcObject = stream;
+                }}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950/90">
+                <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-[10px] font-bold text-cyan-300">
+                  {peer.name.charAt(0).toUpperCase()}
+                </div>
+              </div>
+            )}
+            <div className="absolute bottom-0.5 inset-x-0.5 px-1 py-0.5 rounded bg-black/70 backdrop-blur-xs flex items-center justify-between">
+              <span className="text-[9px] font-semibold text-gray-200 truncate">{peer.name}</span>
+              {!peer.isMicOn && <MicOff className="w-2.5 h-2.5 text-rose-400 shrink-0" />}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function VideoPlayer({
   src,
   poster,
@@ -68,6 +128,7 @@ export function VideoPlayer({
   partnerName = 'Partner',
   syncLatency,
   reactions,
+  floatingChatMessages = [],
   movieVolume,
   canControl = true,
   controlMode = 'shared',
@@ -80,6 +141,9 @@ export function VideoPlayer({
   isLocalScreenPresenter = false,
   currentUserId = 'user-1',
   currentUserName = 'Alex',
+  participants = [],
+  remoteStreams = new Map(),
+  speakingPeers = new Set(),
   isHost = false,
   remotePlaybackAction = null,
   remoteTriviaAction = null,
@@ -108,6 +172,17 @@ export function VideoPlayer({
   const hideControlsTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lockToastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Sync fullscreen state with document events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   // Sync movie volume with video element
   useEffect(() => {
     if (videoRef.current) {
@@ -125,34 +200,44 @@ export function VideoPlayer({
     }
   }, [mediaSource]);
 
-  // HLS.js video initialization
+  const hlsRef = useRef<Hls | null>(null);
+
+  // HLS.js and Direct Video initialization
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !src) return;
 
-    let hls: Hls | null = null;
+    // Clean up previous HLS instance cleanly
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
 
     if (src.includes('.m3u8')) {
       if (Hls.isSupported()) {
-        hls = new Hls({
+        const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
           backBufferLength: 60,
         });
-
+        hlsRef.current = hls;
         hls.loadSource(src);
         hls.attachMedia(video);
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = src;
+        video.load();
       }
     } else {
       // Local Blob URL or direct MP4/WebM
+      video.srcObject = null;
       video.src = src;
+      video.load();
     }
 
     return () => {
-      if (hls) {
-        hls.destroy();
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
       }
     };
   }, [src, videoRef]);
@@ -215,6 +300,15 @@ export function VideoPlayer({
           onChangeVideo={onChangeYouTubeVideo || (() => {})}
         />
         <FloatingReactions reactions={reactions} />
+        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
+        {isFullscreen && (
+          <CornerPipBubbles
+            participants={participants}
+            currentUserId={currentUserId}
+            remoteStreams={remoteStreams}
+            speakingPeers={speakingPeers}
+          />
+        )}
       </div>
     );
   }
@@ -229,6 +323,15 @@ export function VideoPlayer({
           onStopShare={onStopScreenShare || (() => {})}
         />
         <FloatingReactions reactions={reactions} />
+        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
+        {isFullscreen && (
+          <CornerPipBubbles
+            participants={participants}
+            currentUserId={currentUserId}
+            remoteStreams={remoteStreams}
+            speakingPeers={speakingPeers}
+          />
+        )}
       </div>
     );
   }
@@ -245,6 +348,15 @@ export function VideoPlayer({
           onCloseTrivia={onCloseTrivia || (() => {})}
         />
         <FloatingReactions reactions={reactions} />
+        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
+        {isFullscreen && (
+          <CornerPipBubbles
+            participants={participants}
+            currentUserId={currentUserId}
+            remoteStreams={remoteStreams}
+            speakingPeers={speakingPeers}
+          />
+        )}
       </div>
     );
   }
@@ -278,6 +390,19 @@ export function VideoPlayer({
       {/* Floating Reactions Overlay */}
       <FloatingReactions reactions={reactions} />
 
+      {/* Floating Chat Overlay in Fullscreen (Phase 3) */}
+      <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
+
+      {/* Corner Picture-in-Picture Video Bubbles in Fullscreen (Phase 5) */}
+      {isFullscreen && (
+        <CornerPipBubbles
+          participants={participants}
+          currentUserId={currentUserId}
+          remoteStreams={remoteStreams}
+          speakingPeers={speakingPeers}
+        />
+      )}
+
       {/* Top Left: Sync Status Pill */}
       <div className="absolute top-4 left-4 z-30 pointer-events-auto transition-opacity duration-300">
         <SyncStatusBadge
@@ -285,7 +410,7 @@ export function VideoPlayer({
           partnerStatus={partnerStatus}
           latencyMs={syncLatency}
           isPartnerBuffering={isPartnerBuffering}
-          isConnected={true}
+          isConnected={participants.some((p) => p.id !== currentUserId)}
         />
       </div>
 
@@ -334,7 +459,7 @@ export function VideoPlayer({
       )}
 
       {/* Center Big Play Button (When Paused) */}
-      {!isPlaying && !isBuffering && (
+      {!isPlaying && !isBuffering && (!videoRef.current || videoRef.current.paused) && (
         <div
           onClick={handleCanvasClick}
           className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer bg-black/30 hover:bg-black/20 transition"

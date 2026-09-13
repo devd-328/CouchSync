@@ -119,7 +119,7 @@ export function RoomHeader({
           </div>
           <div>
             <h1 className="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-              {roomName}
+              <span suppressHydrationWarning>{roomName}</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-gray-400 font-mono font-normal">
                 #{roomId}
               </span>
@@ -135,7 +135,7 @@ export function RoomHeader({
       </div>
 
       {/* Right: Permissions Control, Source Selector, Layout, Theme, Members, Settings */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-2">
         {/* Host Mode Control Toggle / Status */}
         {isHost ? (
           <button

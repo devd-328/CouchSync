@@ -92,6 +92,9 @@ export function VideoSettingsModal({
             <Upload className="w-3.5 h-3.5" />
             <span>Choose Video File (.mp4, .mkv, .webm)</span>
           </button>
+          <p className="text-[10px] text-gray-500 mt-0.5">
+            Tip: MP4 (H.264/AAC) and WebM provide optimal in-browser playback. MKV files with multichannel DTS/AC3 audio may play video without audio due to browser codec constraints.
+          </p>
         </div>
 
         {/* Preset Streams */}

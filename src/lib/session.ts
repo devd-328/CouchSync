@@ -11,10 +11,17 @@ export interface UserSessionData {
   isHost: boolean;
 }
 
+export function isValidNickname(name: string): boolean {
+  if (!name) return false;
+  const trimmed = name.trim();
+  if (trimmed.length < 3 || trimmed.length > 25) return false;
+  return /^[a-zA-Z0-9 _-]+$/.test(trimmed);
+}
+
 export function loadUserSession(): UserSessionData {
   if (typeof window === 'undefined') {
     return {
-      userName: 'Alex',
+      userName: '',
       roomName: 'Cosmic Nights',
       video: DEFAULT_VIDEO,
       isMicMuted: false,
@@ -23,7 +30,8 @@ export function loadUserSession(): UserSessionData {
     };
   }
 
-  const userName = sessionStorage.getItem(STORAGE_KEYS.USER_NAME) || 'Alex';
+  const rawUserName = sessionStorage.getItem(STORAGE_KEYS.USER_NAME) || '';
+  const userName = isValidNickname(rawUserName) ? rawUserName.trim() : '';
   const roomName = sessionStorage.getItem(STORAGE_KEYS.ROOM_NAME) || 'Cosmic Nights';
   const isHost = sessionStorage.getItem(STORAGE_KEYS.IS_HOST) === 'true';
   const videoUrl = sessionStorage.getItem(STORAGE_KEYS.VIDEO_URL);
