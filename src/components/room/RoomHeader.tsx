@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Clapperboard,
   ArrowLeft,
@@ -114,8 +115,14 @@ export function RoomHeader({
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-linear-to-tr from-cyan-400 to-violet-600 flex items-center justify-center">
-            <Clapperboard className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_12px_rgba(0,242,254,0.3)] border border-cyan-500/30 shrink-0 bg-black/60">
+            <Image
+              src="/icon.png"
+              alt="CouchSync"
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <h1 className="text-sm font-bold tracking-tight text-white flex items-center gap-2">

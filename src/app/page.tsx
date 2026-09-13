@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Clapperboard,
@@ -264,8 +265,15 @@ export default function HomePage() {
       {/* ── Top Navbar ────────────────────────────────────────────────── */}
       <header className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between py-3">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-linear-to-tr from-cyan-400 via-blue-500 to-violet-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,242,254,0.45)] border border-white/20">
-            <Clapperboard className="w-5 h-5 text-white drop-shadow-md" />
+          <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(0,242,254,0.35)] border border-cyan-500/30 shrink-0 bg-black/50">
+            <Image
+              src="/icon.png"
+              alt="CouchSync Logo"
+              width={44}
+              height={44}
+              className="w-full h-full object-cover"
+              priority
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
