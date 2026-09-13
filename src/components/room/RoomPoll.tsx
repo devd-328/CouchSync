@@ -144,11 +144,12 @@ export function RoomPollComponent({
       </button>
 
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <form
-            onSubmit={handleCreatePollSubmit}
-            className="w-full max-w-sm rounded-2xl glass-panel border-white/10 p-5 flex flex-col gap-3.5 shadow-2xl bg-[#101420]"
-          >
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md">
+          <div className="min-h-full flex items-center justify-center p-4">
+            <form
+              onSubmit={handleCreatePollSubmit}
+              className="w-full max-w-sm rounded-2xl glass-panel border-white/10 p-5 flex flex-col gap-3.5 shadow-2xl bg-[#101420] my-auto"
+            >
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <span className="font-bold text-white text-sm flex items-center gap-2">
                 <Vote className="w-4 h-4 text-cyan-400" />
@@ -206,7 +207,8 @@ export function RoomPollComponent({
             >
               Launch Poll to Room
             </button>
-          </form>
+            </form>
+          </div>
         </div>
       )}
     </div>

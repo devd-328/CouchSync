@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
 import { Play, Loader2, Lock, History } from 'lucide-react';
 import { PlayerControls } from './PlayerControls';
@@ -101,6 +101,9 @@ export function VideoPlayer({
   const [showControls, setShowControls] = useState(true);
   const [showLockToast, setShowLockToast] = useState(false);
   const [subtitleTrackUrl, setSubtitleTrackUrl] = useState<string | null>(null);
+  // Brief fade when switching media source types (250ms)
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const prevSourceRef = useRef<MediaSourceType>(mediaSource);
 
   const hideControlsTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lockToastTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -111,6 +114,16 @@ export function VideoPlayer({
       videoRef.current.volume = isMuted ? 0 : movieVolume;
     }
   }, [movieVolume, isMuted, videoRef]);
+
+  // Cross-fade when media source type changes
+  useEffect(() => {
+    if (prevSourceRef.current !== mediaSource) {
+      prevSourceRef.current = mediaSource;
+      setIsTransitioning(true);
+      const t = setTimeout(() => setIsTransitioning(false), 250);
+      return () => clearTimeout(t);
+    }
+  }, [mediaSource]);
 
   // HLS.js video initialization
   useEffect(() => {
@@ -191,7 +204,7 @@ export function VideoPlayer({
 
   if (mediaSource === 'youtube') {
     return (
-      <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl">
+      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
         <YouTubePlayer
           videoId={youtubeVideoId}
           videoTitle={youtubeVideoTitle}
@@ -208,7 +221,7 @@ export function VideoPlayer({
 
   if (mediaSource === 'screenshare') {
     return (
-      <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl">
+      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
         <ScreenSharePlayer
           stream={screenStream}
           presenterName={screenPresenterName}
@@ -222,7 +235,7 @@ export function VideoPlayer({
 
   if (mediaSource === 'trivia') {
     return (
-      <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl">
+      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
         <MovieTrivia
           currentUserId={currentUserId}
           currentUserName={currentUserName}
@@ -240,7 +253,7 @@ export function VideoPlayer({
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 group select-none"
+      className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 group select-none transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
     >
       {/* Native Video Element with Subtitle Track */}
       <video

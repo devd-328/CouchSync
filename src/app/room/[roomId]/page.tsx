@@ -14,7 +14,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { subscribeToRoom, ChannelSubscription } from '@/lib/sync-channel';
 import { loadUserSession } from '@/lib/session';
 import { formatClockTime, generateId } from '@/lib/formatters';
-import { AUDIO_CONFIG } from '@/config/constants';
+import { AUDIO_CONFIG, STORAGE_KEYS } from '@/config/constants';
 import {
   RoomParticipant,
   ChatMessage,
@@ -75,6 +75,26 @@ export default function RoomPage({
   const [isAudioDuckingEnabled, setIsAudioDuckingEnabled] = useState(true);
   const [isPushToTalkActive, setIsPushToTalkActive] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+  // In-room first-use hints — tracked per-hint in localStorage
+  const [dismissedHints, setDismissedHints] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set();
+    const dismissed = new Set<string>();
+    [
+      STORAGE_KEYS.HINT_CHAT,
+      STORAGE_KEYS.HINT_REACTIONS,
+      STORAGE_KEYS.HINT_TRIVIA,
+      STORAGE_KEYS.HINT_VOLUME,
+    ].forEach((key) => {
+      if (localStorage.getItem(key) === 'dismissed') dismissed.add(key);
+    });
+    return dismissed;
+  });
+
+  const dismissHint = (key: string) => {
+    if (typeof window !== 'undefined') localStorage.setItem(key, 'dismissed');
+    setDismissedHints((prev) => new Set([...prev, key]));
+  };
 
   // Channel reference
   const channelRef = useRef<ChannelSubscription | null>(null);
@@ -496,6 +516,18 @@ export default function RoomPage({
             onCloseTrivia={() => handleSelectSource('hls')}
           />
 
+          {/* Dual Volume Mixer + Volume Mixer Hint */}
+          {!dismissedHints.has(STORAGE_KEYS.HINT_VOLUME) && (
+            <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-white/4 border border-white/8 text-[11px] text-gray-400">
+              <span className="text-base leading-none mt-0.5" aria-hidden>🎚️</span>
+              <span className="flex-1">Adjust movie &amp; voice volumes independently — audio ducks automatically when someone speaks.</span>
+              <button
+                onClick={() => dismissHint(STORAGE_KEYS.HINT_VOLUME)}
+                aria-label="Dismiss volume mixer tip"
+                className="text-gray-500 hover:text-gray-300 transition ml-1 shrink-0"
+              >✕</button>
+            </div>
+          )}
           <DualVolumeMixer
             movieVolume={movieVolume}
             partnerVoiceVolume={partnerVoiceVolume}
@@ -540,6 +572,19 @@ export default function RoomPage({
             onBroadcastClose={handleBroadcastClosePoll}
           />
 
+          {/* Trivia hint — shown above Chat, dismissed on first read */}
+          {!dismissedHints.has(STORAGE_KEYS.HINT_TRIVIA) && (
+            <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-white/4 border border-white/8 text-[11px] text-gray-400">
+              <span className="text-base leading-none mt-0.5" aria-hidden>🎮</span>
+              <span className="flex-1">Switch to <strong className="text-amber-300">Trivia</strong> mode from the header to play movie trivia during breaks.</span>
+              <button
+                onClick={() => dismissHint(STORAGE_KEYS.HINT_TRIVIA)}
+                aria-label="Dismiss trivia tip"
+                className="text-gray-500 hover:text-gray-300 transition ml-1 shrink-0"
+              >✕</button>
+            </div>
+          )}
+
           {/* Live In-Room Chat with Timestamped Moments */}
           <ChatPanel
             messages={chatMessages}
@@ -549,6 +594,34 @@ export default function RoomPage({
             onTriggerReaction={handleReactWithEmoji}
             onJumpToTime={(time) => seekTo(time)}
           />
+
+          {/* Chat & Reactions hints — shown once below chat */}
+          {(!dismissedHints.has(STORAGE_KEYS.HINT_CHAT) || !dismissedHints.has(STORAGE_KEYS.HINT_REACTIONS)) && (
+            <div className="flex flex-col gap-1.5">
+              {!dismissedHints.has(STORAGE_KEYS.HINT_CHAT) && (
+                <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-white/4 border border-white/8 text-[11px] text-gray-400">
+                  <span className="text-base leading-none mt-0.5" aria-hidden>💬</span>
+                  <span className="flex-1">Type a message or use <strong className="text-cyan-300">Pin Moment</strong> to share a video timestamp in chat.</span>
+                  <button
+                    onClick={() => dismissHint(STORAGE_KEYS.HINT_CHAT)}
+                    aria-label="Dismiss chat tip"
+                    className="text-gray-500 hover:text-gray-300 transition ml-1 shrink-0"
+                  >✕</button>
+                </div>
+              )}
+              {!dismissedHints.has(STORAGE_KEYS.HINT_REACTIONS) && (
+                <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-white/4 border border-white/8 text-[11px] text-gray-400">
+                  <span className="text-base leading-none mt-0.5" aria-hidden>🎉</span>
+                  <span className="flex-1">Click an emoji in the reaction bar to send a <strong className="text-violet-300">floating reaction</strong> everyone sees live.</span>
+                  <button
+                    onClick={() => dismissHint(STORAGE_KEYS.HINT_REACTIONS)}
+                    aria-label="Dismiss reactions tip"
+                    className="text-gray-500 hover:text-gray-300 transition ml-1 shrink-0"
+                  >✕</button>
+                </div>
+              )}
+            </div>
+          )}
         </aside>
       </main>
 

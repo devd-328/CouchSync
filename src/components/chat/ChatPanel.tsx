@@ -61,6 +61,7 @@ export function ChatPanel({
         {currentTime !== undefined && (
           <button
             onClick={handlePinCurrentMoment}
+            aria-label="Pin current video timestamp to chat"
             className="flex items-center gap-1 px-2.5 py-1 rounded-lg glass-pill hover:bg-white/15 text-[11px] text-amber-300 border-amber-500/30 transition shadow-[0_0_8px_rgba(245,158,11,0.2)]"
             title="Save and share this current timestamp in chat"
           >
@@ -123,7 +124,8 @@ export function ChatPanel({
             <button
               key={emoji}
               onClick={() => onTriggerReaction(emoji)}
-              className="w-7 h-7 rounded-lg hover:bg-white/10 hover:scale-125 transition active:scale-95 flex items-center justify-center text-base"
+              aria-label={`React with ${emoji}`}
+              className="w-7 h-7 rounded-lg hover:bg-white/10 hover:scale-125 hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] transition active:scale-95 flex items-center justify-center text-base"
               title={`React with ${emoji}`}
             >
               {emoji}
@@ -139,11 +141,12 @@ export function ChatPanel({
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 transition"
+          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-100 placeholder-gray-400 focus:outline-none focus:border-cyan-500/50 transition"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
+          aria-label="Send message"
           className="p-2 rounded-xl bg-linear-to-r from-cyan-500 to-violet-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition"
         >
           <Send className="w-3.5 h-3.5" />

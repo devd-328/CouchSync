@@ -123,6 +123,7 @@ export function WebRTCCall({
         <div className="flex items-center gap-2">
           <button
             onClick={onToggleLocalCam}
+            aria-label={isCamOff ? 'Turn camera on' : 'Turn camera off'}
             className={`p-1.5 rounded-lg border transition ${
               isCamOff
                 ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
@@ -134,6 +135,7 @@ export function WebRTCCall({
           </button>
           <button
             onClick={onToggleLocalMic}
+            aria-label={isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
             className={`p-1.5 rounded-lg border transition ${
               isMicMuted
                 ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'

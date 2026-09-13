@@ -304,8 +304,9 @@ export function YouTubePlayer({
 
       {/* Change YouTube URL Modal */}
       {showUrlModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md glass-panel rounded-3xl p-6 border-white/10 bg-[#0E121E] shadow-2xl">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="min-h-full flex items-center justify-center p-4">
+            <div className="w-full max-w-md glass-panel rounded-3xl p-6 border-white/10 bg-[#0E121E] shadow-2xl my-auto">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Tv className="w-5 h-5 text-rose-500" />
               <span>Load YouTube Video</span>
@@ -347,6 +348,7 @@ export function YouTubePlayer({
             </form>
           </div>
         </div>
+      </div>
       )}
     </div>
   );

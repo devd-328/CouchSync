@@ -52,8 +52,9 @@ export function VideoSettingsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg rounded-2xl glass-panel border-white/10 p-6 flex flex-col gap-4 shadow-2xl bg-[#0F1320]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm">
+      <div className="min-h-full flex items-center justify-center p-4">
+        <div className="w-full max-w-lg rounded-2xl glass-panel border-white/10 p-6 flex flex-col gap-4 shadow-2xl bg-[#0F1320] my-auto">
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <h3 className="text-base font-bold text-white flex items-center gap-2">
             <Film className="w-5 h-5 text-cyan-400" />
@@ -138,5 +139,6 @@ export function VideoSettingsModal({
         </div>
       </div>
     </div>
+  </div>
   );
 }

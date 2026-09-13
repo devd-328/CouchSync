@@ -95,9 +95,10 @@ export function PlayerControls({
           <button
             onClick={canControl ? onTogglePlay : undefined}
             disabled={!canControl}
+            aria-label={!canControl ? 'Playback locked by host' : isPlaying ? 'Pause' : 'Play'}
             className={`p-2 rounded-lg transition ${
               canControl
-                ? 'hover:bg-white/15 hover:text-cyan-400 cursor-pointer'
+                ? 'hover:bg-white/15 hover:text-cyan-400 hover:shadow-[0_0_12px_rgba(0,242,254,0.25)] cursor-pointer'
                 : 'opacity-40 cursor-not-allowed'
             }`}
             title={
@@ -115,6 +116,7 @@ export function PlayerControls({
           <button
             onClick={() => canControl && onSkip(-10)}
             disabled={!canControl}
+            aria-label={canControl ? 'Rewind 10 seconds' : 'Rewind locked by host'}
             className={`p-1.5 rounded-lg transition ${
               canControl
                 ? 'hover:bg-white/15 hover:text-cyan-400 cursor-pointer'
@@ -129,6 +131,7 @@ export function PlayerControls({
           <button
             onClick={() => canControl && onSkip(10)}
             disabled={!canControl}
+            aria-label={canControl ? 'Fast forward 10 seconds' : 'Fast forward locked by host'}
             className={`p-1.5 rounded-lg transition ${
               canControl
                 ? 'hover:bg-white/15 hover:text-cyan-400 cursor-pointer'
@@ -143,6 +146,7 @@ export function PlayerControls({
           <div className="flex items-center gap-2 group/volume ml-1 sm:ml-2">
             <button
               onClick={onToggleMute}
+              aria-label={isMuted || volume === 0 ? 'Unmute audio' : 'Mute audio'}
               className="p-1.5 rounded-lg hover:bg-white/15 hover:text-cyan-400 transition"
               title="Mute / Unmute"
             >
@@ -182,6 +186,7 @@ export function PlayerControls({
             <button
               onClick={() => canControl && setShowSpeedMenu(!showSpeedMenu)}
               disabled={!canControl}
+              aria-label={canControl ? `Change playback speed, currently ${playbackSpeed}x` : 'Speed locked by host'}
               className={`px-2 py-1 rounded-lg border text-[11px] font-mono flex items-center gap-1 transition ${
                 canControl
                   ? 'bg-white/5 hover:bg-white/10 border-white/10 text-cyan-300'
@@ -225,6 +230,7 @@ export function PlayerControls({
           {/* Fullscreen Toggle */}
           <button
             onClick={onToggleFullscreen}
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             className="p-1.5 rounded-lg hover:bg-white/15 hover:text-cyan-400 transition"
             title={isFullscreen ? 'Exit Fullscreen (F)' : 'Fullscreen (F)'}
           >

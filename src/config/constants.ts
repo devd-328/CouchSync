@@ -53,4 +53,48 @@ export const STORAGE_KEYS = {
   MIC_MUTED: 'couchsync_mic_muted',
   CAM_OFF: 'couchsync_cam_off',
   IS_HOST: 'couchsync_is_host',
+  // In-room first-use hint dismissal flags (one per feature)
+  HINT_CHAT: 'couchsync_hint_chat',
+  HINT_REACTIONS: 'couchsync_hint_reactions',
+  HINT_TRIVIA: 'couchsync_hint_trivia',
+  HINT_VOLUME: 'couchsync_hint_volume_mixer',
+};
+
+/**
+ * Per-media-source-type color tokens — single source of truth used across
+ * the homepage activity cards, RoomHeader source selector, and feature grid.
+ * Keys map to MediaSourceType values: 'hls' | 'youtube' | 'screenshare' | 'trivia'
+ */
+export const SOURCE_COLORS: Record<
+  string,
+  { bg: string; border: string; shadow: string; text: string; icon: string }
+> = {
+  hls: {
+    bg: 'bg-cyan-500/20',
+    border: 'border-cyan-400/50',
+    shadow: 'shadow-[0_0_18px_rgba(0,242,254,0.22)]',
+    text: 'text-cyan-300',
+    icon: 'text-cyan-400',
+  },
+  youtube: {
+    bg: 'bg-rose-500/20',
+    border: 'border-rose-400/50',
+    shadow: 'shadow-[0_0_18px_rgba(244,63,94,0.22)]',
+    text: 'text-rose-300',
+    icon: 'text-rose-400',
+  },
+  screenshare: {
+    bg: 'bg-violet-500/20',
+    border: 'border-violet-400/50',
+    shadow: 'shadow-[0_0_18px_rgba(139,92,246,0.22)]',
+    text: 'text-violet-300',
+    icon: 'text-violet-400',
+  },
+  trivia: {
+    bg: 'bg-amber-500/20',
+    border: 'border-amber-400/50',
+    shadow: 'shadow-[0_0_18px_rgba(245,158,11,0.22)]',
+    text: 'text-amber-300',
+    icon: 'text-amber-400',
+  },
 };

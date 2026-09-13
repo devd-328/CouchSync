@@ -2,10 +2,24 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Clapperboard, ArrowLeft, Settings, Users, Crown, Lock, Unlock } from 'lucide-react';
+import {
+  Clapperboard,
+  ArrowLeft,
+  Settings,
+  Users,
+  Crown,
+  Lock,
+  Unlock,
+  MonitorUp,
+  Tv,
+  Film,
+  Gamepad2,
+  Square,
+  CheckCircle2,
+} from 'lucide-react';
 import { ControlMode, ThemeMode, MediaSourceType, RoomLayoutMode } from '@/types/sync';
 import { ThemeSelector } from './ThemeSelector';
-import { MonitorUp, Tv, Film, Gamepad2, Layout, Square } from 'lucide-react';
+import { SOURCE_COLORS } from '@/config/constants';
 
 interface RoomHeaderProps {
   roomName: string;
@@ -24,6 +38,51 @@ interface RoomHeaderProps {
   onToggleScreenShare: () => void;
   onOpenSettings: () => void;
 }
+
+/** Source selector button definitions — mirrors the homepage ACTIVITIES array */
+const HEADER_SOURCES: {
+  mode: MediaSourceType;
+  label: string;
+  shortLabel: string;
+  icon: React.ReactNode;
+  ariaLabel: string;
+}[] = [
+  {
+    mode: 'hls',
+    label: 'Cinema Movie',
+    shortLabel: 'Movie',
+    icon: <Film className="w-3.5 h-3.5 shrink-0" />,
+    ariaLabel: 'Switch to Cinema Movie (HLS)',
+  },
+  {
+    mode: 'youtube',
+    label: 'YouTube Party',
+    shortLabel: 'YouTube',
+    icon: <Tv className="w-3.5 h-3.5 shrink-0" />,
+    ariaLabel: 'Switch to YouTube Watch Party',
+  },
+  {
+    mode: 'screenshare',
+    label: 'Screen Share',
+    shortLabel: 'Screen',
+    icon: <MonitorUp className="w-3.5 h-3.5 shrink-0" />,
+    ariaLabel: 'Share your screen to the room',
+  },
+  {
+    mode: 'trivia',
+    label: 'Movie Trivia',
+    shortLabel: 'Trivia',
+    icon: <Gamepad2 className="w-3.5 h-3.5 shrink-0" />,
+    ariaLabel: 'Play intermission movie trivia',
+  },
+];
+
+/** Layout toggle options */
+const LAYOUTS: { mode: RoomLayoutMode; label: string; ariaLabel: string }[] = [
+  { mode: 'cinema',  label: 'Cinema',  ariaLabel: 'Cinema theater layout' },
+  { mode: 'lounge',  label: 'Lounge',  ariaLabel: 'Kosmi lounge couch layout' },
+  { mode: 'focus',   label: 'Focus',   ariaLabel: 'Full focus layout (video only)' },
+];
 
 export function RoomHeader({
   roomName,
@@ -48,6 +107,7 @@ export function RoomHeader({
       <div className="flex items-center gap-3">
         <Link
           href="/"
+          aria-label="Return to lobby"
           className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-400 hover:text-white transition"
           title="Return to Lobby"
         >
@@ -74,12 +134,13 @@ export function RoomHeader({
         </div>
       </div>
 
-      {/* Right: Permissions Control, Theme Selector, Member Count & Settings */}
+      {/* Right: Permissions Control, Source Selector, Layout, Theme, Members, Settings */}
       <div className="flex items-center gap-2.5">
         {/* Host Mode Control Toggle / Status */}
         {isHost ? (
           <button
             onClick={onToggleControlMode}
+            aria-label="Toggle playback control mode"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
               controlMode === 'host-only'
                 ? 'bg-amber-500/20 text-amber-200 border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
@@ -122,105 +183,87 @@ export function RoomHeader({
           </div>
         )}
 
-        {/* Media Source Quick Selector (Kosmi Lounge) */}
+        {/* Media Source Quick Selector — per-source colors match homepage activity cards */}
         <div className="flex items-center gap-1 p-1 rounded-xl bg-black/40 border border-white/10">
-          <button
-            onClick={() => onSelectSource('hls')}
-            title="Switch to Cinema Movie"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-              currentSource === 'hls'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Film className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Movie</span>
-          </button>
+          {HEADER_SOURCES.map(({ mode, shortLabel, icon, ariaLabel }) => {
+            // Screen-share button has special active/stop behaviour
+            const isScreenShareBtn = mode === 'screenshare';
+            const isActive = isScreenShareBtn
+              ? isScreenSharing || currentSource === 'screenshare'
+              : currentSource === mode;
+            const colors = SOURCE_COLORS[mode];
 
-          <button
-            onClick={() => onSelectSource('youtube')}
-            title="Switch to YouTube Watch Party"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-              currentSource === 'youtube'
-                ? 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Tv className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">YouTube</span>
-          </button>
-
-          <button
-            onClick={onToggleScreenShare}
-            title={isScreenSharing ? 'Stop Screen Sharing' : 'Share Screen to Big Screen'}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-              isScreenSharing || currentSource === 'screenshare'
-                ? 'bg-violet-500/30 text-violet-200 border border-violet-400/50 shadow-[0_0_10px_rgba(139,92,246,0.3)]'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            {isScreenSharing ? (
-              <>
-                <Square className="w-3 h-3 text-rose-400 fill-current" />
-                <span className="hidden sm:inline">Stop Share</span>
-              </>
-            ) : (
-              <>
-                <MonitorUp className="w-3.5 h-3.5 text-violet-400" />
-                <span className="hidden sm:inline">Screen Share</span>
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={() => onSelectSource('trivia')}
-            title="Play Intermission Movie Trivia"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-              currentSource === 'trivia'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Gamepad2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Trivia</span>
-          </button>
+            return (
+              <button
+                key={mode}
+                onClick={isScreenShareBtn ? onToggleScreenShare : () => onSelectSource(mode)}
+                aria-label={
+                  isScreenShareBtn && isScreenSharing
+                    ? 'Stop screen sharing'
+                    : ariaLabel
+                }
+                title={
+                  isScreenShareBtn
+                    ? isScreenSharing
+                      ? 'Stop Screen Sharing'
+                      : 'Share Screen to Room'
+                    : ariaLabel
+                }
+                className={`card-hover flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                  isActive
+                    ? `${colors.bg} ${colors.text} border ${colors.border} ${colors.shadow}`
+                    : `${colors.icon} opacity-60 hover:opacity-100 hover:bg-white/8`
+                }`}
+              >
+                {/* Show stop icon when actively screen-sharing */}
+                {isScreenShareBtn && isScreenSharing ? (
+                  <>
+                    <Square className="w-3 h-3 text-rose-400 fill-current" />
+                    <span className="hidden sm:inline text-rose-300">Stop</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{icon}</span>
+                    <span className="hidden sm:inline">{shortLabel}</span>
+                  </>
+                )}
+                {/* Checkmark on active source — matches homepage card treatment */}
+                {isActive && !isScreenSharing && (
+                  <CheckCircle2 className={`w-3 h-3 shrink-0 ${colors.icon}`} />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Room Layout Switcher */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-black/40 border border-white/10" title="Switch Room Layout">
-          <button
-            onClick={() => onSelectLayout('cinema')}
-            title="Cinema Theater Layout"
-            className={`px-2 py-1 rounded-lg text-[11px] font-bold transition ${
-              currentLayout === 'cinema' ? 'bg-white/20 text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            Cinema
-          </button>
-          <button
-            onClick={() => onSelectLayout('lounge')}
-            title="Kosmi Lounge Couch Layout"
-            className={`px-2 py-1 rounded-lg text-[11px] font-bold transition ${
-              currentLayout === 'lounge' ? 'bg-white/20 text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            Lounge
-          </button>
-          <button
-            onClick={() => onSelectLayout('focus')}
-            title="Full Focus Layout"
-            className={`px-2 py-1 rounded-lg text-[11px] font-bold transition ${
-              currentLayout === 'focus' ? 'bg-white/20 text-white' : 'text-gray-500 hover:text-gray-300'
-            }`}
-          >
-            Focus
-          </button>
+        <div
+          className="flex items-center gap-1 p-1 rounded-xl bg-black/40 border border-white/10"
+          role="group"
+          aria-label="Switch room layout"
+        >
+          {LAYOUTS.map(({ mode, label, ariaLabel }) => (
+            <button
+              key={mode}
+              onClick={() => onSelectLayout(mode)}
+              aria-label={ariaLabel}
+              aria-pressed={currentLayout === mode}
+              title={ariaLabel}
+              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition ${
+                currentLayout === mode
+                  ? 'bg-white/20 text-white shadow-[0_0_8px_rgba(255,255,255,0.1)]'
+                  : 'text-gray-500 hover:text-gray-300 hover:bg-white/8'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Ambient Theater Theme Selector */}
         <ThemeSelector currentTheme={currentTheme} onSelectTheme={onSelectTheme} />
 
-        {/* In-Room Counter */}
+        {/* In-Room Participant Counter */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-pill text-xs text-gray-300">
           <Users className="w-3.5 h-3.5 text-cyan-400" />
           <span>{Math.max(1, participantsCount)} in room</span>
@@ -229,7 +272,8 @@ export function RoomHeader({
         {/* Settings */}
         <button
           onClick={onOpenSettings}
-          className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-300 transition"
+          aria-label="Video and room settings"
+          className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-300 hover:text-white transition"
           title="Video & Room Settings"
         >
           <Settings className="w-4 h-4" />
