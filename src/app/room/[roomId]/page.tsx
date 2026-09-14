@@ -638,15 +638,17 @@ export default function RoomPage({
             onSelectLocalFile={handleLocalFileSelect}
           />
 
-          {/* Dual Volume Mixer + Volume Mixer Hint */}
+          {/* Volume Mixer Hint (Clean borderless inline tip) */}
           {isMounted && !dismissedHints.has(STORAGE_KEYS.HINT_VOLUME) && (
-            <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-white/4 border border-white/8 text-[11px] text-gray-400">
-              <span className="text-base leading-none mt-0.5" aria-hidden>🎚️</span>
-              <span className="flex-1">Adjust movie &amp; voice volumes independently — audio ducks automatically when someone speaks.</span>
+            <div className="flex items-center justify-between gap-2 px-2 text-[11px] text-gray-400">
+              <div className="flex items-center gap-1.5 truncate">
+                <span className="text-xs">🎚️</span>
+                <span className="truncate">Adjust movie &amp; voice volumes independently — audio ducks automatically when someone speaks.</span>
+              </div>
               <button
                 onClick={() => dismissHint(STORAGE_KEYS.HINT_VOLUME)}
                 aria-label="Dismiss volume mixer tip"
-                className="text-gray-500 hover:text-gray-300 transition ml-1 shrink-0"
+                className="text-gray-500 hover:text-gray-300 transition ml-2 shrink-0 cursor-pointer"
               >✕</button>
             </div>
           )}

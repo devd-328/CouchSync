@@ -130,9 +130,9 @@ export function WebRTCCall({
   const remoteParticipants = participants.filter((p) => p.id !== currentUserId);
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2.5 h-full flex-1 justify-between">
       {/* Top Header: Soft Group-Size Cap Indicator */}
-      <div className="flex items-center justify-between px-1 text-[10px] text-gray-400 font-medium">
+      <div className="flex items-center justify-between px-1 text-[10px] text-gray-400 font-medium shrink-0">
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           <span className="text-gray-200 font-semibold">
@@ -145,7 +145,7 @@ export function WebRTCCall({
       </div>
 
       {/* Video Grid */}
-      <div className="flex-1 min-h-0 overflow-y-auto pr-0.5">
+      <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 flex flex-col justify-center">
         {remoteParticipants.length === 0 ? (
           // Fallback for single user in room or 1:1 legacy view
           remoteStream ? (
@@ -158,7 +158,7 @@ export function WebRTCCall({
               volume={partnerVoiceVolume}
             />
           ) : (
-            <div className="aspect-4/3 rounded-2xl border border-white/10 glass-panel flex flex-col items-center justify-center text-center p-4 bg-slate-950/60">
+            <div className="w-full flex-1 min-h-[200px] rounded-2xl border border-white/10 glass-panel flex flex-col items-center justify-center text-center p-4 bg-slate-950/60">
               <div className="w-11 h-11 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center mb-2 text-cyan-400">
                 <Users className="w-5 h-5" />
               </div>
