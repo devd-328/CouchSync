@@ -8,13 +8,14 @@ import { ChatPanel } from '@/components/chat/ChatPanel';
 import { DualVolumeMixer } from '@/components/controls/DualVolumeMixer';
 import { RoomHeader } from '@/components/room/RoomHeader';
 import { VideoSettingsModal } from '@/components/room/VideoSettingsModal';
+import { RoomSettingsModal } from '@/components/room/RoomSettingsModal';
 import { RoomPollComponent } from '@/components/room/RoomPoll';
 import { FloatingChatMessage } from '@/components/chat/FloatingChatOverlay';
 import { useSyncedPlayback } from '@/hooks/useSyncedPlayback';
 import { useWebRTC } from '@/hooks/useWebRTC';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { subscribeToRoom, ChannelSubscription } from '@/lib/sync-channel';
-import { loadUserSession, isValidNickname } from '@/lib/session';
+import { loadUserSession, isValidNickname, saveUserSession } from '@/lib/session';
 import { DEFAULT_VIDEO } from '@/lib/sample-media';
 import { formatClockTime, generateId } from '@/lib/formatters';
 import { AUDIO_CONFIG, STORAGE_KEYS } from '@/config/constants';
@@ -129,7 +130,9 @@ export default function RoomPage({
   const [partnerVoiceVolume, setPartnerVoiceVolume] = useState(AUDIO_CONFIG.DEFAULT_PARTNER_VOLUME);
   const [isAudioDuckingEnabled, setIsAudioDuckingEnabled] = useState(true);
   const [isPushToTalkActive, setIsPushToTalkActive] = useState(false);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showMoviePickerModal, setShowMoviePickerModal] = useState(false);
+  const [showRoomSettingsModal, setShowRoomSettingsModal] = useState(false);
+  const [showDeviceCheckModal, setShowDeviceCheckModal] = useState(false);
 
   // In-room first-use hints — tracked per-hint in localStorage (hydrated in useEffect)
   const [dismissedHints, setDismissedHints] = useState<Set<string>>(() => new Set());
@@ -544,6 +547,16 @@ export default function RoomPage({
     }
   };
 
+  const handleUpdateUserName = (newName: string) => {
+    const updatedUser = { ...currentUser, name: newName };
+    setCurrentUser(updatedUser);
+    saveUserSession({ userName: newName });
+    setParticipants((prev) =>
+      prev.map((p) => (p.id === currentUser.id ? { ...p, name: newName } : p))
+    );
+    channelRef.current?.updatePresence(updatedUser);
+  };
+
   // Smart Audio Ducking calculation
   const effectiveMovieVolume =
     isAudioDuckingEnabled && isPartnerSpeaking
@@ -568,8 +581,8 @@ export default function RoomPage({
         onSelectSource={handleSelectSource}
         onSelectLayout={setRoomLayout}
         onToggleScreenShare={handleToggleScreenShare}
-        onOpenSettings={() => setShowSettingsModal(true)}
-        onOpenSelectMovie={() => setShowSettingsModal(true)}
+        onOpenSettings={() => setShowRoomSettingsModal(true)}
+        onOpenSelectMovie={() => setShowMoviePickerModal(true)}
       />
 
       {/* Main Theater Layout */}
@@ -621,7 +634,7 @@ export default function RoomPage({
             onChangeYouTubeVideo={handleChangeYouTubeVideo}
             onSendTriviaAction={handleSendTriviaAction}
             onCloseTrivia={() => handleSelectSource('hls')}
-            onOpenSelectMovie={() => setShowSettingsModal(true)}
+            onOpenSelectMovie={() => setShowMoviePickerModal(true)}
             onSelectLocalFile={handleLocalFileSelect}
           />
 
@@ -652,7 +665,7 @@ export default function RoomPage({
             onToggleCam={toggleCamera}
             onToggleAudioDucking={() => setIsAudioDuckingEnabled(!isAudioDuckingEnabled)}
             onTogglePushToTalk={() => setIsPushToTalkActive(!isPushToTalkActive)}
-            onOpenSettings={() => setShowSettingsModal(true)}
+            onOpenSettings={() => setShowRoomSettingsModal(true)}
           />
         </section>
 
@@ -874,11 +887,11 @@ export default function RoomPage({
         )}
       </main>
 
-      {/* Modular Settings Dialog with Local File Support */}
+      {/* Dedicated Select Movie / Upload from PC Dialog */}
       <VideoSettingsModal
-        isOpen={showSettingsModal}
+        isOpen={showMoviePickerModal}
         currentVideoSrc={currentVideo.src}
-        onClose={() => setShowSettingsModal(false)}
+        onClose={() => setShowMoviePickerModal(false)}
         onSelectVideo={(vid) => {
           setCurrentVideo(vid);
           if (mediaSource !== 'hls') {
@@ -887,20 +900,39 @@ export default function RoomPage({
         }}
       />
 
-      {/* Mandatory Name Gate Modal for direct URL visits */}
+      {/* Room Preferences & Settings Modal */}
+      <RoomSettingsModal
+        isOpen={showRoomSettingsModal}
+        onClose={() => setShowRoomSettingsModal(false)}
+        userName={currentUser.name}
+        isHost={currentUser.isHost}
+        roomId={roomId}
+        roomName={roomName}
+        isAudioDuckingEnabled={isAudioDuckingEnabled}
+        onToggleAudioDucking={() => setIsAudioDuckingEnabled(!isAudioDuckingEnabled)}
+        onUpdateUserName={handleUpdateUserName}
+        onOpenDeviceCheck={() => setShowDeviceCheckModal(true)}
+        currentTheme={currentTheme}
+        onSelectTheme={setCurrentTheme}
+        isMicOn={!isMicMuted}
+        isCamOn={!isCamOff}
+      />
+
+      {/* Device Check Modal (Mandatory on First Visit or Optional Diagnostics) */}
       <DeviceCheckModal
-        isOpen={isMounted && !hasValidName}
-        onClose={() => {}}
+        isOpen={(isMounted && !hasValidName) || showDeviceCheckModal}
+        onClose={() => setShowDeviceCheckModal(false)}
         stream={localStream}
         isMuted={isMicMuted}
         isCamOff={isCamOff}
         onToggleMic={toggleMic}
         onToggleCam={toggleCamera}
         userName={currentUser.name}
-        isMandatory={true}
+        isMandatory={!hasValidName}
         onSaveName={(name) => {
-          setCurrentUser((prev) => ({ ...prev, name }));
+          handleUpdateUserName(name);
           setHasValidName(true);
+          setShowDeviceCheckModal(false);
         }}
       />
     </div>
