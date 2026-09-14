@@ -21,8 +21,8 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'Features — CouchSync Cinema Lounge',
-  description: 'Explore CouchSync features: sub-second playback sync, P2P video & voice with smart ducking, native screen sharing, movie trivia, and ambient cinema themes.',
+  title: 'Features — CouchSync Live Cinema Lounge',
+  description: 'Explore CouchSync Live features: sub-second playback sync, P2P video & voice with smart ducking, native screen sharing, movie trivia, and ambient cinema themes.',
 };
 
 export default function FeaturesPage() {
@@ -48,7 +48,7 @@ export default function FeaturesPage() {
             Engineered for Cinema Together
           </h1>
           <p className="mt-4 text-sm sm:text-base text-gray-300 leading-relaxed">
-            Discover the technology behind CouchSync. Ultra-low latency synchronization, peer-to-peer media encryption, smart acoustic ducking, and ambient cinema theater theming.
+            Discover the technology behind CouchSync Live. Ultra-low latency synchronization, peer-to-peer media encryption, smart acoustic ducking, and ambient cinema theater theming.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export default function FeaturesPage() {
                   Sub-Second Sync Engine
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  CouchSync reconciles play, pause, seek, and playback rates across all participants with under 150ms latency. A fine-tuned drift tolerance threshold ensures micro-fluctuations never cause annoying micro-stutters. Continuous 1.5-second heartbeat telemetry and cooperative buffering ensure nobody gets left behind when a partner buffers.
+                  CouchSync Live reconciles play, pause, seek, and playback rates across all participants with under 150ms latency. A fine-tuned drift tolerance threshold ensures micro-fluctuations never cause annoying micro-stutters. Continuous 1.5-second heartbeat telemetry and cooperative buffering ensure nobody gets left behind when a partner buffers.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
@@ -241,7 +241,7 @@ export default function FeaturesPage() {
                   Native 60fps Screen Sharing
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  Stream full desktop screens, individual application windows, or browser tabs with zero cloud compression. Whether sharing indie movies from personal drives, browsing through photo albums, or co-watching subscription services, CouchSync establishes direct WebRTC video pipes without watermarks or duration limits.
+                  Stream full desktop screens, individual application windows, or browser tabs with zero cloud compression. Whether sharing indie movies from personal drives, browsing through photo albums, or co-watching subscription services, CouchSync Live establishes direct WebRTC video pipes without watermarks or duration limits.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
@@ -502,7 +502,7 @@ export default function FeaturesPage() {
           <div className="absolute inset-0 bg-linear-to-r from-cyan-500/5 via-violet-500/5 to-emerald-500/5 pointer-events-none" />
           <div className="relative z-10 max-w-xl mx-auto space-y-4">
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Ready to Try CouchSync?
+              Ready to Try CouchSync Live?
             </h2>
             <p className="text-xs sm:text-sm text-gray-300">
               Host your movie night in seconds with crystal-clear P2P audio, sub-second sync, and zero accounts.

@@ -1,5 +1,5 @@
 /**
- * CouchSync - Centralized Platform Constants & Configuration
+ * CouchSync Live - Centralized Platform Constants & Configuration
  * Following the KISS principle: single source of truth for all parameters.
  */
 

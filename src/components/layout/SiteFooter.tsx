@@ -44,7 +44,7 @@ export function SiteFooter() {
       </div>
 
       <div className="text-[10px] text-gray-600 font-medium">
-        CouchSync — Watch Movies Together in Real-Time Sync
+        CouchSync Live — Watch Movies Together in Real-Time Sync
       </div>
     </footer>
   );

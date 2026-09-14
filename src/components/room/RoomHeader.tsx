@@ -123,7 +123,7 @@ export function RoomHeader({
           <div className="w-8 h-8 rounded-lg overflow-hidden shadow-[0_0_12px_rgba(0,242,254,0.3)] border border-cyan-500/30 shrink-0 bg-black/60">
             <Image
               src="/icon.png"
-              alt="CouchSync"
+              alt="CouchSync Live"
               width={32}
               height={32}
               className="w-full h-full object-cover"

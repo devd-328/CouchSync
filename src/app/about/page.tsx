@@ -12,8 +12,8 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'About — CouchSync Cinema Lounge',
-  description: 'The story and philosophy behind CouchSync: watching movies across distance, zero-server-cost peer-to-peer architecture, and the Kosmi Lounge aesthetic.',
+  title: 'About — CouchSync Live Cinema Lounge',
+  description: 'The story and philosophy behind CouchSync Live: watching movies across distance, zero-server-cost peer-to-peer architecture, and the Kosmi Lounge aesthetic.',
 };
 
 export default function AboutPage() {
@@ -37,7 +37,7 @@ export default function AboutPage() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-            Why CouchSync Exists
+            Why CouchSync Live Exists
           </h1>
           <p className="mt-4 text-sm sm:text-base text-gray-300 leading-relaxed">
             A real-time cinema lounge built so friends, partners, and movie lovers can watch together across any distance — without servers, accounts, or friction.
@@ -64,7 +64,7 @@ export default function AboutPage() {
                 We all know the frustration of long-distance watch parties: counting down <em className="text-white">“3, 2, 1, press play!”</em> on a phone call, only to discover one person is three seconds ahead and reacting to spoilers before they happen.
               </p>
               <p>
-                Cinema is an inherently social art form. It’s meant to be experienced with gasps, quiet laughs, popcorn debates, and shared moments. CouchSync was created to eliminate the distance barrier with sub-second lockstep synchronization, making your living rooms feel right next door to each other.
+                Cinema is an inherently social art form. It’s meant to be experienced with gasps, quiet laughs, popcorn debates, and shared moments. CouchSync Live was created to eliminate the distance barrier with sub-second lockstep synchronization, making your living rooms feel right next door to each other.
               </p>
             </div>
           </article>
@@ -87,7 +87,7 @@ export default function AboutPage() {
                 Traditional streaming platforms incur massive server bills by re-encoding and routing video through centralized clouds. Those high infrastructure costs inevitably force apps to charge monthly subscriptions, sell user data, or eventually shut down.
               </p>
               <p>
-                CouchSync takes a radically different approach: <strong>Peer-to-Peer by design</strong>. Video, voice, and media sync directly between participants&apos; browsers via WebRTC (DTLS-SRTP encryption). Because no heavy video data passes through our servers, hosting costs stay near zero. This ensures CouchSync can remain completely free, lightweight, and private forever.
+                CouchSync Live takes a radically different approach: <strong>Peer-to-Peer by design</strong>. Video, voice, and media sync directly between participants&apos; browsers via WebRTC (DTLS-SRTP encryption). Because no heavy video data passes through our servers, hosting costs stay near zero. This ensures CouchSync Live can remain completely free, lightweight, and private forever.
               </p>
             </div>
           </article>
@@ -110,7 +110,7 @@ export default function AboutPage() {
                 Most video call tools look like corporate Monday morning meetings — bright white backgrounds, sterile gray borders, and harsh notification pings that ruin movie atmosphere.
               </p>
               <p>
-                We designed CouchSync as an homage to the neon-lit midnight movie theater experience: obsidian glassmorphism, soft ambient glows that match the film, and smart audio ducking that automatically softens movie dialogue when a friend speaks so nobody has to shout.
+                We designed CouchSync Live as an homage to the neon-lit midnight movie theater experience: obsidian glassmorphism, soft ambient glows that match the film, and smart audio ducking that automatically softens movie dialogue when a friend speaks so nobody has to shout.
               </p>
             </div>
           </article>

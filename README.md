@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🍿 CouchSync
+# 🍿 CouchSync Live
 
 ### **Watch Movies Together in Real-Time Sync**
 *Zero-Server Cost • Crystal-Clear P2P Video/Voice • <150ms Lockstep Sync*
@@ -29,9 +29,9 @@
 
 ## ✨ Overview
 
-**CouchSync** is a modern, privacy-first virtual cinema lounge built for friends and communities who want to experience movies, YouTube videos, screen-shared games, and multiplayer trivia together without lag or desync.
+**CouchSync Live** is a modern, privacy-first virtual cinema lounge built for friends and communities who want to experience movies, YouTube videos, screen-shared games, and multiplayer trivia together without lag or desync.
 
-Unlike traditional watch party tools that route high-bandwidth media through costly cloud servers or require clumsy browser extensions, CouchSync runs **100% in the browser** using direct peer-to-peer **WebRTC** mesh data channels, adaptive **HLS**, and lightweight real-time synchronization.
+Unlike traditional watch party tools that route high-bandwidth media through costly cloud servers or require clumsy browser extensions, CouchSync Live runs **100% in the browser** using direct peer-to-peer **WebRTC** mesh data channels, adaptive **HLS**, and lightweight real-time synchronization.
 
 ---
 
@@ -159,7 +159,7 @@ npm install
 ```
 
 ### 3. Environment Variables (Optional)
-CouchSync works out-of-the-box locally with `BroadcastChannel`. To enable multi-device cloud rooms, add your Supabase credentials to `.env.local`:
+CouchSync Live works out-of-the-box locally with `BroadcastChannel`. To enable multi-device cloud rooms, add your Supabase credentials to `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key

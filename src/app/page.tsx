@@ -73,13 +73,13 @@ const ACTIVITIES: { mode: MediaSourceType; label: string; sub: string; icon: Rea
 
 const FAQ_ITEMS = [
   {
-    q: 'Is CouchSync really 100% free with no account required?',
+    q: 'Is CouchSync Live really 100% free with no account required?',
     badge: 'Free & No Sign-up',
     badgeColor: 'bg-emerald-500/15 border-emerald-400/30 text-emerald-300',
-    a: 'Yes. CouchSync requires zero account registration, credit cards, or subscriptions. You can launch a room with a single click or paste an invite code to join a friend’s lounge instantly in any supported browser.',
+    a: 'Yes. CouchSync Live requires zero account registration, credit cards, or subscriptions. You can launch a room with a single click or paste an invite code to join a friend’s lounge instantly in any supported browser.',
   },
   {
-    q: 'Does CouchSync store, record, or route my video/voice through a server?',
+    q: 'Does CouchSync Live store, record, or route my video/voice through a server?',
     badge: 'DTLS-SRTP Encrypted',
     badgeColor: 'bg-cyan-500/15 border-cyan-400/30 text-cyan-300',
     a: 'Never. All camera and microphone streams are transmitted directly between browsers using end-to-end encrypted WebRTC (DTLS-SRTP). No video or audio ever touches or gets stored on an intermediate media server.',
@@ -88,13 +88,13 @@ const FAQ_ITEMS = [
     q: 'Which web browsers are supported?',
     badge: 'Cross-Browser',
     badgeColor: 'bg-violet-500/15 border-violet-400/30 text-violet-300',
-    a: 'CouchSync is fully supported on Chrome 90+, Firefox 85+, Safari 15+, and Edge 90+. No browser plugins, extensions, or software installations are needed.',
+    a: 'CouchSync Live is fully supported on Chrome 90+, Firefox 85+, Safari 15+, and Edge 90+. No browser plugins, extensions, or software installations are needed.',
   },
   {
     q: 'What happens if someone has a slow connection or begins buffering?',
     badge: 'Cooperative Sync',
     badgeColor: 'bg-amber-500/15 border-amber-400/30 text-amber-300',
-    a: 'CouchSync features cooperative buffering: if someone buffers, playback automatically pauses cleanly for everyone until they catch up, preventing anyone from missing a scene. If remote servers are ever unreachable, our engine automatically falls back to local broadcast synchronization.',
+    a: 'CouchSync Live features cooperative buffering: if someone buffers, playback automatically pauses cleanly for everyone until they catch up, preventing anyone from missing a scene. If remote servers are ever unreachable, our engine automatically falls back to local broadcast synchronization.',
   },
   {
     q: 'How does video playback stay in sync without lag or audio echo?',
@@ -311,7 +311,7 @@ export default function HomePage() {
           <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(0,242,254,0.35)] border border-cyan-500/30 shrink-0 bg-black/50">
             <Image
               src="/icon.png"
-              alt="CouchSync Logo"
+              alt="CouchSync Live Logo"
               width={44}
               height={44}
               className="w-full h-full object-cover"
@@ -320,7 +320,7 @@ export default function HomePage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black tracking-tight text-white">CouchSync</h1>
+              <h1 className="text-xl font-black tracking-tight text-white">CouchSync Live</h1>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
                 Kosmi Lounge
               </span>
@@ -698,7 +698,7 @@ export default function HomePage() {
       </div>
 
       {/* ── How It Works — 3-Step Onboarding Strip ─────────────────────── */}
-      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="How CouchSync works">
+      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="How CouchSync Live works">
         <div className="flex items-center justify-between mb-3 px-1">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -779,7 +779,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Feature Highlights Grid ───────────────────────────────────── */}
-      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="CouchSync features">
+      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="CouchSync Live features">
         <div className="flex items-center justify-between mb-3 px-1">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />

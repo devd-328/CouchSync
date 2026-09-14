@@ -22,7 +22,7 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'How It Works — CouchSync Cinema Lounge',
+  title: 'How It Works — CouchSync Live Cinema Lounge',
   description: 'Step-by-step guide to hosting synchronized watch parties with friends: room setup, device testing, media streaming, and keyboard shortcuts.',
 };
 
@@ -124,7 +124,7 @@ export default function HowItWorksPage() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-            How CouchSync Works
+            How CouchSync Live Works
           </h1>
           <p className="mt-4 text-sm sm:text-base text-gray-300 leading-relaxed">
             Synchronized movie nights made effortless. From creating your first lounge to peer-to-peer audio ducking and hotkeys, here is the full walkthrough.
@@ -232,7 +232,7 @@ export default function HowItWorksPage() {
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  CouchSync never routes your video or voice streams through a middleman server. All peer audio and video are encrypted point-to-point directly between viewers using standard WebRTC (DTLS-SRTP). Furthermore, when testing locally or in private environments, CouchSync uses the browser&apos;s native BroadcastChannel engine — functioning 100% offline without requiring any database or backend authentication.
+                  CouchSync Live never routes your video or voice streams through a middleman server. All peer audio and video are encrypted point-to-point directly between viewers using standard WebRTC (DTLS-SRTP). Furthermore, when testing locally or in private environments, CouchSync Live uses the browser&apos;s native BroadcastChannel engine — functioning 100% offline without requiring any database or backend authentication.
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-400">
                   <div className="flex items-center gap-1.5 text-cyan-300">
