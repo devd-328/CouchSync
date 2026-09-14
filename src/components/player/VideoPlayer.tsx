@@ -322,58 +322,43 @@ export function VideoPlayer({
     }, 2500);
   };
 
-  if (mediaSource === 'youtube') {
-    return (
-      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+  return (
+    <div
+      ref={containerRef}
+      id="theater-container"
+      onMouseMove={handleMouseMove}
+      onDragOver={handlePlayerDragOver}
+      onDragLeave={handlePlayerDragLeave}
+      onDrop={handlePlayerDrop}
+      className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 group select-none transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+    >
+      {/* 1. YouTube Party Mode */}
+      {mediaSource === 'youtube' && (
         <YouTubePlayer
           videoId={youtubeVideoId}
           videoTitle={youtubeVideoTitle}
           canControlPlayback={canControl}
           controlMode={controlMode}
+          isFullscreen={isFullscreen}
           onSendAction={onSendPlaybackAction || (() => {})}
           remoteAction={remotePlaybackAction}
           onChangeVideo={onChangeYouTubeVideo || (() => {})}
+          onToggleFullscreen={toggleFullscreen}
         />
-        <FloatingReactions reactions={reactions} />
-        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
-        {isFullscreen && (
-          <CornerPipBubbles
-            participants={participants}
-            currentUserId={currentUserId}
-            remoteStreams={remoteStreams}
-            speakingPeers={speakingPeers}
-          />
-        )}
-      </div>
-    );
-  }
+      )}
 
-  if (mediaSource === 'screenshare') {
-    return (
-      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+      {/* 2. Screen Share Mode */}
+      {mediaSource === 'screenshare' && (
         <ScreenSharePlayer
           stream={screenStream}
           presenterName={screenPresenterName}
           isLocalPresenter={isLocalScreenPresenter}
           onStopShare={onStopScreenShare || (() => {})}
         />
-        <FloatingReactions reactions={reactions} />
-        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
-        {isFullscreen && (
-          <CornerPipBubbles
-            participants={participants}
-            currentUserId={currentUserId}
-            remoteStreams={remoteStreams}
-            speakingPeers={speakingPeers}
-          />
-        )}
-      </div>
-    );
-  }
+      )}
 
-  if (mediaSource === 'trivia') {
-    return (
-      <div className={`relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+      {/* 3. Movie Trivia Mode */}
+      {mediaSource === 'trivia' && (
         <MovieTrivia
           currentUserId={currentUserId}
           currentUserName={currentUserName}
@@ -382,74 +367,58 @@ export function VideoPlayer({
           remoteTriviaAction={remoteTriviaAction}
           onCloseTrivia={onCloseTrivia || (() => {})}
         />
-        <FloatingReactions reactions={reactions} />
-        <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
-        {isFullscreen && (
-          <CornerPipBubbles
-            participants={participants}
-            currentUserId={currentUserId}
-            remoteStreams={remoteStreams}
-            speakingPeers={speakingPeers}
-          />
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onDragOver={handlePlayerDragOver}
-      onDragLeave={handlePlayerDragLeave}
-      onDrop={handlePlayerDrop}
-      className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10 group select-none transition-opacity duration-250 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
-    >
-      {/* Interactive Drag & Drop Overlay */}
-      {isDraggingFile && (
-        <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border-3 border-dashed border-cyan-400 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
-          <div className="w-18 h-18 rounded-3xl bg-cyan-500/25 border border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_30px_rgba(0,242,254,0.5)] mb-4">
-            <Upload className="w-9 h-9 animate-bounce" />
-          </div>
-          <h3 className="text-xl font-bold text-white text-center">
-            Drop Movie File Here to Play
-          </h3>
-          <p className="text-xs text-cyan-200 mt-1.5 text-center max-w-sm">
-            Instant playback directly from your PC with zero upload time and $0 cloud cost
-          </p>
-          <span className="mt-3 text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
-            Supports .mp4 • .mkv • .webm
-          </span>
-        </div>
       )}
 
-      {/* Native Video Element with Subtitle Track */}
-      <video
-        ref={videoRef}
-        poster={poster}
-        playsInline
-        preload="auto"
-        className="w-full h-full object-contain cursor-pointer"
-        onClick={handleCanvasClick}
-      >
-        {subtitleTrackUrl && (
-          <track
-            src={subtitleTrackUrl}
-            kind="subtitles"
-            srcLang="en"
-            label="Subtitles"
-            default
-          />
-        )}
-      </video>
+      {/* 4. Native HLS / Local File Player Mode */}
+      {mediaSource === 'hls' && (
+        <>
+          {/* Interactive Drag & Drop Overlay */}
+          {isDraggingFile && (
+            <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border-3 border-dashed border-cyan-400 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+              <div className="w-18 h-18 rounded-3xl bg-cyan-500/25 border border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_30px_rgba(0,242,254,0.5)] mb-4">
+                <Upload className="w-9 h-9 animate-bounce" />
+              </div>
+              <h3 className="text-xl font-bold text-white text-center">
+                Drop Movie File Here to Play
+              </h3>
+              <p className="text-xs text-cyan-200 mt-1.5 text-center max-w-sm">
+                Instant playback directly from your PC with zero upload time and $0 cloud cost
+              </p>
+              <span className="mt-3 text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+                Supports .mp4 • .mkv • .webm
+              </span>
+            </div>
+          )}
 
-      {/* Floating Reactions Overlay */}
+          {/* Native Video Element with Subtitle Track */}
+          <video
+            ref={videoRef}
+            poster={poster}
+            playsInline
+            preload="auto"
+            className="w-full h-full object-contain cursor-pointer"
+            onClick={handleCanvasClick}
+          >
+            {subtitleTrackUrl && (
+              <track
+                src={subtitleTrackUrl}
+                kind="subtitles"
+                srcLang="en"
+                label="Subtitles"
+                default
+              />
+            )}
+          </video>
+        </>
+      )}
+
+      {/* Floating Reactions Overlay (Universal) */}
       <FloatingReactions reactions={reactions} />
 
-      {/* Floating Chat Overlay in Fullscreen (Phase 3) */}
+      {/* Floating Chat Overlay in Fullscreen (Universal) */}
       <FloatingChatOverlay messages={floatingChatMessages} isVisible={isFullscreen} />
 
-      {/* Corner Picture-in-Picture Video Bubbles in Fullscreen (Phase 5) */}
+      {/* Corner Picture-in-Picture Video Bubbles in Fullscreen (Universal) */}
       {isFullscreen && (
         <CornerPipBubbles
           participants={participants}
@@ -459,123 +428,128 @@ export function VideoPlayer({
         />
       )}
 
-      {/* Top Left: Sync Status Pill & Movie Quick Switch */}
-      <div className="absolute top-4 left-4 z-30 pointer-events-auto flex items-center gap-2 transition-opacity duration-300">
-        <SyncStatusBadge
-          partnerName={partnerName}
-          partnerStatus={partnerStatus}
-          latencyMs={syncLatency}
-          isPartnerBuffering={isPartnerBuffering}
-          isConnected={participants.some((p) => p.id !== currentUserId)}
-        />
-        {mediaSource === 'hls' && onOpenSelectMovie && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenSelectMovie();
-            }}
-            className={`glass-pill px-3 py-1.5 rounded-xl border border-white/15 hover:border-cyan-400/50 bg-black/60 hover:bg-black/80 text-xs text-gray-200 hover:text-cyan-200 flex items-center gap-2 transition shadow-lg cursor-pointer ${
-              showControls || !isPlaying ? 'opacity-100' : 'opacity-0 hover:opacity-100'
-            }`}
-            title="Click to select or upload a different movie from PC"
-          >
-            <FolderOpen className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span className="font-semibold max-w-[120px] sm:max-w-[180px] truncate">{videoTitle || 'Movie'}</span>
-            <span className="text-[10px] text-cyan-300 font-bold bg-cyan-500/20 px-1.5 py-0.5 rounded border border-cyan-400/30">
-              Change
-            </span>
-          </button>
-        )}
-      </div>
-
-      {/* Resume from where you left off prompt */}
-      {savedResumeTime && savedResumeTime > 15 && (
-        <div className="absolute top-4 right-4 z-30 pointer-events-auto animate-fade-in">
-          <div className="glass-pill px-3.5 py-2 rounded-xl border-cyan-500/40 bg-black/80 text-xs flex items-center gap-2.5 shadow-2xl">
-            <History className="w-4 h-4 text-cyan-400" />
-            <span>Resume from <b>{formatTime(savedResumeTime)}</b>?</span>
-            <button
-              onClick={onResumeSaved}
-              className="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition"
-            >
-              Resume
-            </button>
-            <button
-              onClick={onDismissResume}
-              className="text-gray-400 hover:text-white text-[11px] ml-1"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Host Locked Notice Toast */}
-      {showLockToast && (
-        <div className="absolute top-4 inset-x-0 flex justify-center z-40 pointer-events-none transition-all animate-bounce">
-          <div className="glass-pill px-4 py-2 rounded-xl border-amber-500/40 bg-black/80 text-amber-300 text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-            <Lock className="w-4 h-4 text-amber-400" />
-            <span>Playback is locked by the room host</span>
-          </div>
-        </div>
-      )}
-
-      {/* Buffering Overlay */}
-      {(isBuffering || isPartnerBuffering) && (
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-20 pointer-events-none">
-          <div className="flex flex-col items-center gap-3 glass-pill px-5 py-3 rounded-xl border-cyan-500/30">
-            <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-            <span className="text-sm font-medium text-cyan-200">
-              {isPartnerBuffering ? `${partnerName} is buffering...` : 'Buffering...'}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Center Big Play Button (When Paused) */}
-      {!isPlaying && !isBuffering && (!videoRef.current || videoRef.current.paused) && (
-        <div
-          onClick={handleCanvasClick}
-          className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer bg-black/30 hover:bg-black/20 transition"
-        >
-          <div className="w-16 h-16 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 backdrop-blur-md flex items-center justify-center text-cyan-300 shadow-[0_0_24px_rgba(0,242,254,0.3)] transition transform hover:scale-110">
-            {canControl ? (
-              <Play className="w-8 h-8 fill-current ml-1" />
-            ) : (
-              <Lock className="w-7 h-7 text-amber-300" />
+      {/* HLS-only Overlays & Controls */}
+      {mediaSource === 'hls' && (
+        <>
+          {/* Top Left: Sync Status Pill & Movie Quick Switch */}
+          <div className="absolute top-4 left-4 z-30 pointer-events-auto flex items-center gap-2 transition-opacity duration-300">
+            <SyncStatusBadge
+              partnerName={partnerName}
+              partnerStatus={partnerStatus}
+              latencyMs={syncLatency}
+              isPartnerBuffering={isPartnerBuffering}
+              isConnected={participants.some((p) => p.id !== currentUserId)}
+            />
+            {onOpenSelectMovie && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenSelectMovie();
+                }}
+                className={`glass-pill px-3 py-1.5 rounded-xl border border-white/15 hover:border-cyan-400/50 bg-black/60 hover:bg-black/80 text-xs text-gray-200 hover:text-cyan-200 flex items-center gap-2 transition shadow-lg cursor-pointer ${
+                  showControls || !isPlaying ? 'opacity-100' : 'opacity-0 hover:opacity-100'
+                }`}
+                title="Click to select or upload a different movie from PC"
+              >
+                <FolderOpen className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <span className="font-semibold max-w-[120px] sm:max-w-[180px] truncate">{videoTitle || 'Movie'}</span>
+                <span className="text-[10px] text-cyan-300 font-bold bg-cyan-500/20 px-1.5 py-0.5 rounded border border-cyan-400/30">
+                  Change
+                </span>
+              </button>
             )}
           </div>
-        </div>
-      )}
 
-      {/* Bottom Controls */}
-      <div
-        className={`transition-opacity duration-300 ${
-          showControls || !isPlaying ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <PlayerControls
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={duration}
-          volume={movieVolume}
-          isMuted={isMuted}
-          isFullscreen={isFullscreen}
-          playbackSpeed={playbackSpeed}
-          canControl={canControl}
-          controlMode={controlMode}
-          onTogglePlay={onTogglePlay}
-          onSeek={onSeek}
-          onSpeedChange={onSpeedChange}
-          onSubtitleTrackChange={setSubtitleTrackUrl}
-          onVolumeChange={onMovieVolumeChange}
-          onToggleMute={() => setIsMuted(!isMuted)}
-          onToggleFullscreen={toggleFullscreen}
-          onSkip={handleSkip}
-          onOpenSelectMovie={onOpenSelectMovie}
-        />
-      </div>
+          {/* Resume from where you left off prompt */}
+          {savedResumeTime && savedResumeTime > 15 && (
+            <div className="absolute top-4 right-4 z-30 pointer-events-auto animate-fade-in">
+              <div className="glass-pill px-3.5 py-2 rounded-xl border-cyan-500/40 bg-black/80 text-xs flex items-center gap-2.5 shadow-2xl">
+                <History className="w-4 h-4 text-cyan-400" />
+                <span>Resume from <b>{formatTime(savedResumeTime)}</b>?</span>
+                <button
+                  onClick={onResumeSaved}
+                  className="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition"
+                >
+                  Resume
+                </button>
+                <button
+                  onClick={onDismissResume}
+                  className="text-gray-400 hover:text-white text-[11px] ml-1"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Host Locked Notice Toast */}
+          {showLockToast && (
+            <div className="absolute top-4 inset-x-0 flex justify-center z-40 pointer-events-none transition-all animate-bounce">
+              <div className="glass-pill px-4 py-2 rounded-xl border-amber-500/40 bg-black/80 text-amber-300 text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                <Lock className="w-4 h-4 text-amber-400" />
+                <span>Playback is locked by the room host</span>
+              </div>
+            </div>
+          )}
+
+          {/* Buffering Overlay */}
+          {(isBuffering || isPartnerBuffering) && (
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-20 pointer-events-none">
+              <div className="flex flex-col items-center gap-3 glass-pill px-5 py-3 rounded-xl border-cyan-500/30">
+                <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
+                <span className="text-sm font-medium text-cyan-200">
+                  {isPartnerBuffering ? `${partnerName} is buffering...` : 'Buffering...'}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Center Big Play Button (When Paused) */}
+          {!isPlaying && !isBuffering && (!videoRef.current || videoRef.current.paused) && (
+            <div
+              onClick={handleCanvasClick}
+              className="absolute inset-0 flex items-center justify-center z-20 cursor-pointer bg-black/30 hover:bg-black/20 transition"
+            >
+              <div className="w-16 h-16 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 backdrop-blur-md flex items-center justify-center text-cyan-300 shadow-[0_0_24px_rgba(0,242,254,0.3)] transition transform hover:scale-110">
+                {canControl ? (
+                  <Play className="w-8 h-8 fill-current ml-1" />
+                ) : (
+                  <Lock className="w-7 h-7 text-amber-300" />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Bottom Controls */}
+          <div
+            className={`transition-opacity duration-300 ${
+              showControls || !isPlaying ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            <PlayerControls
+              isPlaying={isPlaying}
+              currentTime={currentTime}
+              duration={duration}
+              volume={movieVolume}
+              isMuted={isMuted}
+              isFullscreen={isFullscreen}
+              playbackSpeed={playbackSpeed}
+              canControl={canControl}
+              controlMode={controlMode}
+              onTogglePlay={onTogglePlay}
+              onSeek={onSeek}
+              onSpeedChange={onSpeedChange}
+              onSubtitleTrackChange={setSubtitleTrackUrl}
+              onVolumeChange={onMovieVolumeChange}
+              onToggleMute={() => setIsMuted(!isMuted)}
+              onToggleFullscreen={toggleFullscreen}
+              onSkip={handleSkip}
+              onOpenSelectMovie={onOpenSelectMovie}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

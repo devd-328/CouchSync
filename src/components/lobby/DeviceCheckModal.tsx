@@ -58,6 +58,8 @@ export function DeviceCheckModal({
     if (!isValid) return;
     if (typeof window !== 'undefined') {
       sessionStorage.setItem(STORAGE_KEYS.USER_NAME, trimmed);
+      sessionStorage.setItem(STORAGE_KEYS.MIC_MUTED, isMuted ? 'true' : 'false');
+      sessionStorage.setItem(STORAGE_KEYS.CAM_OFF, isCamOff ? 'true' : 'false');
     }
     onSaveName?.(trimmed);
     onClose();

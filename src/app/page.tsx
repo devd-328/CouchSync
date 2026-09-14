@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Clapperboard,
@@ -26,6 +27,7 @@ import {
   Users,
   Share2,
   Lock,
+  ChevronDown,
 } from 'lucide-react';
 import { generateId } from '@/lib/formatters';
 import {
@@ -41,6 +43,7 @@ import { DEFAULT_VIDEO } from '@/lib/sample-media';
 import { DeviceCheckModal } from '@/components/lobby/DeviceCheckModal';
 import { WEBRTC_CONFIG, SOURCE_COLORS } from '@/config/constants';
 import { MediaSourceType } from '@/types/sync';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 const RANDOM_ROOM_NAMES = [
   'Neon Premiere',
@@ -68,6 +71,45 @@ const ACTIVITIES: { mode: MediaSourceType; label: string; sub: string; icon: Rea
   { mode: 'trivia',      label: 'Movie Trivia',  sub: 'Multiplayer Games',     icon: <Gamepad2  className="w-4 h-4 shrink-0" /> },
 ];
 
+const FAQ_ITEMS = [
+  {
+    q: 'Is CouchSync really 100% free with no account required?',
+    badge: 'Free & No Sign-up',
+    badgeColor: 'bg-emerald-500/15 border-emerald-400/30 text-emerald-300',
+    a: 'Yes. CouchSync requires zero account registration, credit cards, or subscriptions. You can launch a room with a single click or paste an invite code to join a friend’s lounge instantly in any supported browser.',
+  },
+  {
+    q: 'Does CouchSync store, record, or route my video/voice through a server?',
+    badge: 'DTLS-SRTP Encrypted',
+    badgeColor: 'bg-cyan-500/15 border-cyan-400/30 text-cyan-300',
+    a: 'Never. All camera and microphone streams are transmitted directly between browsers using end-to-end encrypted WebRTC (DTLS-SRTP). No video or audio ever touches or gets stored on an intermediate media server.',
+  },
+  {
+    q: 'Which web browsers are supported?',
+    badge: 'Cross-Browser',
+    badgeColor: 'bg-violet-500/15 border-violet-400/30 text-violet-300',
+    a: 'CouchSync is fully supported on Chrome 90+, Firefox 85+, Safari 15+, and Edge 90+. No browser plugins, extensions, or software installations are needed.',
+  },
+  {
+    q: 'What happens if someone has a slow connection or begins buffering?',
+    badge: 'Cooperative Sync',
+    badgeColor: 'bg-amber-500/15 border-amber-400/30 text-amber-300',
+    a: 'CouchSync features cooperative buffering: if someone buffers, playback automatically pauses cleanly for everyone until they catch up, preventing anyone from missing a scene. If remote servers are ever unreachable, our engine automatically falls back to local broadcast synchronization.',
+  },
+  {
+    q: 'How does video playback stay in sync without lag or audio echo?',
+    badge: '< 150ms Lockstep',
+    badgeColor: 'bg-cyan-500/15 border-cyan-400/30 text-cyan-300',
+    a: 'Our sync engine operates on lightweight real-time channels broadcasting play, pause, seek, and playback rates in under 150ms. Continuous 1.5s heartbeats silently reconcile drift without causing audio phase echo or micro-stutters.',
+  },
+  {
+    q: 'What media formats and streaming sources can I watch?',
+    badge: 'HLS · YouTube · Screen',
+    badgeColor: 'bg-rose-500/15 border-rose-400/30 text-rose-300',
+    a: 'You can stream adaptive bitrate HLS videos with custom subtitle tracks (.srt/.vtt), paste any public YouTube video link for an instant watch party, or share your full desktop screen, individual app window, or browser tab at 60fps.',
+  },
+];
+
 export default function HomePage() {
   const router = useRouter();
 
@@ -79,6 +121,7 @@ export default function HomePage() {
   const [joinInput, setJoinInput] = useState('');
   const [joinError, setJoinError] = useState('');
   const [recentRooms, setRecentRooms] = useState<RecentRoom[]>([]);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   // Pending action to execute once nickname is confirmed via modal
   const [pendingAction, setPendingAction] = useState<((name: string) => void) | null>(null);
@@ -263,7 +306,7 @@ export default function HomePage() {
       <div className="absolute bottom-1/5 right-1/4 w-150 h-150 bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
 
       {/* ── Top Navbar ────────────────────────────────────────────────── */}
-      <header className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between py-3">
+      <header className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between py-3 gap-3">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(0,242,254,0.35)] border border-cyan-500/30 shrink-0 bg-black/50">
             <Image
@@ -285,6 +328,34 @@ export default function HomePage() {
             <p className="text-[11px] text-gray-400 font-medium">Real-time Watch Party &amp; Virtual Hangout</p>
           </div>
         </div>
+
+        {/* Center Nav Links on Desktop */}
+        <nav className="hidden lg:flex items-center gap-1 p-1 rounded-2xl glass-panel border-white/8">
+          <Link
+            href="/how-it-works"
+            className="px-3 py-1 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+          >
+            How It Works
+          </Link>
+          <Link
+            href="/features"
+            className="px-3 py-1 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+          >
+            Features
+          </Link>
+          <Link
+            href="/#faq"
+            className="px-3 py-1 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+          >
+            FAQ
+          </Link>
+          <Link
+            href="/about"
+            className="px-3 py-1 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+          >
+            About
+          </Link>
+        </nav>
 
         {/* User Nickname & Device Check Quick Pill */}
         <div className="flex items-center gap-2.5">
@@ -407,53 +478,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── How to Use — 3-Step Onboarding Strip ─────────────────────── */}
-      {/* Extensible: add a 4th step here for private rooms/passwords when that feature ships */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto mb-6">
-        <div className="glass-panel rounded-2xl px-5 py-4 border-white/8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x sm:divide-white/8">
-            {/* Step 1 */}
-            <div className="flex items-center gap-3 sm:pr-6">
-              <div className="shrink-0 w-8 h-8 rounded-full bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center">
-                <span className="text-xs font-black text-cyan-400">1</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-                  <Film className="w-3.5 h-3.5 text-cyan-400" />
-                  Create a room
-                </div>
-                <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">Pick an activity, name your room, launch.</p>
-              </div>
-            </div>
-            {/* Step 2 */}
-            <div className="flex items-center gap-3 sm:px-6">
-              <div className="shrink-0 w-8 h-8 rounded-full bg-violet-500/15 border border-violet-400/30 flex items-center justify-center">
-                <span className="text-xs font-black text-violet-400">2</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-                  <Share2 className="w-3.5 h-3.5 text-violet-400" />
-                  Share the link
-                </div>
-                <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">Copy the room URL and send it to your friends.</p>
-              </div>
-            </div>
-            {/* Step 3 */}
-            <div className="flex items-center gap-3 sm:pl-6">
-              <div className="shrink-0 w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center">
-                <span className="text-xs font-black text-emerald-400">3</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-                  <Users className="w-3.5 h-3.5 text-emerald-400" />
-                  Watch together
-                </div>
-                <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">No sign-up needed — join instantly in the browser.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Main Dual Hub Cards (Create / Join) ───────────────────────── */}
       <div className="relative z-10 w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 my-auto py-2">
@@ -673,51 +697,238 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* ── How It Works — 3-Step Onboarding Strip ─────────────────────── */}
+      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="How CouchSync works">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-300">
+              How It Works
+            </h3>
+          </div>
+          <Link
+            href="/how-it-works"
+            className="group inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition"
+          >
+            <span>See full guide</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+          {/* Step 1 */}
+          <div className="glass-panel card-hover rounded-2xl p-4 sm:p-5 border-white/8 flex flex-col justify-between group">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shadow-[0_0_12px_rgba(0,242,254,0.15)]">
+                <Film className="w-4.5 h-4.5" />
+              </div>
+              <span className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-black text-cyan-300 flex items-center justify-center">
+                1
+              </span>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition">
+                Create or join a room
+              </h4>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                Launch your cinema lounge in one click or enter a friend&apos;s invite code instantly.
+              </p>
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div className="glass-panel card-hover rounded-2xl p-4 sm:p-5 border-white/8 flex flex-col justify-between group">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-violet-500/15 border border-violet-400/30 flex items-center justify-center text-violet-400 shadow-[0_0_12px_rgba(127,0,255,0.15)]">
+                <Tv className="w-4.5 h-4.5" />
+              </div>
+              <span className="w-6 h-6 rounded-full bg-violet-500/20 border border-violet-400/40 text-[11px] font-black text-violet-300 flex items-center justify-center">
+                2
+              </span>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white group-hover:text-violet-300 transition">
+                Pick your source
+              </h4>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                Stream HLS cinema streams, YouTube party URLs, or desktop screen share.
+              </p>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="glass-panel card-hover rounded-2xl p-4 sm:p-5 border-white/8 flex flex-col justify-between group">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shadow-[0_0_12px_rgba(0,230,118,0.15)]">
+                <Zap className="w-4.5 h-4.5" />
+              </div>
+              <span className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[11px] font-black text-emerald-300 flex items-center justify-center">
+                3
+              </span>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition">
+                Sync up and watch together
+              </h4>
+              <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                Sub-second lockstep sync with encrypted P2P video, voice, and live reactions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Feature Highlights Grid ───────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto py-6 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        {/* Cyan = HLS/Cinema */}
-        <div className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
-          <Zap className="w-5 h-5 text-cyan-400" />
-          <div className="text-xs font-bold text-white">Sub-Second Sync</div>
-          <div className="text-[11px] text-gray-400">Lockstep play/pause &amp; speed matching</div>
+      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="CouchSync features">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-300">
+                Features
+              </h3>
+              <span className="hidden sm:inline text-[11px] text-gray-400 font-normal">
+                — Click any card to explore full specs
+              </span>
+            </div>
+          </div>
+          <Link
+            href="/features"
+            className="group inline-flex items-center gap-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300 transition"
+          >
+            <span>See full features</span>
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         </div>
 
-        {/* Emerald = P2P Voice (matches Camera icon elsewhere) */}
-        <div className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
-          <Camera className="w-5 h-5 text-emerald-400" />
-          <div className="text-xs font-bold text-white">P2P Video &amp; Voice</div>
-          <div className="text-[11px] text-gray-400">Auto audio ducking &amp; push-to-talk</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          {/* Cyan = HLS/Cinema */}
+          <Link
+            href="/features#sync"
+            className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col justify-between group cursor-pointer"
+          >
+            <div className="flex flex-col gap-1.5">
+              <Zap className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <div className="text-xs font-bold text-white group-hover:text-cyan-300 transition">Sub-Second Sync</div>
+              <div className="text-[11px] text-gray-400">Lockstep play/pause &amp; speed matching</div>
+            </div>
+            <span className="text-[10px] font-semibold text-cyan-400 mt-2.5 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+              Learn more →
+            </span>
+          </Link>
+
+          {/* Emerald = P2P Voice (matches Camera icon elsewhere) */}
+          <Link
+            href="/features#p2p-call"
+            className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col justify-between group cursor-pointer"
+          >
+            <div className="flex flex-col gap-1.5">
+              <Camera className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <div className="text-xs font-bold text-white group-hover:text-emerald-300 transition">P2P Video &amp; Voice</div>
+              <div className="text-[11px] text-gray-400">Auto audio ducking &amp; push-to-talk</div>
+            </div>
+            <span className="text-[10px] font-semibold text-emerald-400 mt-2.5 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+              Learn more →
+            </span>
+          </Link>
+
+          {/* Violet = Screen Share */}
+          <Link
+            href="/features#screenshare"
+            className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col justify-between group cursor-pointer"
+          >
+            <div className="flex flex-col gap-1.5">
+              <MonitorUp className="w-5 h-5 text-violet-400 group-hover:scale-110 transition-transform" />
+              <div className="text-xs font-bold text-white group-hover:text-violet-300 transition">Screen Sharing</div>
+              <div className="text-[11px] text-gray-400">Stream desktop, tabs &amp; apps native</div>
+            </div>
+            <span className="text-[10px] font-semibold text-violet-400 mt-2.5 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+              Learn more →
+            </span>
+          </Link>
+
+          {/* Amber = Trivia */}
+          <Link
+            href="/features#trivia-polls"
+            className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col justify-between group cursor-pointer"
+          >
+            <div className="flex flex-col gap-1.5">
+              <Gamepad2 className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+              <div className="text-xs font-bold text-white group-hover:text-amber-300 transition">Movie Trivia &amp; Polls</div>
+              <div className="text-[11px] text-gray-400">Multiplayer hangout games during breaks</div>
+            </div>
+            <span className="text-[10px] font-semibold text-amber-400 mt-2.5 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+              Learn more →
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Frequently Asked Questions (FAQ Accordion) ─────────────────── */}
+      <section className="relative z-10 w-full max-w-5xl mx-auto my-6 px-1" aria-label="Frequently Asked Questions">
+        <div className="flex items-center justify-between mb-4 px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-300">
+                Frequently Asked Questions
+              </h3>
+              <span className="hidden sm:inline text-[11px] text-gray-400 font-normal">
+                — Privacy, synchronization &amp; streaming specs
+              </span>
+            </div>
+          </div>
+          <span className="text-[11px] text-gray-500 font-mono hidden sm:inline">
+            6 Questions
+          </span>
         </div>
 
-        {/* Violet = Screen Share */}
-        <div className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
-          <MonitorUp className="w-5 h-5 text-violet-400" />
-          <div className="text-xs font-bold text-white">Screen Sharing</div>
-          <div className="text-[11px] text-gray-400">Stream desktop, tabs &amp; apps native</div>
-        </div>
+        <div className="space-y-2.5">
+          {FAQ_ITEMS.map((faq, index) => {
+            const isOpen = openFaqIndex === index;
+            return (
+              <div
+                key={index}
+                className={`rounded-2xl glass-panel transition-all duration-200 overflow-hidden border ${
+                  isOpen ? 'border-cyan-400/40 bg-white/4 shadow-[0_4px_20px_rgba(0,242,254,0.08)]' : 'border-white/8 bg-white/2 hover:border-white/15'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+                  aria-expanded={isOpen}
+                  className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 cursor-pointer group"
+                >
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition">
+                      {faq.q}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${faq.badgeColor}`}>
+                      {faq.badge}
+                    </span>
+                  </div>
+                  <div
+                    className={`shrink-0 w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
+                      isOpen ? 'bg-cyan-500/20 text-cyan-300 rotate-180' : 'bg-white/5 text-gray-400 group-hover:text-white'
+                    }`}
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </button>
 
-        {/* Amber = Trivia */}
-        <div className="card-hover p-3.5 rounded-2xl glass-panel border-white/5 bg-white/2 flex flex-col gap-1.5">
-          <Gamepad2 className="w-5 h-5 text-amber-400" />
-          <div className="text-xs font-bold text-white">Movie Trivia &amp; Polls</div>
-          <div className="text-[11px] text-gray-400">Multiplayer hangout games during breaks</div>
+                {isOpen && (
+                  <div className="px-5 pb-4 pt-1 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      {/* ── Footer — Trust badges (user-benefit framing) ──────────────── */}
-      <footer className="relative z-10 w-full max-w-6xl mx-auto text-center py-2 text-[11px] text-gray-500 flex flex-wrap items-center justify-center gap-4">
-        <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>End-to-end WebRTC encryption</span>
-        </div>
-        <span>•</span>
-        <div className="flex items-center gap-1.5">
-          <Lock className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Always free · No account needed</span>
-        </div>
-        <span>•</span>
-        <span>Acoustic echo cancellation active</span>
-      </footer>
+      {/* ── Footer ────────────────────────────────────────────────────── */}
+      <SiteFooter />
 
       {/* Cam & Mic Check Modal */}
       <DeviceCheckModal

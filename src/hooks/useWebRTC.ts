@@ -7,13 +7,20 @@ import { WEBRTC_CONFIG, AUDIO_CONFIG } from '@/config/constants';
 interface UseWebRTCOptions {
   userId: string;
   onSendSignal: (action: WebRTCSignalAction) => void;
+  initialMicMuted?: boolean;
+  initialCamOff?: boolean;
 }
 
-export function useWebRTC({ userId, onSendSignal }: UseWebRTCOptions) {
+export function useWebRTC({
+  userId,
+  onSendSignal,
+  initialMicMuted = false,
+  initialCamOff = false,
+}: UseWebRTCOptions) {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(new Map());
-  const [isMicMuted, setIsMicMuted] = useState<boolean>(false);
-  const [isCamOff, setIsCamOff] = useState<boolean>(false);
+  const [isMicMuted, setIsMicMuted] = useState<boolean>(initialMicMuted);
+  const [isCamOff, setIsCamOff] = useState<boolean>(initialCamOff);
   const [partnerMediaStates, setPartnerMediaStates] = useState<
     Map<string, { isMicMuted: boolean; isCamOff: boolean }>
   >(new Map());
@@ -25,6 +32,11 @@ export function useWebRTC({ userId, onSendSignal }: UseWebRTCOptions) {
 
   const onSendSignalRef = useRef(onSendSignal);
   onSendSignalRef.current = onSendSignal;
+
+  const isMicMutedRef = useRef(isMicMuted);
+  isMicMutedRef.current = isMicMuted;
+  const isCamOffRef = useRef(isCamOff);
+  isCamOffRef.current = isCamOff;
 
   // Mesh peer connections keyed by participantId
   const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
@@ -45,11 +57,32 @@ export function useWebRTC({ userId, onSendSignal }: UseWebRTCOptions) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia(WEBRTC_CONFIG.MEDIA_CONSTRAINTS);
         if (active) {
+          const audioTrack = stream.getAudioTracks()[0];
+          const videoTrack = stream.getVideoTracks()[0];
+
+          if (audioTrack) {
+            audioTrack.enabled = !isMicMutedRef.current;
+          } else {
+            setIsMicMuted(true);
+          }
+
+          if (videoTrack) {
+            videoTrack.enabled = !isCamOffRef.current;
+          } else {
+            setIsCamOff(true);
+          }
+
           localStreamRef.current = stream;
           setLocalStream(stream);
         }
       } catch (err) {
-        console.warn('Camera/mic access unavailable:', err);
+        console.warn('Camera/mic access unavailable or declined:', err);
+        if (active) {
+          setIsMicMuted(true);
+          setIsCamOff(true);
+          setLocalStream(null);
+          localStreamRef.current = null;
+        }
       }
     }
 
@@ -419,35 +452,59 @@ export function useWebRTC({ userId, onSendSignal }: UseWebRTCOptions) {
 
   // 9. Device Toggles
   const toggleMic = useCallback(() => {
-    if (!localStreamRef.current) return;
-    const audioTrack = localStreamRef.current.getAudioTracks()[0];
-    if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      setIsMicMuted(!audioTrack.enabled);
+    if (localStreamRef.current) {
+      const audioTrack = localStreamRef.current.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMicMuted(!audioTrack.enabled);
 
+        onSendSignalRef.current({
+          type: 'media-toggle',
+          audio: audioTrack.enabled,
+          video: !isCamOff,
+          senderId: userId,
+        });
+        return;
+      }
+    }
+    setIsMicMuted((prev) => {
+      const next = !prev;
       onSendSignalRef.current({
         type: 'media-toggle',
-        audio: audioTrack.enabled,
+        audio: !next,
         video: !isCamOff,
         senderId: userId,
       });
-    }
+      return next;
+    });
   }, [userId, isCamOff]);
 
   const toggleCamera = useCallback(() => {
-    if (!localStreamRef.current) return;
-    const videoTrack = localStreamRef.current.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      setIsCamOff(!videoTrack.enabled);
+    if (localStreamRef.current) {
+      const videoTrack = localStreamRef.current.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsCamOff(!videoTrack.enabled);
 
+        onSendSignalRef.current({
+          type: 'media-toggle',
+          audio: !isMicMuted,
+          video: videoTrack.enabled,
+          senderId: userId,
+        });
+        return;
+      }
+    }
+    setIsCamOff((prev) => {
+      const next = !prev;
       onSendSignalRef.current({
         type: 'media-toggle',
         audio: !isMicMuted,
-        video: videoTrack.enabled,
+        video: !next,
         senderId: userId,
       });
-    }
+      return next;
+    });
   }, [userId, isMicMuted]);
 
   // 10. Screen Sharing Controls

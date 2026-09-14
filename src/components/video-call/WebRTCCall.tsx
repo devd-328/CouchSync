@@ -222,7 +222,7 @@ export function WebRTCCall({
           <div>
             <span className="text-xs font-semibold text-gray-200 block leading-none">You (Self)</span>
             <span className="text-[10px] text-gray-400 mt-0.5 block">
-              {isMicMuted ? 'Muted' : 'Mic Live'} • {isCamOff ? 'Cam Off' : 'Cam Live'}
+              {isMicMuted || !localStream ? 'Mic Off' : 'Mic Live'} • {isCamOff || !localStream ? 'Cam Off' : 'Cam Live'}
             </span>
           </div>
         </div>

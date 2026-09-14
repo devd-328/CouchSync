@@ -196,7 +196,21 @@ export default function RoomPage({
   } = useWebRTC({
     userId: currentUser.id,
     onSendSignal: broadcastMessage,
+    initialMicMuted: typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEYS.MIC_MUTED) === 'true' : false,
+    initialCamOff: typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEYS.CAM_OFF) === 'true' : false,
   });
+
+  // Keep presence and session in sync when mic/cam toggles
+  useEffect(() => {
+    if (!hasValidName) return;
+    setCurrentUser((prev) => {
+      if (prev.isMicOn === !isMicMuted && prev.isCamOn === !isCamOff) return prev;
+      const updated = { ...prev, isMicOn: !isMicMuted, isCamOn: !isCamOff };
+      channelRef.current?.updatePresence(updated);
+      return updated;
+    });
+    saveUserSession({ isMicMuted, isCamOff });
+  }, [isMicMuted, isCamOff, hasValidName]);
 
   // Read initialMode from URL search param on mount (e.g. ?initialMode=youtube)
   useEffect(() => {
@@ -320,8 +334,11 @@ export default function RoomPage({
     isPushToTalkActive,
     onTogglePlay: () => canControl && togglePlayPause(),
     onToggleFullscreen: () => {
-      if (!document.fullscreenElement && videoRef.current) {
-        videoRef.current.requestFullscreen().catch(() => {});
+      if (!document.fullscreenElement) {
+        const target = document.getElementById('theater-container') || videoRef.current;
+        if (target) {
+          target.requestFullscreen().catch(() => {});
+        }
       } else if (document.exitFullscreen) {
         document.exitFullscreen().catch(() => {});
       }
