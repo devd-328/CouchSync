@@ -48,15 +48,15 @@ export default function FeaturesPage() {
             Engineered for Cinema Together
           </h1>
           <p className="mt-4 text-sm sm:text-base text-gray-300 leading-relaxed">
-            Discover the technology behind CouchSync Live. Ultra-low latency synchronization, peer-to-peer media encryption, smart acoustic ducking, and ambient cinema theater theming.
+            Everything you need for perfect movie nights with friends. Instant playback sync, direct private video calls, smart volume controls, and beautiful cinema lounge themes.
           </p>
         </div>
 
         {/* ── Quick Anchor Jump Bar ─────────────────────────────────────── */}
         <div className="mb-14 p-2 rounded-2xl glass-panel border-white/10 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
           {[
-            { label: 'Sub-Second Sync', href: '#sync', color: 'text-cyan-300 hover:bg-cyan-500/10' },
-            { label: 'P2P Video & Voice', href: '#p2p-call', color: 'text-emerald-300 hover:bg-emerald-500/10' },
+            { label: 'Instant Sync', href: '#sync', color: 'text-cyan-300 hover:bg-cyan-500/10' },
+            { label: 'Direct Video & Voice', href: '#p2p-call', color: 'text-emerald-300 hover:bg-emerald-500/10' },
             { label: 'Screen Sharing', href: '#screenshare', color: 'text-violet-300 hover:bg-violet-500/10' },
             { label: 'Trivia & Polls', href: '#trivia-polls', color: 'text-amber-300 hover:bg-amber-500/10' },
             { label: 'Chat & Reactions', href: '#chat-reactions', color: 'text-rose-300 hover:bg-rose-500/10' },
@@ -81,20 +81,20 @@ export default function FeaturesPage() {
               <div className="lg:col-span-7 space-y-4">
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-xs font-bold text-cyan-300">
                   <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Sub-150ms Synchronization</span>
+                  <span>Instant Playback Sync</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  Sub-Second Sync Engine
+                  Instant Playback Sync
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  CouchSync Live reconciles play, pause, seek, and playback rates across all participants with under 150ms latency. A fine-tuned drift tolerance threshold ensures micro-fluctuations never cause annoying micro-stutters. Continuous 1.5-second heartbeat telemetry and cooperative buffering ensure nobody gets left behind when a partner buffers.
+                  CouchSync Live keeps your play, pause, rewind, and speed controls in sync across all viewers with zero noticeable delay. Smart adjustments ensure you stay aligned without annoying skips or stutters. If a friend’s connection buffers, playback automatically pauses cleanly for everyone so no one gets left behind.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
-                    'Automatic drift correction (>1.5s)',
-                    'Cooperative buffer sync',
-                    'Bi-directional speed matching',
-                    'Zero playback feedback loops',
+                    'Automatic smooth catch-up',
+                    'Pauses together if a friend buffers',
+                    'Synced video speed across all viewers',
+                    'Smooth, glitch-free controls',
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-gray-400">
                       <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
@@ -108,9 +108,9 @@ export default function FeaturesPage() {
               <div className="lg:col-span-5 flex justify-center">
                 <div className="w-full max-w-sm rounded-2xl bg-black/40 border border-cyan-400/20 p-5 shadow-2xl space-y-4">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-cyan-400 font-bold">DRIFT &lt; 0.04s</span>
+                    <span className="font-mono text-cyan-400 font-bold">PERFECT SYNC</span>
                     <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold text-[10px]">
-                      LOCKSTEP SYNC
+                      IN REAL TIME
                     </span>
                   </div>
 
@@ -129,7 +129,7 @@ export default function FeaturesPage() {
 
                     <div>
                       <div className="flex justify-between text-[11px] text-gray-400 mb-1">
-                        <span>Partner (Remote)</span>
+                        <span>Partner (Friend)</span>
                         <span className="font-mono text-white">01:42:15</span>
                       </div>
                       <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden relative">
@@ -141,9 +141,9 @@ export default function FeaturesPage() {
 
                   <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-gray-400">
                     <span className="flex items-center gap-1 text-cyan-300">
-                      <Zap className="w-3 h-3" /> 1.5s Heartbeat Loop
+                      <Zap className="w-3 h-3" /> Real-Time Sync Loop
                     </span>
-                    <span>150ms Lockout Safe</span>
+                    <span>Echo &amp; Stutter Free</span>
                   </div>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function FeaturesPage() {
                       <span className="font-bold text-white">Voice Active</span>
                     </div>
                     <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-[10px] font-bold">
-                      DUCKING 0.65x
+                      AUTO-SOFTEN 65%
                     </span>
                   </div>
 
@@ -173,7 +173,7 @@ export default function FeaturesPage() {
                         <Camera className="w-4 h-4" />
                       </div>
                       <span className="text-[11px] font-bold text-white">You</span>
-                      <span className="text-[10px] text-gray-400">Mic On · 1080p</span>
+                      <span className="text-[10px] text-gray-400">Mic On · HD</span>
                     </div>
 
                     <div className="rounded-xl bg-emerald-500/10 border border-emerald-400/40 p-3 flex flex-col items-center justify-center text-center relative overflow-hidden">
@@ -187,7 +187,7 @@ export default function FeaturesPage() {
 
                   {/* Audio meter bars */}
                   <div className="pt-2 border-t border-white/5 flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400">VAD Analyzer (120ms):</span>
+                    <span className="text-[10px] text-gray-400">Voice Level Meter:</span>
                     <div className="flex items-center gap-1">
                       {[4, 8, 14, 18, 12, 6, 15, 10, 5].map((val, idx) => (
                         <div
@@ -204,20 +204,20 @@ export default function FeaturesPage() {
               <div className="order-1 lg:order-2 lg:col-span-7 space-y-4">
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-xs font-bold text-emerald-300">
                   <Camera className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Encrypted WebRTC Calling</span>
+                  <span>Private Direct Calling</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  P2P Video &amp; Smart Voice Ducking
+                  Direct Video &amp; Smart Voice Auto-Quiet
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  Stream high-definition face-to-face video directly between browsers without touching an intermediate media server. Integrated Voice Activity Detection (VAD) continuously samples audio levels and gracefully attenuates movie volume to 65% when someone is speaking, preventing participants from having to shout over dialogue.
+                  Enjoy crystal-clear video and voice directly between you and your friends with full privacy. Our smart sound feature detects when someone speaks and gently softens the movie audio so you never have to shout over loud explosions or action scenes.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
-                    'DTLS-SRTP end-to-end encryption',
-                    'Automatic cinema volume ducking',
-                    'Hardware echo cancellation',
-                    'Dual individual volume mixer',
+                    '100% private, end-to-end encrypted',
+                    'Auto-lowers movie sound when speaking',
+                    'Built-in echo and noise reduction',
+                    'Independent movie & voice volume sliders',
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-gray-400">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -235,20 +235,20 @@ export default function FeaturesPage() {
               <div className="lg:col-span-7 space-y-4">
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-violet-500/15 border border-violet-400/30 text-xs font-bold text-violet-300">
                   <MonitorUp className="w-3.5 h-3.5 text-violet-400" />
-                  <span>Lossless Native Streaming</span>
+                  <span>Smooth High Quality</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  Native 60fps Screen Sharing
+                  Smooth Screen Sharing
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  Stream full desktop screens, individual application windows, or browser tabs with zero cloud compression. Whether sharing indie movies from personal drives, browsing through photo albums, or co-watching subscription services, CouchSync Live establishes direct WebRTC video pipes without watermarks or duration limits.
+                  Share your entire screen, a single app window, or a browser tab in high definition. Whether you want to watch movies from your personal drive, look through vacation photos, or co-stream games, CouchSync Live streams directly to your friends with zero time limits or watermarks.
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
-                    'Fluid 60fps refresh rate',
-                    'Single-click window/tab picker',
-                    'Zero cloud re-encoding artifacts',
-                    'System audio passthrough',
+                    'Smooth high frame rate sharing',
+                    'One-click window, tab, or screen picker',
+                    'No compression artifacts or delays',
+                    'Includes computer audio sharing',
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-gray-400">
                       <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
@@ -480,10 +480,10 @@ export default function FeaturesPage() {
                 </p>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                   {[
-                    'Instant room-wide CSS property switching',
-                    'Optimized for low-light eye comfort',
-                    'Zero battery drain OLED mode',
-                    'Smooth ambient backdrop glows',
+                    'One-click instant theme change',
+                    'Comfortable for nighttime movie watching',
+                    'Pitch-black OLED dark mode',
+                    'Soft ambient theater lighting',
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-gray-400">
                       <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
@@ -505,7 +505,7 @@ export default function FeaturesPage() {
               Ready to Try CouchSync Live?
             </h2>
             <p className="text-xs sm:text-sm text-gray-300">
-              Host your movie night in seconds with crystal-clear P2P audio, sub-second sync, and zero accounts.
+              Host your movie night in seconds with crystal-clear private audio, instant playback sync, and zero accounts.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link

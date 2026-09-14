@@ -75,10 +75,10 @@ export function DeviceCheckModal({
           <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                Join Setup &amp; Device Check
+                Quick Mic &amp; Camera Check
               </h3>
               <p className="text-[11px] sm:text-xs text-gray-400">
-                Set your name and test camera/microphone before entering
+                Choose your name and preview your camera and microphone
               </p>
             </div>
             {(!isMandatory || isValid) && (

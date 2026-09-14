@@ -35,52 +35,52 @@ const STEPS = [
     icon: Clapperboard,
     subtitle: 'Instant setup with zero registration',
     description:
-      'Launch a customized cinema room in one click, or join a friend’s lounge by pasting their room code or invite URL. No email, passwords, or personal accounts required.',
-    highlights: ['One-click room generation', 'Custom room titles', 'Saved recent room history'],
+      'Launch a customized cinema room in one click, or join a friend’s lounge by pasting their room code or invite link. No email, passwords, or personal accounts required.',
+    highlights: ['One-click room creation', 'Custom room titles', 'Saved recent room history'],
   },
   {
     step: '02',
-    title: 'Hardware & Device Pre-Check',
+    title: 'Quick Camera & Mic Check',
     badge: 'Step 2',
     color: 'emerald',
     icon: Camera,
-    subtitle: 'Crystal clear video & studio-grade audio',
+    subtitle: 'Crystal-clear video & voice preview',
     description:
-      'Test your camera and microphone in the pre-flight lobby before entering. Verify audio input meters, toggle push-to-talk, and benefit from built-in acoustic echo cancellation and noise suppression.',
-    highlights: ['Real-time audio level meter', 'Camera & mic preview', 'Hardware toggle hotkeys'],
+      'Check your camera and microphone in the room lobby before entering. See real-time volume levels, turn mic/camera on or off, and enjoy built-in noise reduction and echo prevention.',
+    highlights: ['Live volume meter', 'Camera & mic preview', 'Easy keyboard mute toggles'],
   },
   {
     step: '03',
-    title: 'Invite Your Watch Partners',
+    title: 'Invite Your Friends',
     badge: 'Step 3',
     color: 'violet',
     icon: Share2,
-    subtitle: 'Shareable links for instant connection',
+    subtitle: 'Shareable link for instant watching',
     description:
-      'Copy your unique room link with a single tap and share it with friends via messaging apps. Guests connect straight from their browser on desktop or mobile without downloading any apps.',
-    highlights: ['Instant link clipboard copy', 'Cross-browser compatibility', 'Automatic peer presence'],
+      'Copy your unique room link with a single click and send it to friends on WhatsApp, Discord, or text. Friends join instantly right in their browser without downloading any apps.',
+    highlights: ['Instant link copy', 'Works on any device & browser', 'See who joins in real time'],
   },
   {
     step: '04',
-    title: 'Pick Your Media Source',
+    title: 'Pick What to Watch',
     badge: 'Step 4',
     color: 'amber',
     icon: Tv,
-    subtitle: 'Cinema streams, YouTube, or screen share',
+    subtitle: 'Cinema movies, YouTube, or your screen',
     description:
-      'Stream high-definition HLS video streams with multiple subtitle tracks, paste any YouTube video link for an instant watch party, or share your entire screen, browser tab, or app natively.',
-    highlights: ['Adaptive bitrate HLS & local files', 'Full YouTube player integration', 'Native 60fps screen sharing'],
+      'Watch high-definition movie streams with subtitles, play your own video files from your computer, paste any YouTube link, or share your entire screen or app window in smooth quality.',
+    highlights: ['High-definition video links & local files', 'Full YouTube player support', 'Smooth high-quality screen sharing'],
   },
   {
     step: '05',
-    title: 'Sub-Second Playback Sync',
+    title: 'Instant Playback Sync',
     badge: 'Step 5',
     color: 'cyan',
     icon: Zap,
-    subtitle: 'Lockstep play, pause, seek & speed',
+    subtitle: 'Play, pause, skip & speed stay together',
     description:
-      'Every pause, play, seek, and playback rate adjustment propagates to your partner in under 150 milliseconds. Smart drift tolerance prevents micro-stutters, while cooperative buffering pauses both viewers if either connection slows down.',
-    highlights: ['< 150ms sync latency', 'Automatic drift reconciliation', 'Smart cooperative buffering'],
+      'Every pause, play, rewind, and fast-forward syncs to your friends instantly with zero noticeable delay. If someone’s internet slows down, the video gently pauses for everyone so nobody misses a moment.',
+    highlights: ['Instant zero-lag sync', 'Automatic seamless catch-up', 'Smart auto-pause if a friend buffers'],
   },
   {
     step: '06',
@@ -88,10 +88,10 @@ const STEPS = [
     badge: 'Step 6',
     color: 'rose',
     icon: Gamepad2,
-    subtitle: 'Interactive live lounge experience',
+    subtitle: 'Interactive virtual movie lounge',
     description:
-      'Chat in real-time with timestamped video jumping, send floating emoji reactions that burst over the cinema screen, launch interactive audience polls, or play movie trivia during movie intermissions.',
-    highlights: ['Smart audio ducking when speaking', 'Timestamp-linked chat messages', 'Multiplayer movie trivia'],
+      'Chat in real time with clickable scene timestamps, send floating emoji reactions that pop on screen, create live audience polls, or play movie trivia during intermissions.',
+    highlights: ['Auto-lowers movie volume when friends speak', 'Jump to scenes from chat timestamps', 'Multiplayer movie trivia'],
   },
 ];
 
@@ -100,7 +100,7 @@ const KEYBOARD_SHORTCUTS = [
   { keys: ['F'], action: 'Toggle Fullscreen', note: 'Immersive cinema viewing mode' },
   { keys: ['M'], action: 'Mute / Unmute Media', note: 'Silences video sound without affecting voice chat' },
   { keys: ['C'], action: 'Toggle Chat Panel', note: 'Show or collapse live conversation sidebar' },
-  { keys: ['←', '→'], action: 'Seek ±5 Seconds', note: 'Quick replay or skip forward in lockstep' },
+  { keys: ['←', '→'], action: 'Seek ±5 Seconds', note: 'Quick replay or skip forward in perfect sync' },
   { keys: ['↑', '↓'], action: 'Volume ±10%', note: 'Fine-tune movie audio level' },
 ];
 
@@ -228,20 +228,20 @@ export default function HowItWorksPage() {
                     Works without an account. Works without a server.
                   </h2>
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                    Zero-Cost P2P
+                    100% Private &amp; Free
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  CouchSync Live never routes your video or voice streams through a middleman server. All peer audio and video are encrypted point-to-point directly between viewers using standard WebRTC (DTLS-SRTP). Furthermore, when testing locally or in private environments, CouchSync Live uses the browser&apos;s native BroadcastChannel engine — functioning 100% offline without requiring any database or backend authentication.
+                  CouchSync Live never passes your video or voice calls through a middleman server. All video and audio feeds are encrypted and sent directly between you and your friends. Your data stays on your own devices — nothing is recorded, tracked, or uploaded.
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-400">
                   <div className="flex items-center gap-1.5 text-cyan-300">
                     <Lock className="w-3.5 h-3.5" />
-                    <span>No data collection or video logging</span>
+                    <span>No accounts, tracking, or video logging</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-emerald-300">
                     <Radio className="w-3.5 h-3.5" />
-                    <span>Instant offline multi-tab fallback</span>
+                    <span>Instant connection right in your browser</span>
                   </div>
                 </div>
               </div>

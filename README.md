@@ -31,7 +31,7 @@
 
 **CouchSync Live** is a modern, privacy-first virtual cinema lounge built for friends and communities who want to experience movies, YouTube videos, screen-shared games, and multiplayer trivia together without lag or desync.
 
-Unlike traditional watch party tools that route high-bandwidth media through costly cloud servers or require clumsy browser extensions, CouchSync Live runs **100% in the browser** using direct peer-to-peer **WebRTC** mesh data channels, adaptive **HLS**, and lightweight real-time synchronization.
+Unlike traditional watch party tools that route high-bandwidth media through costly cloud servers or require browser extensions, CouchSync Live runs **100% in the browser** using direct device-to-device connections, high-definition streaming, and instant real-time synchronization.
 
 ---
 
@@ -40,22 +40,22 @@ Unlike traditional watch party tools that route high-bandwidth media through cos
 <table>
   <tr>
     <td width="50%">
-      <h3>⏱️ Sub-Second Playback Sync</h3>
-      <p>Synchronizes play, pause, seek, and speed in <b>&lt; 150ms</b>. Continuous 1.5s background heartbeats silently correct drift without stutter or audio echo.</p>
+      <h3>⏱️ Instant Playback Sync</h3>
+      <p>Synchronizes play, pause, seek, and speed instantly in real time. Continuous background checks seamlessly keep everyone aligned without stutter or audio echo.</p>
     </td>
     <td width="50%">
-      <h3>📹 P2P Video & Voice Calls</h3>
-      <p>Crystal-clear, DTLS-SRTP encrypted multi-user WebRTC video chat with audio waveforms, speaking glows, and custom PiP bubbles.</p>
+      <h3>📹 Private Video & Voice Calls</h3>
+      <p>Crystal-clear, 100% private direct video and voice chat with audio waveforms, speaking indicators, and custom picture-in-picture bubbles.</p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3>🎚️ Smart Audio Ducking</h3>
-      <p>Automatically lowers movie volume by <b>35%</b> whenever someone in your call speaks, ensuring you never miss a friend's reaction.</p>
+      <h3>🎚️ Smart Voice Auto-Quiet</h3>
+      <p>Automatically lowers movie volume by <b>35%</b> whenever someone in your call speaks, so you can chat naturally without shouting over loud scenes.</p>
     </td>
     <td width="50%">
       <h3>📺 YouTube & Screen Sharing</h3>
-      <p>Watch synchronized YouTube videos via IFrame API or stream your desktop, app window, or browser tab at a smooth <b>60 FPS</b>.</p>
+      <p>Watch synchronized YouTube videos together or stream your desktop, app window, or browser tab in smooth high quality.</p>
     </td>
   </tr>
   <tr>
@@ -64,13 +64,13 @@ Unlike traditional watch party tools that route high-bandwidth media through cos
       <p>Host-driven multiplayer trivia mini-games with countdown timers, live scoreboards, and real-time community polls.</p>
     </td>
     <td width="50%">
-      <h3>💬 Live Chat & Floating Emojis</h3>
-      <p>Interactive text chat with clickable timestamps and an animated physics engine bursting emojis (🍿 ❤️ 😂 😱 🔥 👏) across the screen.</p>
+      <h3>💬 Live Chat & Floating Reactions</h3>
+      <p>Interactive text chat with clickable scene timestamps and animated emoji bursts (🍿 ❤️ 😂 😱 🔥 👏) that float across the screen.</p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <h3>🎨 Kosmi Lounge Cinema Themes</h3>
+      <h3>🎨 Ambient Cinema Themes</h3>
       <p>4 custom-tailored cinema themes (<b>Obsidian</b>, <b>Cyberpunk Neon</b>, <b>Retro Warm</b>, and <b>OLED Pure Black</b>) with glassmorphism UI.</p>
     </td>
     <td width="50%">

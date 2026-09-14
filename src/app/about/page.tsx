@@ -64,7 +64,7 @@ export default function AboutPage() {
                 We all know the frustration of long-distance watch parties: counting down <em className="text-white">“3, 2, 1, press play!”</em> on a phone call, only to discover one person is three seconds ahead and reacting to spoilers before they happen.
               </p>
               <p>
-                Cinema is an inherently social art form. It’s meant to be experienced with gasps, quiet laughs, popcorn debates, and shared moments. CouchSync Live was created to eliminate the distance barrier with sub-second lockstep synchronization, making your living rooms feel right next door to each other.
+                Cinema is an inherently social art form. It’s meant to be experienced with gasps, quiet laughs, popcorn debates, and shared moments. CouchSync Live was created to eliminate the distance barrier with instant, real-time playback sync, making your living rooms feel right next door to each other.
               </p>
             </div>
           </article>
@@ -76,18 +76,18 @@ export default function AboutPage() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">The Architecture</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">The Design</span>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
-                  Zero Server Cost, 100% Peer-to-Peer
+                  Direct Device-to-Device: 100% Private &amp; Free Forever
                 </h2>
               </div>
             </div>
             <div className="space-y-3 text-xs sm:text-sm text-gray-300 leading-relaxed">
               <p>
-                Traditional streaming platforms incur massive server bills by re-encoding and routing video through centralized clouds. Those high infrastructure costs inevitably force apps to charge monthly subscriptions, sell user data, or eventually shut down.
+                Traditional streaming platforms incur massive server bills by routing heavy video files through corporate clouds. Those high infrastructure costs inevitably force apps to charge monthly subscriptions, sell user data, or eventually shut down.
               </p>
               <p>
-                CouchSync Live takes a radically different approach: <strong>Peer-to-Peer by design</strong>. Video, voice, and media sync directly between participants&apos; browsers via WebRTC (DTLS-SRTP encryption). Because no heavy video data passes through our servers, hosting costs stay near zero. This ensures CouchSync Live can remain completely free, lightweight, and private forever.
+                CouchSync Live takes a simpler, privacy-first approach: <strong>Direct Connection by design</strong>. Video, voice, and sync signals pass directly between your browser and your friends with full encryption. Because no heavy media is routed through or stored on external servers, CouchSync Live remains completely free, lightning-fast, and private forever.
               </p>
             </div>
           </article>
@@ -101,16 +101,16 @@ export default function AboutPage() {
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">The Atmosphere</span>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
-                  Why The &quot;Kosmi Lounge&quot; Cinema Aesthetic?
+                  Why The &quot;Cinema Lounge&quot; Aesthetic?
                 </h2>
               </div>
             </div>
             <div className="space-y-3 text-xs sm:text-sm text-gray-300 leading-relaxed">
               <p>
-                Most video call tools look like corporate Monday morning meetings — bright white backgrounds, sterile gray borders, and harsh notification pings that ruin movie atmosphere.
+                Most video call tools feel like boring Monday morning office meetings — bright white backgrounds, sterile borders, and loud notification pings that ruin the mood of a film.
               </p>
               <p>
-                We designed CouchSync Live as an homage to the neon-lit midnight movie theater experience: obsidian glassmorphism, soft ambient glows that match the film, and smart audio ducking that automatically softens movie dialogue when a friend speaks so nobody has to shout.
+                We designed CouchSync Live as an homage to the neon-lit midnight movie theater experience: obsidian glass panels, soft ambient lighting that complements the film, and smart sound controls that automatically soften movie dialogue whenever a friend speaks so nobody has to shout.
               </p>
             </div>
           </article>

@@ -65,7 +65,7 @@ const LAUNCH_LABELS: Record<MediaSourceType, string> = {
 };
 
 const ACTIVITIES: { mode: MediaSourceType; label: string; sub: string; icon: React.ReactNode }[] = [
-  { mode: 'hls',         label: 'Cinema Movie',  sub: 'HLS & Local Files',    icon: <Film      className="w-4 h-4 shrink-0" /> },
+  { mode: 'hls',         label: 'Cinema Movie',  sub: 'Video Links & Files',  icon: <Film      className="w-4 h-4 shrink-0" /> },
   { mode: 'youtube',     label: 'YouTube Party', sub: 'Paste any URL',         icon: <Tv        className="w-4 h-4 shrink-0" /> },
   { mode: 'screenshare', label: 'Screen Share',  sub: 'Tabs, Games & Apps',    icon: <MonitorUp className="w-4 h-4 shrink-0" /> },
   { mode: 'trivia',      label: 'Movie Trivia',  sub: 'Multiplayer Games',     icon: <Gamepad2  className="w-4 h-4 shrink-0" /> },
@@ -80,33 +80,33 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Does CouchSync Live store, record, or route my video/voice through a server?',
-    badge: 'DTLS-SRTP Encrypted',
+    badge: '100% Private & Direct',
     badgeColor: 'bg-cyan-500/15 border-cyan-400/30 text-cyan-300',
-    a: 'Never. All camera and microphone streams are transmitted directly between browsers using end-to-end encrypted WebRTC (DTLS-SRTP). No video or audio ever touches or gets stored on an intermediate media server.',
+    a: 'Never. All camera and microphone feeds are sent directly between your browser and your friends with end-to-end encryption. No video or audio is ever uploaded, recorded, or stored on any server.',
   },
   {
     q: 'Which web browsers are supported?',
     badge: 'Cross-Browser',
     badgeColor: 'bg-violet-500/15 border-violet-400/30 text-violet-300',
-    a: 'CouchSync Live is fully supported on Chrome 90+, Firefox 85+, Safari 15+, and Edge 90+. No browser plugins, extensions, or software installations are needed.',
+    a: 'CouchSync Live is fully supported on Chrome, Firefox, Safari, and Edge. No browser plugins, extensions, or software installations are needed.',
   },
   {
     q: 'What happens if someone has a slow connection or begins buffering?',
-    badge: 'Cooperative Sync',
+    badge: 'Smart Auto-Pause',
     badgeColor: 'bg-amber-500/15 border-amber-400/30 text-amber-300',
-    a: 'CouchSync Live features cooperative buffering: if someone buffers, playback automatically pauses cleanly for everyone until they catch up, preventing anyone from missing a scene. If remote servers are ever unreachable, our engine automatically falls back to local broadcast synchronization.',
+    a: 'CouchSync Live keeps everyone together: if someone’s video starts buffering, playback automatically pauses cleanly for everyone until they catch up, so nobody gets left behind or misses a scene.',
   },
   {
     q: 'How does video playback stay in sync without lag or audio echo?',
-    badge: '< 150ms Lockstep',
+    badge: 'Lag-Free Instant Sync',
     badgeColor: 'bg-cyan-500/15 border-cyan-400/30 text-cyan-300',
-    a: 'Our sync engine operates on lightweight real-time channels broadcasting play, pause, seek, and playback rates in under 150ms. Continuous 1.5s heartbeats silently reconcile drift without causing audio phase echo or micro-stutters.',
+    a: 'Our sync engine connects viewers in real time, sharing play, pause, seek, and speed controls instantly. Continuous background checks keep everyone perfectly aligned without any annoying audio echo or stutter.',
   },
   {
     q: 'What media formats and streaming sources can I watch?',
-    badge: 'HLS · YouTube · Screen',
+    badge: 'Web Videos · YouTube · Screen',
     badgeColor: 'bg-rose-500/15 border-rose-400/30 text-rose-300',
-    a: 'You can stream adaptive bitrate HLS videos with custom subtitle tracks (.srt/.vtt), paste any public YouTube video link for an instant watch party, or share your full desktop screen, individual app window, or browser tab at 60fps.',
+    a: 'You can stream online video links (.m3u8/.mp4) with subtitles, drop in your own local video files from your computer, paste any YouTube link for a watch party, or share your entire screen, app window, or browser tab in high quality.',
   },
 ];
 
