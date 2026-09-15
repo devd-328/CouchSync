@@ -22,8 +22,8 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'How It Works — CouchSync Live Cinema Lounge',
-  description: 'Step-by-step guide to hosting synchronized watch parties with friends: room setup, device testing, media streaming, and keyboard shortcuts.',
+  title: 'How It Works — CouchSync',
+  description: 'Learn how to host virtual movie nights with friends: 1-click room setup, syncing local movie files or YouTube, video calling, and controls.',
 };
 
 const STEPS = [

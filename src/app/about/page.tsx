@@ -12,8 +12,8 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'About — CouchSync Live Cinema Lounge',
-  description: 'The story and philosophy behind CouchSync Live: watching movies across distance, zero-server-cost peer-to-peer architecture, and the Kosmi Lounge aesthetic.',
+  title: 'About — CouchSync',
+  description: 'The story behind CouchSync: bringing friends and long-distance loved ones together for cozy movie nights without accounts, ads, or fees.',
 };
 
 export default function AboutPage() {

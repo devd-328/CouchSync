@@ -21,8 +21,8 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'Features — CouchSync Live Cinema Lounge',
-  description: 'Explore CouchSync Live features: sub-second playback sync, P2P video & voice with smart ducking, native screen sharing, movie trivia, and ambient cinema themes.',
+  title: 'Features — CouchSync',
+  description: 'Explore CouchSync features: perfect video sync, local movie file player, YouTube watch parties, screen share, video & voice calls, and movie trivia.',
 };
 
 export default function FeaturesPage() {

@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://couchsync.vercel.app'),
-  title: 'CouchSync Live — Watch Movies Together in Real-Time Sync',
-  description: 'Synchronized HLS video playback with peer-to-peer WebRTC video calling, low-latency live chat, and audio ducking.',
+  metadataBase: new URL('https://couchsync.live'),
+  title: 'CouchSync — Watch Movies & Videos Together with Friends',
+  description: 'Host virtual movie nights with friends in perfect sync! Watch movies from your PC, stream YouTube, or share your screen with live video call & chat — 100% free with no sign-up.',
   icons: {
     icon: [
       { url: '/icon.png', sizes: '512x512', type: 'image/png' },
@@ -17,24 +17,24 @@ export const metadata: Metadata = {
     shortcut: '/icon.png',
   },
   openGraph: {
-    title: 'CouchSync Live — Watch Movies Together in Real-Time Sync',
-    description: 'Synchronized HLS video playback with peer-to-peer WebRTC video calling, low-latency live chat, and audio ducking.',
-    url: 'https://couchsync.vercel.app',
-    siteName: 'CouchSync Live',
+    title: 'CouchSync — Watch Movies & Videos Together with Friends',
+    description: 'Host virtual movie nights with friends in perfect sync! Watch movies from your PC, stream YouTube, or share your screen with live video call & chat — 100% free with no sign-up.',
+    url: 'https://couchsync.live',
+    siteName: 'CouchSync',
     images: [
       {
         url: '/og-image.png',
         width: 1024,
         height: 1024,
-        alt: 'CouchSync Live Logo',
+        alt: 'CouchSync — Watch Movies Together',
       },
     ],
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'CouchSync Live — Watch Movies Together in Real-Time Sync',
-    description: 'Synchronized HLS video playback with peer-to-peer WebRTC video calling, low-latency live chat, and audio ducking.',
+    title: 'CouchSync — Watch Movies & Videos Together with Friends',
+    description: 'Host virtual movie nights with friends in perfect sync! Watch movies from your PC, stream YouTube, or share your screen with live video call & chat — 100% free with no sign-up.',
     images: ['/og-image.png'],
   },
 };
