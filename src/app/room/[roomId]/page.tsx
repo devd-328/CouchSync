@@ -347,7 +347,8 @@ export default function RoomPage({
     onToggleCam: toggleCamera,
     onSeekRelative: (delta) => {
       if (canControl) {
-        seekTo(Math.max(0, Math.min(duration, currentTime + delta)));
+        const maxLimit = isFinite(duration) && duration > 0 ? duration : Infinity;
+        seekTo(Math.max(0, Math.min(maxLimit, currentTime + delta)));
       }
     },
     onAdjustVolume: (delta) => {

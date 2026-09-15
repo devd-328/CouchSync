@@ -63,7 +63,7 @@ export function PlayerControls({
 }: PlayerControlsProps) {
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const validDuration = isFinite(duration) && duration > 0 ? duration : 0;
-  const progressPercent = validDuration > 0 ? (currentTime / validDuration) * 100 : 0;
+  const progressPercent = validDuration > 0 ? Math.min(100, Math.max(0, (currentTime / validDuration) * 100)) : 0;
 
   return (
     <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/95 via-black/70 to-transparent p-4 pt-10 flex flex-col gap-2 z-30 transition-opacity duration-300">
@@ -78,7 +78,7 @@ export function PlayerControls({
         <input
           type="range"
           min={0}
-          max={validDuration || 100}
+          max={validDuration > 0 ? validDuration : Math.max(100, currentTime + 60)}
           step={0.5}
           disabled={!canControl}
           value={currentTime}

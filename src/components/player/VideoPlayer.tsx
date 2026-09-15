@@ -302,7 +302,8 @@ export function VideoPlayer({
       triggerLockToast();
       return;
     }
-    const target = Math.max(0, Math.min(duration, currentTime + seconds));
+    const maxLimit = isFinite(duration) && duration > 0 ? duration : Infinity;
+    const target = Math.max(0, Math.min(maxLimit, currentTime + seconds));
     onSeek(target);
   };
 

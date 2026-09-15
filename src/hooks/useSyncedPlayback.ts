@@ -269,26 +269,79 @@ export function useSyncedPlayback({
     const video = videoRef.current;
     if (!video) return;
 
-    const onTimeUpdate = () => {
-      if (video) setCurrentTime(video.currentTime);
-    };
-    const onDurationChange = () => {
-      if (video && isFinite(video.duration) && video.duration > 0) {
+    const resolveDuration = () => {
+      if (!video) return;
+      if (isFinite(video.duration) && video.duration > 0) {
         setDuration(video.duration);
+        return;
+      }
+
+      // Fallback 1: check seekable range if available
+      try {
+        if (video.seekable && video.seekable.length > 0) {
+          const seekableEnd = video.seekable.end(video.seekable.length - 1);
+          if (isFinite(seekableEnd) && seekableEnd > 0) {
+            setDuration(seekableEnd);
+          }
+        }
+      } catch {
+        // Ignore seekable range access errors
+      }
+
+      // Fallback 2: Chromium Blob/MKV/WebM duration resolution trick
+      // When Chrome loads a video blob without container cues, duration is Infinity.
+      // Jumping to a very large number forces Chrome to locate the file end and compute duration.
+      if (video.duration === Infinity) {
+        const prevTime = video.currentTime || 0;
+        let isResolved = false;
+
+        const onTempTimeUpdate = () => {
+          if (isResolved) return;
+          isResolved = true;
+          video.removeEventListener('timeupdate', onTempTimeUpdate);
+
+          if (isFinite(video.duration) && video.duration > 0) {
+            setDuration(video.duration);
+          } else if (isFinite(video.currentTime) && video.currentTime > 0) {
+            setDuration(video.currentTime);
+          }
+
+          // Restore playback position cleanly
+          video.currentTime = prevTime;
+        };
+
+        video.addEventListener('timeupdate', onTempTimeUpdate);
+        video.currentTime = 1e101;
       }
     };
+
+    const onTimeUpdate = () => {
+      if (video) {
+        setCurrentTime(video.currentTime);
+        // If duration is still 0, try updating if video duration has become finite
+        if (isFinite(video.duration) && video.duration > 0) {
+          setDuration((prev) => (prev > 0 ? prev : video.duration));
+        }
+      }
+    };
+
+    const onDurationChange = () => {
+      resolveDuration();
+    };
+
     const onLoadedMetadata = () => {
       if (video) {
-        if (isFinite(video.duration) && video.duration > 0) {
-          setDuration(video.duration);
-        }
+        resolveDuration();
         setCurrentTime(video.currentTime || 0);
       }
     };
+
     const onPlaying = () => {
       setIsPlaying(true);
       setIsBuffering(false);
+      resolveDuration();
     };
+
     const onEnded = () => setIsPlaying(false);
 
     video.addEventListener('timeupdate', onTimeUpdate);
@@ -300,6 +353,11 @@ export function useSyncedPlayback({
     video.addEventListener('pause', handleLocalPause);
     video.addEventListener('waiting', handleLocalWaiting);
     video.addEventListener('canplay', handleLocalCanPlay);
+
+    // Initial check in case metadata was already loaded
+    if (video.readyState >= 1) {
+      resolveDuration();
+    }
 
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate);
