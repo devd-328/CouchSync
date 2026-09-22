@@ -62,34 +62,33 @@ export function RoomPollComponent({
     const totalVotes = Object.keys(activePoll.votes).length;
     const userVote = activePoll.votes[currentUserId];
 
-    // Calculate vote counts per option
     const counts = activePoll.options.map((_, idx) => {
       return Object.values(activePoll.votes).filter((v) => v === idx).length;
     });
 
     return (
-      <div className="rounded-2xl glass-panel border-cyan-500/30 p-3.5 flex flex-col gap-2.5 shadow-2xl bg-black/70 backdrop-blur-xl animate-fade-in text-xs">
-        <div className="flex items-center justify-between border-b border-white/10 pb-2">
-          <span className="font-semibold text-cyan-300 flex items-center gap-1.5">
-            <BarChart3 className="w-4 h-4" />
+      <div className="rounded-2xl bg-white border border-black/8 p-4 flex flex-col gap-3 shadow-sm text-xs text-gray-900">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
+          <span className="font-bold text-[#E64A19] flex items-center gap-1.5">
+            <BarChart3 className="w-4 h-4 text-[#FF5722]" />
             Live In-Stream Poll
           </span>
           {activePoll.creatorId === currentUserId && (
             <button
               onClick={() => onBroadcastClose(activePoll.id)}
-              className="text-[10px] text-gray-400 hover:text-rose-300 transition"
+              className="text-[11px] font-semibold text-gray-500 hover:text-rose-600 transition cursor-pointer"
             >
               End Poll
             </button>
           )}
         </div>
 
-        <p className="font-medium text-gray-100 text-xs leading-snug">
+        <p className="font-bold text-gray-900 text-sm leading-snug">
           {activePoll.question}
         </p>
 
         {/* Voting Options */}
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2">
           {activePoll.options.map((opt, idx) => {
             const voteCount = counts[idx] || 0;
             const percent = totalVotes > 0 ? Math.round((voteCount / totalVotes) * 100) : 0;
@@ -99,24 +98,26 @@ export function RoomPollComponent({
               <button
                 key={idx}
                 onClick={() => onBroadcastVote(activePoll.id, idx)}
-                className={`relative w-full overflow-hidden p-2.5 rounded-xl text-left border transition ${
+                className={`relative overflow-hidden rounded-xl border text-left p-2.5 transition flex flex-col justify-center cursor-pointer ${
                   hasVotedThis
-                    ? 'border-cyan-400/60 bg-cyan-500/20 text-cyan-200'
-                    : 'border-white/10 bg-white/5 hover:bg-white/10 text-gray-200'
+                    ? 'border-[#FF5722] bg-orange-50/60'
+                    : 'border-gray-200 bg-gray-50 hover:bg-gray-100/70 hover:border-gray-300'
                 }`}
               >
-                {/* Progress bar background fill */}
+                {/* Visual percentage progress bar */}
                 <div
-                  className="absolute inset-0 bg-cyan-500/15 pointer-events-none transition-all duration-500"
+                  className="absolute inset-0 bg-orange-200/50 -z-0 transition-all duration-300 pointer-events-none"
                   style={{ width: `${percent}%` }}
                 />
 
-                <div className="relative flex items-center justify-between z-10">
-                  <div className="flex items-center gap-2 truncate">
-                    {hasVotedThis && <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
-                    <span className="truncate">{opt}</span>
-                  </div>
-                  <span className="font-mono text-[11px] text-gray-400 shrink-0 ml-2">
+                <div className="relative z-10 flex items-center justify-between font-semibold">
+                  <span className="flex items-center gap-1.5 text-xs text-gray-900">
+                    {opt}
+                    {hasVotedThis && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#FF5722]" />
+                    )}
+                  </span>
+                  <span className="font-mono text-[11px] font-bold text-gray-700">
                     {percent}% ({voteCount})
                   </span>
                 </div>
@@ -125,88 +126,99 @@ export function RoomPollComponent({
           })}
         </div>
 
-        <span className="text-[10px] text-gray-500 text-right">
+        <div className="text-[10px] text-gray-400 font-mono text-center pt-1 border-t border-gray-100">
           {totalVotes} {totalVotes === 1 ? 'vote' : 'votes'} total
-        </span>
+        </div>
       </div>
     );
   }
 
-  // Trigger button to start a poll when none active
+  // Idle state: prompt to launch a poll
   return (
-    <div>
+    <div className="flex flex-col h-full min-h-0 justify-center items-center text-center p-6 text-gray-900">
+      <div className="w-12 h-12 rounded-2xl bg-orange-100 border border-orange-200 flex items-center justify-center mb-3 text-[#FF5722] shadow-2xs">
+        <Vote className="w-6 h-6" />
+      </div>
+      <h3 className="text-sm font-bold text-gray-900">Room Polls</h3>
+      <p className="text-xs text-gray-600 mt-1 max-w-[220px]">
+        Ask your friends what to watch next, rate the movie, or make group predictions!
+      </p>
+
       <button
         onClick={() => setShowCreateModal(true)}
-        className="w-full py-2 px-3 rounded-xl glass-panel hover:bg-white/10 border-white/10 text-xs font-semibold text-gray-300 flex items-center justify-center gap-2 transition"
+        className="mt-4 px-4 py-2 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer"
       >
-        <Vote className="w-3.5 h-3.5 text-cyan-400" />
+        <Plus className="w-4 h-4" />
         <span>Create Quick Poll</span>
       </button>
 
+      {/* Create Poll Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-md">
-          <div className="min-h-full flex items-center justify-center p-4">
-            <form
-              onSubmit={handleCreatePollSubmit}
-              className="w-full max-w-sm rounded-2xl glass-panel border-white/10 p-5 flex flex-col gap-3.5 shadow-2xl bg-[#101420] my-auto"
-            >
-            <div className="flex items-center justify-between border-b border-white/10 pb-2">
-              <span className="font-bold text-white text-sm flex items-center gap-2">
-                <Vote className="w-4 h-4 text-cyan-400" />
-                Ask a Question / Poll
-              </span>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-3xl bg-white border border-black/8 p-6 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-gray-950 text-base">New Room Poll</span>
               <button
-                type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="text-gray-400 hover:text-white"
+                className="p-1 rounded-full text-gray-400 hover:text-gray-900 hover:bg-black/5"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <input
-              type="text"
-              placeholder="e.g. Will they make it back to Earth?"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              required
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400/50"
-            />
-
-            <div className="flex flex-col gap-2">
-              <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-                Options
-              </span>
-              {options.map((opt, idx) => (
+            <form onSubmit={handleCreatePollSubmit} className="flex flex-col gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-gray-600 uppercase">Question</label>
                 <input
-                  key={idx}
                   type="text"
-                  placeholder={`Option ${idx + 1}`}
-                  value={opt}
-                  onChange={(e) => handleOptionTextChange(idx, e.target.value)}
                   required
-                  className="w-full px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400/50"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder="e.g. Which movie next?"
+                  className="w-full mt-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#FF5722] focus:bg-white"
                 />
-              ))}
+              </div>
 
-              {options.length < 4 && (
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-bold text-gray-600 uppercase">Options</label>
+                {options.map((opt, i) => (
+                  <input
+                    key={i}
+                    type="text"
+                    required
+                    value={opt}
+                    onChange={(e) => handleOptionTextChange(i, e.target.value)}
+                    placeholder={`Option ${i + 1}`}
+                    className="w-full px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#FF5722] focus:bg-white"
+                  />
+                ))}
+
+                {options.length < 4 && (
+                  <button
+                    type="button"
+                    onClick={handleAddOption}
+                    className="text-xs font-semibold text-[#FF5722] hover:underline self-start mt-1"
+                  >
+                    + Add option
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 justify-end mt-2 pt-2 border-t border-gray-100">
                 <button
                   type="button"
-                  onClick={handleAddOption}
-                  className="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 self-start pt-1"
+                  onClick={() => setShowCreateModal(false)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
                 >
-                  <Plus className="w-3 h-3" />
-                  <span>Add another option</span>
+                  Cancel
                 </button>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-linear-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white rounded-xl font-bold text-xs shadow-lg transition"
-            >
-              Launch Poll to Room
-            </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white text-xs font-bold shadow-xs hover:shadow-md transition"
+                >
+                  Launch Poll
+                </button>
+              </div>
             </form>
           </div>
         </div>

@@ -65,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark h-full">
+    <html lang="en" className="h-full">
       <head>
         <script
           type="application/ld+json"
@@ -74,7 +74,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-[#0B0D14] text-gray-100 antialiased flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+      <body className="min-h-screen bg-[#FAF8F5] text-gray-900 antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-900">
         {children}
         <SpeedInsights />
       </body>

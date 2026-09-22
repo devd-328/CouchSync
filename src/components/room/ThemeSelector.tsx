@@ -45,19 +45,19 @@ export function ThemeSelector({ currentTheme, onSelectTheme }: ThemeSelectorProp
         aria-label="Open theater theme picker"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        className="p-2 rounded-xl glass-pill hover:bg-white/15 text-gray-300 hover:text-white transition"
+        className="p-2 rounded-xl bg-gray-100 border border-gray-200 hover:bg-orange-50 text-gray-700 hover:text-[#FF5722] transition cursor-pointer"
         title="Ambient Theater Themes"
       >
-        <Palette className="w-4 h-4 text-cyan-400" />
+        <Palette className="w-4 h-4 text-[#FF5722]" />
       </button>
 
       {isOpen && (
         <div
           role="listbox"
           aria-label="Theater theme"
-          className="absolute top-10 right-0 w-48 p-2 rounded-2xl glass-panel border-white/10 shadow-2xl bg-black/90 backdrop-blur-xl z-50 flex flex-col gap-1 text-xs"
+          className="absolute top-11 right-0 w-48 p-2 rounded-2xl bg-white border border-black/10 shadow-2xl z-50 flex flex-col gap-1 text-xs text-gray-900 animate-in fade-in duration-150"
         >
-          <span className="text-[10px] font-semibold text-gray-400 px-2 py-1 uppercase tracking-wider">
+          <span className="text-[10px] font-bold text-gray-500 px-2 py-1 uppercase tracking-wider">
             Theater Theme
           </span>
           {THEMES.map((t) => {
@@ -71,20 +71,20 @@ export function ThemeSelector({ currentTheme, onSelectTheme }: ThemeSelectorProp
                   onSelectTheme(t.id);
                   setIsOpen(false);
                 }}
-                className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border transition ${
+                className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border transition cursor-pointer ${
                   isSelected
-                    ? `${t.selectedClass} font-semibold`
-                    : 'border-transparent hover:bg-white/10 text-gray-300 hover:scale-[1.01]'
+                    ? 'bg-orange-50 text-[#EA580C] border-orange-200 font-bold'
+                    : 'border-transparent hover:bg-gray-100 text-gray-700 font-medium'
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs"
                     style={{ backgroundColor: t.dotColor }}
                   />
                   <span>{t.label}</span>
                 </div>
-                {isSelected && <Check className="w-3.5 h-3.5" />}
+                {isSelected && <Check className="w-3.5 h-3.5 text-[#EA580C]" />}
               </button>
             );
           })}

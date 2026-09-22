@@ -17,10 +17,10 @@ export function SiteHeader({ currentPage, badgeText }: SiteHeaderProps) {
   ];
 
   return (
-    <header className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between border-b border-white/5 gap-4">
+    <header className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between border-b border-black/6 gap-4">
       {/* Brand logo & title */}
       <Link href="/" className="flex items-center gap-3 group">
-        <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(0,242,254,0.3)] border border-cyan-500/30 shrink-0 bg-black/50 group-hover:border-cyan-400/60 transition">
+        <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-xs border border-orange-200/80 shrink-0 bg-orange-50 group-hover:scale-105 transition">
           <Image
             src="/icon.png"
             alt="CouchSync Live Logo"
@@ -32,21 +32,21 @@ export function SiteHeader({ currentPage, badgeText }: SiteHeaderProps) {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-black tracking-tight text-white group-hover:text-cyan-300 transition">
+            <span className="text-lg font-black tracking-tight text-gray-950 group-hover:text-[#EA580C] transition">
               CouchSync Live
             </span>
             {badgeText && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-[#EA580C] border border-orange-200">
                 {badgeText}
               </span>
             )}
           </div>
-          <p className="text-[11px] text-gray-400 font-medium">Virtual Cinema &amp; Hangout Lounge</p>
+          <p className="text-[11px] text-gray-500 font-medium">Virtual Cinema &amp; Hangout Lounge</p>
         </div>
       </Link>
 
       {/* Nav Links */}
-      <nav className="hidden md:flex items-center gap-1 p-1 rounded-2xl glass-panel border-white/8">
+      <nav className="hidden md:flex items-center gap-1 p-1 rounded-2xl bg-gray-100/90 border border-black/5 shadow-2xs">
         {NAV_LINKS.map((link) => {
           const isActive = currentPage === link.id;
           return (
@@ -55,8 +55,8 @@ export function SiteHeader({ currentPage, badgeText }: SiteHeaderProps) {
               href={link.href}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
                 isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 shadow-xs'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-[#EA580C] border border-black/5 shadow-2xs font-bold'
+                  : 'text-gray-600 hover:text-gray-950 hover:bg-white/60'
               }`}
             >
               {link.label}
@@ -69,7 +69,7 @@ export function SiteHeader({ currentPage, badgeText }: SiteHeaderProps) {
       <div className="flex items-center gap-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-linear-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-white text-xs font-bold shadow-[0_0_15px_rgba(0,242,254,0.3)] transition cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs font-bold shadow-[0_4px_16px_rgba(255,87,34,0.3)] transition cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Launch Room</span>

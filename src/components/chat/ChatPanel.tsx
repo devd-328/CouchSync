@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, MessageSquare, Bookmark, Play } from 'lucide-react';
+import { Send, MessageSquare, Bookmark } from 'lucide-react';
 import { ChatMessage } from '@/types/sync';
 import { formatTime } from '@/lib/formatters';
 
@@ -46,13 +46,13 @@ export function ChatPanel({
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0 rounded-2xl glass-panel border-white/10 overflow-hidden">
-      {/* Header ("Room Chat" + Pin Moment) - shrink-0 */}
-      <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-white/2">
+    <div className="flex flex-col h-full min-h-0 rounded-2xl bg-white border border-black/8 shadow-xs overflow-hidden text-gray-900">
+      {/* Header ("Room Chat" + Pin Moment) */}
+      <div className="shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50/70">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-semibold text-gray-200">Room Chat</h3>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 font-mono">
+          <MessageSquare className="w-4 h-4 text-[#FF5722]" />
+          <h3 className="text-sm font-bold text-gray-900">Room Chat</h3>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-[#E64A19] font-mono font-bold">
             {participantsCount}
           </span>
         </div>
@@ -62,23 +62,23 @@ export function ChatPanel({
           <button
             onClick={handlePinCurrentMoment}
             aria-label="Pin current video timestamp to chat"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg glass-pill hover:bg-white/15 text-[11px] text-amber-300 border-amber-500/30 transition shadow-[0_0_8px_rgba(245,158,11,0.2)] cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[11px] font-semibold text-amber-800 border border-amber-200 transition cursor-pointer"
             title="Save and share this current timestamp in chat"
           >
-            <Bookmark className="w-3 h-3 text-amber-400 fill-amber-400/40" />
+            <Bookmark className="w-3 h-3 text-amber-600 fill-amber-500/40" />
             <span>Pin Moment</span>
           </button>
         )}
       </div>
 
-      {/* Messages Scroll Area - flex-1 min-h-0 overflow-y-auto */}
+      {/* Messages Scroll Area */}
       <div className="flex-1 min-h-0 overflow-y-auto p-3.5 flex flex-col gap-2.5">
         {messages.length === 0 ? (
           <div className="my-auto flex flex-col items-center justify-center text-center p-6 text-xs text-gray-500">
-            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-2.5 text-cyan-400/50">
+            <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center mb-2.5 text-[#FF5722]">
               <MessageSquare className="w-5 h-5" />
             </div>
-            <p className="font-medium text-gray-300">No messages yet</p>
+            <p className="font-bold text-gray-800">No messages yet</p>
             <p className="mt-1 text-[11px] text-gray-500">Say hi or pin a moment to get the chat started!</p>
           </div>
         ) : (
@@ -88,27 +88,25 @@ export function ChatPanel({
               className={`flex flex-col text-xs ${msg.isSelf ? 'items-end' : 'items-start'}`}
             >
               <div className="flex items-center gap-1.5 mb-0.5 px-1">
-                <span className="font-semibold text-gray-400 text-[11px]">
+                <span className="font-bold text-gray-700 text-[11px]">
                   {msg.senderName}
                 </span>
-                <span className="text-[10px] text-gray-600">{msg.timestamp}</span>
+                <span className="text-[10px] text-gray-400">{msg.timestamp}</span>
               </div>
               <div
-                className={`px-3.5 py-2 rounded-2xl max-w-[85%] wrap-break-word leading-relaxed ${
+                className={`px-3.5 py-2 rounded-2xl max-w-[85%] wrap-break-word leading-relaxed text-xs ${
                   msg.isSelf
-                    ? 'bg-linear-to-r from-cyan-600/80 to-blue-600/80 text-white rounded-tr-xs shadow-[0_2px_12px_rgba(0,242,254,0.15)]'
-                    : 'bg-white/10 text-gray-200 rounded-tl-xs border border-white/5'
+                    ? 'bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white rounded-tr-xs shadow-xs font-medium'
+                    : 'bg-gray-100 text-gray-900 rounded-tl-xs border border-gray-200/80 font-normal'
                 }`}
               >
-                <p>{msg.text}</p>
-                {/* Clickable Moment Button */}
-                {msg.jumpTime !== undefined && onJumpToTime && (
+                {msg.text}
+                {msg.jumpTime !== undefined && (
                   <button
-                    onClick={() => onJumpToTime(msg.jumpTime!)}
-                    className="mt-1.5 px-2 py-1 rounded-md bg-black/40 hover:bg-black/60 border border-amber-400/40 text-[11px] font-mono font-semibold text-amber-300 flex items-center gap-1.5 transition cursor-pointer"
+                    onClick={() => onJumpToTime?.(msg.jumpTime!)}
+                    className="mt-1 text-[10px] underline block font-semibold hover:opacity-80"
                   >
-                    <Play className="w-2.5 h-2.5 fill-current" />
-                    <span>Jump to {formatTime(msg.jumpTime)}</span>
+                    Jump to {formatTime(msg.jumpTime)}
                   </button>
                 )}
               </div>
@@ -118,43 +116,35 @@ export function ChatPanel({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Reactions Bar (Inline horizontal above input) */}
-      <div className="shrink-0 px-3 py-1.5 border-t border-white/5 bg-black/20 flex items-center justify-between gap-1">
-        <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider shrink-0">
-          React
-        </span>
-        <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
-          {QUICK_REACTIONS.map((emoji) => (
-            <button
-              key={emoji}
-              type="button"
-              onClick={() => onTriggerReaction(emoji)}
-              aria-label={`React with ${emoji}`}
-              className="w-7 h-7 rounded-lg hover:bg-white/10 hover:scale-125 hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] transition active:scale-95 flex items-center justify-center text-sm cursor-pointer"
-              title={`React with ${emoji}`}
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
+      {/* Quick Reaction Bar */}
+      <div className="px-3 py-1.5 border-t border-gray-100 bg-gray-50/70 flex items-center justify-around gap-1 shrink-0">
+        {QUICK_REACTIONS.map((emoji) => (
+          <button
+            key={emoji}
+            onClick={() => onTriggerReaction(emoji)}
+            className="p-1.5 rounded-lg hover:bg-orange-100/60 transition text-base leading-none cursor-pointer transform hover:scale-125"
+            title={`Send ${emoji} reaction`}
+          >
+            {emoji}
+          </button>
+        ))}
       </div>
 
-      {/* Input Field (Pinned at bottom) */}
-      <form onSubmit={handleSend} className="shrink-0 p-2.5 border-t border-white/10 bg-white/2 flex items-center gap-2">
+      {/* Input Box */}
+      <form onSubmit={handleSend} className="p-2.5 border-t border-gray-100 bg-white flex items-center gap-2 shrink-0">
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-100 placeholder-gray-400 focus:outline-none focus:border-cyan-500/50 transition"
+          placeholder="Say something to the room..."
+          className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
-          aria-label="Send message"
-          className="p-2 rounded-xl bg-linear-to-r from-cyan-500 to-violet-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+          className="p-2 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition cursor-pointer"
         >
-          <Send className="w-3.5 h-3.5" />
+          <Send className="w-4 h-4" />
         </button>
       </form>
     </div>

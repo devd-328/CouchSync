@@ -79,23 +79,23 @@ export function VideoSettingsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-xl rounded-2xl glass-panel border border-cyan-500/30 p-5 sm:p-6 flex flex-col gap-4 shadow-[0_0_50px_rgba(0,0,0,0.8)] bg-[#0C101C] my-auto relative animate-in fade-in zoom-in-95 duration-200">
+      <div className="w-full max-w-xl rounded-3xl bg-white border border-black/10 p-5 sm:p-7 flex flex-col gap-4 shadow-2xl my-auto relative animate-in fade-in zoom-in-95 duration-200 text-gray-950 font-sans">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
+        <div className="flex items-center justify-between border-b border-black/8 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center shadow-[0_0_12px_rgba(0,242,254,0.3)]">
-              <FolderOpen className="w-4 h-4 text-cyan-300" />
+            <div className="w-9 h-9 rounded-xl bg-orange-100 border border-orange-200 flex items-center justify-center text-[#FF5722] shadow-2xs">
+              <FolderOpen className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-gray-950 tracking-tight flex items-center gap-2">
                 Select Movie or Upload from PC
               </h2>
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-gray-500 font-medium">
                 Choose a video from your computer or pick an online stream to watch together
               </p>
             </div>
@@ -103,7 +103,7 @@ export function VideoSettingsModal({
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1.5 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition"
+            className="p-1.5 rounded-full hover:bg-black/5 text-gray-400 hover:text-gray-900 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,12 +112,12 @@ export function VideoSettingsModal({
         {/* HERO SECTION: Pick Video from PC (Zero-Cloud Mode) */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] flex items-center gap-1.5">
               <HardDrive className="w-3.5 h-3.5" />
               Option 1: Play File from PC (Recommended)
             </span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-cyan-400" />
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-[#EA580C] border border-orange-200 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-[#FF5722]" />
               Zero Cloud Cost
             </span>
           </div>
@@ -138,36 +138,36 @@ export function VideoSettingsModal({
             onDrop={handleDrop}
             className={`cursor-pointer rounded-2xl border-2 border-dashed p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all group select-none ${
               isDragging
-                ? 'border-cyan-400 bg-cyan-500/25 scale-[1.01] shadow-[0_0_25px_rgba(0,242,254,0.4)]'
-                : 'border-cyan-500/40 hover:border-cyan-400 bg-linear-to-b from-cyan-950/30 to-blue-950/20 hover:from-cyan-950/50 hover:to-blue-950/40 shadow-inner'
+                ? 'border-[#FF5722] bg-orange-100/70 scale-[1.01] shadow-md'
+                : 'border-orange-300 hover:border-[#FF5722] bg-orange-50/50 hover:bg-orange-50 shadow-2xs'
             }`}
           >
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 group-hover:bg-cyan-500/30 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_15px_rgba(0,242,254,0.3)] group-hover:scale-110 transition-transform mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-orange-100 group-hover:bg-orange-200 border border-orange-300 flex items-center justify-center text-[#FF5722] shadow-2xs group-hover:scale-110 transition-transform mb-3">
               <Upload className="w-6 h-6 animate-pulse" />
             </div>
 
-            <p className="text-sm sm:text-base font-bold text-white group-hover:text-cyan-200 transition-colors">
+            <p className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-[#EA580C] transition-colors">
               Click to Browse Video File from PC
             </p>
-            <p className="text-xs text-gray-400 mt-1 max-w-md">
-              or simply drag and drop your movie file here (<span className="text-cyan-300 font-mono">.mp4</span>, <span className="text-cyan-300 font-mono">.mkv</span>, <span className="text-cyan-300 font-mono">.webm</span>)
+            <p className="text-xs text-gray-500 mt-1 max-w-md">
+              or simply drag and drop your movie file here (<span className="text-[#EA580C] font-mono font-bold">.mp4</span>, <span className="text-[#EA580C] font-mono font-bold">.mkv</span>, <span className="text-[#EA580C] font-mono font-bold">.webm</span>)
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2 mt-3.5">
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300">
+              <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-white border border-black/10 text-gray-700 shadow-2xs">
                 🔒 100% Private (stays on your PC)
               </span>
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300">
+              <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-white border border-black/10 text-gray-700 shadow-2xs">
                 ⚡ Ultra-Fast Playback
               </span>
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-gray-300">
+              <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-white border border-black/10 text-gray-700 shadow-2xs">
                 👥 Both select same file to sync
               </span>
             </div>
           </div>
 
-          <div className="flex items-start gap-1.5 px-2 text-[10px] text-gray-400">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-1.5 px-2 text-[10px] text-gray-500">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
             <span>
               <strong>Tip:</strong> If both participants select their own local copy of the same movie, you watch in synchronized harmony with zero bandwidth lag! MP4 (H.264/AAC) provides the best audio/video compatibility.
             </span>
@@ -175,8 +175,8 @@ export function VideoSettingsModal({
         </div>
 
         {/* SECTION 2: Preset Online Streams */}
-        <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
+        <div className="flex flex-col gap-2 pt-2 border-t border-black/8">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
             <Film className="w-3.5 h-3.5 text-gray-400" />
             Option 2: Or Choose a Preset Demo Movie
           </span>
@@ -192,21 +192,21 @@ export function VideoSettingsModal({
                     onSelectVideo(vid);
                     onClose();
                   }}
-                  className={`flex items-center gap-2.5 p-2 rounded-xl text-left border transition cursor-pointer ${
+                  className={`flex items-center gap-2.5 p-2.5 rounded-xl text-left border transition cursor-pointer ${
                     isSelected
-                      ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-200 shadow-[0_0_10px_rgba(0,242,254,0.15)]'
-                      : 'bg-white/5 border-white/8 hover:bg-white/10 text-gray-300'
+                      ? 'bg-orange-50 border-orange-300 text-[#EA580C] shadow-2xs font-bold'
+                      : 'bg-gray-50 border-black/5 hover:bg-orange-50/40 text-gray-800 hover:text-[#EA580C]'
                   }`}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center shrink-0">
-                    <Film className={`w-4 h-4 ${isSelected ? 'text-cyan-400' : 'text-gray-400'}`} />
+                  <div className="w-8 h-8 rounded-lg bg-white border border-black/8 flex items-center justify-center shrink-0">
+                    <Film className={`w-4 h-4 ${isSelected ? 'text-[#FF5722]' : 'text-gray-400'}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-white truncate">{vid.title}</p>
-                    <p className="text-[10px] text-gray-400 truncate">{vid.category} • {vid.duration}</p>
+                    <p className="text-xs font-bold truncate">{vid.title}</p>
+                    <p className="text-[10px] text-gray-500 truncate">{vid.category} • {vid.duration}</p>
                   </div>
                   {isSelected && (
-                    <Check className="w-4 h-4 text-cyan-400 shrink-0 mr-1" />
+                    <Check className="w-4 h-4 text-[#FF5722] shrink-0 mr-1" />
                   )}
                 </button>
               );
@@ -215,8 +215,8 @@ export function VideoSettingsModal({
         </div>
 
         {/* SECTION 3: Custom URL Stream */}
-        <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
+        <div className="flex flex-col gap-2 pt-2 border-t border-black/8">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-gray-400" />
             Option 3: Custom Online Stream URL
           </span>
@@ -226,12 +226,12 @@ export function VideoSettingsModal({
               value={customUrl}
               onChange={(e) => setCustomUrl(e.target.value)}
               placeholder="Paste direct .mp4 or HLS .m3u8 link..."
-              className="flex-1 bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-cyan-400/60 transition"
+              className="flex-1 bg-gray-50 border border-black/10 rounded-xl px-3 py-2 text-xs text-gray-950 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] transition"
             />
             <button
               type="submit"
               disabled={!customUrl.trim()}
-              className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 disabled:hover:bg-cyan-500 text-black font-bold rounded-xl text-xs transition shadow-[0_0_12px_rgba(0,242,254,0.25)] cursor-pointer"
+              className="px-4 py-2 bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] disabled:opacity-40 text-white font-bold rounded-xl text-xs transition shadow-xs cursor-pointer"
             >
               Play Link
             </button>

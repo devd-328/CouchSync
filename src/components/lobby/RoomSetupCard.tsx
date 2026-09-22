@@ -57,14 +57,14 @@ export function RoomSetupCard({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 text-gray-900">
       {/* Title */}
       <div>
-        <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-gray-950 tracking-tight flex items-center gap-2">
           Room Setup
-          <Sparkles className="w-5 h-5 text-cyan-400" />
+          <Sparkles className="w-5 h-5 text-[#FF5722]" />
         </h2>
-        <p className="text-xs text-gray-400 mt-0.5">
+        <p className="text-xs text-gray-500 mt-0.5">
           Configure your session and invite your friend
         </p>
       </div>
@@ -72,26 +72,26 @@ export function RoomSetupCard({
       {/* User Name & Room Name */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">
             Your Nickname
           </label>
           <input
             type="text"
             value={userName}
             onChange={(e) => onUserNameChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-100 focus:outline-none focus:border-cyan-400/50 transition"
+            className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
             placeholder="e.g. Alex"
           />
         </div>
         <div>
-          <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+          <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1">
             Room Name
           </label>
           <input
             type="text"
             value={roomName}
             onChange={(e) => onRoomNameChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-gray-100 focus:outline-none focus:border-cyan-400/50 transition"
+            className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
             placeholder="e.g. Cosmic Nights"
           />
         </div>
@@ -99,36 +99,36 @@ export function RoomSetupCard({
 
       {/* Selected Video Card */}
       <div className="flex flex-col gap-1.5">
-        <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+        <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider">
           Featured Stream
         </label>
-        <div className="flex items-center gap-3 p-2.5 rounded-xl glass-panel border-white/10 bg-white/2">
-          <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10">
+        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 border border-gray-200">
+          <div className="relative w-24 h-16 rounded-lg overflow-hidden shrink-0 border border-gray-200">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selectedVideo.poster}
               alt={selectedVideo.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent flex items-end p-1">
-              <span className="text-[9px] font-mono text-cyan-300 bg-black/60 px-1 rounded-xs">
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent flex items-end p-1">
+              <span className="text-[9px] font-mono font-bold text-orange-200 bg-black/60 px-1 rounded-xs">
                 HLS Ready
               </span>
             </div>
           </div>
 
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-semibold text-gray-200 truncate">
+            <h4 className="text-xs font-semibold text-gray-900 truncate">
               {selectedVideo.title}
             </h4>
-            <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-0.5">
+            <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-0.5">
               <span>{selectedVideo.duration}</span>
               <span>•</span>
-              <span className="text-emerald-400">Ready</span>
+              <span className="text-emerald-600 font-semibold">Ready</span>
             </div>
             <button
               onClick={() => setShowVideoSelector(!showVideoSelector)}
-              className="mt-1.5 text-[11px] font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition"
+              className="mt-1.5 text-[11px] font-semibold text-[#FF5722] hover:text-[#EA580C] flex items-center gap-1 transition cursor-pointer"
             >
               <Film className="w-3 h-3" />
               <span>Change Video</span>
@@ -139,8 +139,8 @@ export function RoomSetupCard({
 
         {/* Video Selector Dropdown */}
         {showVideoSelector && (
-          <div className="p-3 rounded-xl glass-panel border-white/10 bg-black/40 flex flex-col gap-3 mt-1">
-            <span className="text-[11px] font-medium text-gray-400">Select a preloaded movie:</span>
+          <div className="p-3 rounded-2xl bg-white border border-gray-200 shadow-xl flex flex-col gap-3 mt-1">
+            <span className="text-[11px] font-bold text-gray-600">Select a preloaded movie:</span>
             <div className="grid grid-cols-1 gap-2">
               {SAMPLE_VIDEOS.map((vid) => (
                 <button
@@ -149,30 +149,30 @@ export function RoomSetupCard({
                     onSelectVideo(vid);
                     setShowVideoSelector(false);
                   }}
-                  className={`flex items-center gap-2.5 p-2 rounded-lg text-left transition ${
+                  className={`flex items-center gap-2.5 p-2 rounded-xl text-left transition cursor-pointer ${
                     selectedVideo.id === vid.id
-                      ? 'bg-cyan-500/20 border border-cyan-400/40 text-cyan-200'
-                      : 'hover:bg-white/5 text-gray-300'
+                      ? 'bg-orange-50 border border-orange-300 text-[#EA580C] font-semibold'
+                      : 'hover:bg-gray-50 text-gray-800'
                   }`}
                 >
-                  <Film className="w-3.5 h-3.5 shrink-0" />
+                  <Film className="w-3.5 h-3.5 shrink-0 text-[#FF5722]" />
                   <span className="text-xs truncate">{vid.title}</span>
                 </button>
               ))}
             </div>
 
             {/* Custom URL Input */}
-            <form onSubmit={handleCustomUrlSubmit} className="flex gap-2 pt-1 border-t border-white/10">
+            <form onSubmit={handleCustomUrlSubmit} className="flex gap-2 pt-2 border-t border-gray-100">
               <input
                 type="url"
                 value={customUrl}
                 onChange={(e) => setCustomUrl(e.target.value)}
                 placeholder="Or paste custom .m3u8 or .mp4 URL..."
-                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-cyan-400/50"
+                className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-1.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] focus:bg-white"
               />
               <button
                 type="submit"
-                className="px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-xs font-semibold hover:bg-cyan-500 transition"
+                className="px-3 py-1.5 bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white rounded-xl text-xs font-bold shadow-xs hover:from-[#F4511E] hover:to-[#FF5722] transition cursor-pointer"
               >
                 Use
               </button>
@@ -183,21 +183,21 @@ export function RoomSetupCard({
 
       {/* Invite Link Box */}
       <div className="flex flex-col gap-1.5">
-        <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+        <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider">
           Invite Link
         </label>
-        <div className="flex items-center gap-2 p-1.5 pl-3 rounded-xl bg-black/40 border border-white/10">
+        <div className="flex items-center gap-2 p-1.5 pl-3 rounded-xl bg-gray-50 border border-gray-200">
           <input
             type="text"
             readOnly
             value={inviteUrl}
-            className="flex-1 bg-transparent text-xs text-gray-300 select-all focus:outline-none truncate font-mono"
+            className="flex-1 bg-transparent text-xs text-gray-800 select-all focus:outline-none truncate font-mono"
           />
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-medium transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 text-gray-800 text-xs font-semibold shadow-2xs transition cursor-pointer"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
         </div>
@@ -206,7 +206,7 @@ export function RoomSetupCard({
       {/* Join Action Button */}
       <button
         onClick={onJoinRoom}
-        className="w-full mt-2 py-3 rounded-xl bg-linear-to-r from-cyan-400 via-blue-500 to-violet-600 hover:from-cyan-300 hover:via-blue-400 hover:to-violet-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,242,254,0.35)] transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+        className="w-full mt-2 py-3 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white font-bold text-sm shadow-md transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
       >
         <span>Join Watch Party</span>
         <ChevronRight className="w-4 h-4" />

@@ -68,23 +68,23 @@ export function DeviceCheckModal({
   const validationMsg = getValidationMessage();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="min-h-full flex items-center justify-center p-3 sm:p-4">
-        <div className="relative w-full max-w-115 glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-white/10 shadow-2xl bg-[#0E121E]/95 my-auto">
+        <div className="relative w-full max-w-115 rounded-3xl p-5 sm:p-6 border border-black/10 shadow-2xl bg-white text-gray-950 my-auto">
           {/* Header */}
-          <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-gray-950 flex items-center gap-2">
                 Quick Mic &amp; Camera Check
               </h3>
-              <p className="text-[11px] sm:text-xs text-gray-400">
+              <p className="text-[11px] sm:text-xs text-gray-500">
                 Choose your name and preview your camera and microphone
               </p>
             </div>
             {(!isMandatory || isValid) && (
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition cursor-pointer"
+                className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -95,11 +95,11 @@ export function DeviceCheckModal({
           {/* Mandatory Nickname Entry Input */}
           <div className="pt-3 pb-1">
             <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="modal-nickname-input" className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Your Nickname <span className="text-rose-400">*</span></span>
+              <label htmlFor="modal-nickname-input" className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-[#FF5722]" />
+                <span>Your Nickname <span className="text-rose-500">*</span></span>
               </label>
-              <span className={`text-[10px] font-mono ${trimmed.length > 25 ? 'text-rose-400 font-bold' : 'text-gray-400'}`}>
+              <span className={`text-[10px] font-mono ${trimmed.length > 25 ? 'text-rose-500 font-bold' : 'text-gray-400'}`}>
                 {trimmed.length}/25
               </span>
             </div>
@@ -114,20 +114,20 @@ export function DeviceCheckModal({
                   handleConfirm();
                 }
               }}
-              placeholder="Enter your nickname (e.g. Neo, Alex99)..."
+              placeholder="Enter your nickname (e.g. Alex, Sam99)..."
               maxLength={30}
               autoFocus
-              className={`w-full px-3 py-2 rounded-xl bg-white/5 border text-xs text-white placeholder-gray-500 focus:outline-none transition ${
+              className={`w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white transition ${
                 !trimmed
-                  ? 'border-cyan-500/40 focus:border-cyan-400 shadow-[0_0_10px_rgba(0,242,254,0.15)]'
+                  ? 'border-orange-300 focus:border-[#FF5722] focus:ring-2 focus:ring-orange-500/20'
                   : isValid
-                  ? 'border-emerald-500/50 focus:border-emerald-400'
-                  : 'border-rose-500/50 focus:border-rose-400'
+                  ? 'border-emerald-500/60 focus:border-emerald-500'
+                  : 'border-rose-400 focus:border-rose-500'
               }`}
             />
             {validationMsg && (
-              <p className="text-[11px] text-amber-400/90 mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3 shrink-0" />
+              <p className="text-[11px] text-amber-700 mt-1 flex items-center gap-1 font-medium">
+                <AlertCircle className="w-3 h-3 shrink-0 text-amber-600" />
                 <span>{validationMsg}</span>
               </p>
             )}
@@ -145,26 +145,26 @@ export function DeviceCheckModal({
           </div>
 
           {/* Status Indicators */}
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-            <div className="flex items-center gap-2.5 p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10">
-              <div className={`p-1.5 sm:p-2 rounded-lg shrink-0 ${isMuted ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-4">
+            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+              <div className={`p-2 rounded-xl shrink-0 ${isMuted ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-700'}`}>
                 {isMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider truncate">Microphone</div>
-                <div className={`text-xs font-bold truncate ${isMuted ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <div className="text-[10px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Microphone</div>
+                <div className={`text-xs font-bold truncate ${isMuted ? 'text-rose-600' : 'text-emerald-700'}`}>
                   {isMuted ? 'Muted' : 'Connected & Active'}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10">
-              <div className={`p-1.5 sm:p-2 rounded-lg shrink-0 ${isCamOff ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-gray-50 border border-gray-100">
+              <div className={`p-2 rounded-xl shrink-0 ${isCamOff ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-700'}`}>
                 {isCamOff ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider truncate">Camera</div>
-                <div className={`text-xs font-bold truncate ${isCamOff ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <div className="text-[10px] sm:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Camera</div>
+                <div className={`text-xs font-bold truncate ${isCamOff ? 'text-rose-600' : 'text-emerald-700'}`}>
                   {isCamOff ? 'Camera Off' : 'Live Preview'}
                 </div>
               </div>
@@ -175,7 +175,7 @@ export function DeviceCheckModal({
           <button
             onClick={handleConfirm}
             disabled={!isValid}
-            className="w-full py-2.5 sm:py-3 rounded-xl bg-linear-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_20px_rgba(0,242,254,0.3)] transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:from-cyan-400 disabled:hover:to-blue-600"
+            className="w-full py-3 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Looks Good — Continue</span>
