@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { CouchSyncMark } from '@/components/brand/CouchSyncLogo';
 import {
   ArrowLeft,
   Settings,
@@ -116,9 +117,7 @@ export function RoomHeader({
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-[#FF5722] to-[#FF8A65] flex items-center justify-center text-white font-black text-sm shadow-[0_4px_10px_rgba(255,87,34,0.3)] shrink-0">
-            <span>✕</span>
-          </div>
+          <CouchSyncMark size={32} />
           <div>
             <h1 className="text-sm sm:text-base font-black tracking-tight text-gray-950 flex items-center gap-2">
               <span suppressHydrationWarning>{roomName}</span>

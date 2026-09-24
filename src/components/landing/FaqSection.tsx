@@ -12,9 +12,9 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Does CouchSync Live store, record, or route my video/voice through a server?',
-    badge: '100% Private & Direct',
+    badge: 'Encrypted & Private',
     badgeColor: 'bg-orange-50 border-orange-200 text-[#E64A19]',
-    a: 'Never. All camera and microphone feeds are sent directly between your browser and your friends with end-to-end encryption. No video or audio is ever uploaded, recorded, or stored on any server.',
+    a: 'Never. All camera and microphone feeds are encrypted end-to-end between you and your friends. No video or audio is ever uploaded, recorded, or stored on any server.',
   },
   {
     q: 'Which web browsers are supported?',
@@ -43,13 +43,11 @@ const FAQ_ITEMS = [
 ];
 
 export function FaqSection() {
-  // Support independent toggle so users can expand or collapse any question
-  const [openIndices, setOpenIndices] = useState<number[]>([0]);
+  // Single-open accordion: opening an item closes the others
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleItem = (index: number) => {
-    setOpenIndices((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
+    setOpenIndex((prev) => (prev === index ? null : index));
   };
 
   return (
@@ -69,7 +67,7 @@ export function FaqSection() {
 
       <div className="space-y-3">
         {FAQ_ITEMS.map((faq, index) => {
-          const isOpen = openIndices.includes(index);
+          const isOpen = openIndex === index;
           const answerId = `faq-answer-${index}`;
           const buttonId = `faq-btn-${index}`;
 

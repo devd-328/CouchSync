@@ -3,7 +3,7 @@ import { VideoMedia } from '@/types/sync';
 export const SAMPLE_VIDEOS: VideoMedia[] = [
   {
     id: 'space-odyssey',
-    title: 'Interstellar Odyssey (1080p HLS Ready)',
+    title: 'Interstellar Odyssey (HLS Ready)',
     src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     poster: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=1200&auto=format&fit=crop&q=80',
     duration: '02h 15m',

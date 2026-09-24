@@ -71,7 +71,7 @@ export default function FeaturesPage() {
           {/* ── Detailed Feature Sections ─────────────────────────────────── */}
           <div className="space-y-12 sm:space-y-16">
 
-            {/* Feature 1: Sub-Second Sync */}
+            {/* Feature 1: Instant Playback Sync */}
             <section id="sync" className="scroll-mt-24">
               <div className="bg-white rounded-3xl p-6 sm:p-8 border border-black/8 shadow-2xs grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-7 space-y-4">
@@ -243,7 +243,7 @@ export default function FeaturesPage() {
                     {[
                       'Smooth high frame rate sharing',
                       'One-click window, tab, or screen picker',
-                      'No compression artifacts or delays',
+                      'High-clarity stream with low latency',
                       'Includes computer audio sharing',
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-2 text-xs text-gray-700">
@@ -262,7 +262,7 @@ export default function FeaturesPage() {
                         <Tv className="w-3.5 h-3.5 text-[#FF5722]" /> Display Capture
                       </span>
                       <span className="px-2 py-0.5 rounded-full bg-orange-100 text-[#EA580C] border border-orange-200 text-[10px] font-bold">
-                        1080P @ 60FPS
+                        HD SCREEN SHARE
                       </span>
                     </div>
 

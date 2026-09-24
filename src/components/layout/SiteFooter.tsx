@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Lock } from 'lucide-react';
+import { CouchSyncLogo } from '@/components/brand/CouchSyncLogo';
 
 export function SiteFooter() {
   return (
@@ -47,8 +48,13 @@ export function SiteFooter() {
         <span>Acoustic echo cancellation active</span>
       </div>
 
-      <div className="text-[11px] text-gray-400 font-medium">
-        CouchSync Live — Watch Movies Together in Real-Time Sync
+      <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-black/5 text-[11px] text-gray-500">
+        <div className="flex items-center gap-2">
+          <CouchSyncLogo markSize={24} showBadge={true} theme="light" />
+        </div>
+        <p className="font-medium text-gray-400">
+          CouchSync Live — Watch Movies Together in Real-Time Sync · WebRTC P2P
+        </p>
       </div>
     </footer>
   );

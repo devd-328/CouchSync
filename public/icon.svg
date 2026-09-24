@@ -1,0 +1,56 @@
+<svg width="512" height="512" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background subtle rounded container for app icon -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#18181B" />
+      <stop offset="100%" stop-color="#09090B" />
+    </linearGradient>
+
+    <!-- Top facet: radiant warm amber to electric coral -->
+    <linearGradient id="facetTop" x1="16" y1="14" x2="80" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFA24C" />
+      <stop offset="60%" stop-color="#FF6B35" />
+      <stop offset="100%" stop-color="#FF4F18" />
+    </linearGradient>
+
+    <!-- Bottom facet: vivid coral to deep sunset crimson -->
+    <linearGradient id="facetBottom" x1="16" y1="86" x2="80" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF5722" />
+      <stop offset="60%" stop-color="#E64A19" />
+      <stop offset="100%" stop-color="#C83808" />
+    </linearGradient>
+
+    <!-- Warm ambient glow -->
+    <filter id="markGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#FF5722" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- App icon container background -->
+  <rect width="100" height="100" rx="24" fill="url(#bgGrad)" />
+  <rect x="0.5" y="0.5" width="99" height="99" rx="23.5" stroke="rgba(255, 255, 255, 0.12)" />
+
+  <!-- Option 06 Play-C Monogram -->
+  <g transform="translate(4, 4) scale(0.92)" filter="url(#markGlow)">
+    <!-- Top Facet of the Play-C -->
+    <path
+      d="M 76 22 C 62 8 35 8 20 21 C 9 31 8 43 9 50 L 59 50 C 65 43 71 33 76 22 Z"
+      fill="url(#facetTop)"
+    />
+
+    <!-- Bottom Facet of the Play-C -->
+    <path
+      d="M 9 50 C 8 57 9 69 20 79 C 35 92 62 92 76 78 C 71 67 65 57 59 50 L 9 50 Z"
+      fill="url(#facetBottom)"
+    />
+
+    <!-- Subtle faceted origami fold highlight -->
+    <path
+      d="M 9 50 L 59 50"
+      stroke="#FFC59E"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-opacity="0.55"
+    />
+  </g>
+</svg>

@@ -10,12 +10,12 @@ const CAPABILITIES = [
   {
     icon: <Tv className="w-4 h-4 text-indigo-500" />,
     title: 'YouTube Parties',
-    desc: 'Paste any video or playlist link with shared queue',
+    desc: 'Paste any video link and watch together in sync',
   },
   {
     icon: <MonitorUp className="w-4 h-4 text-emerald-500" />,
     title: 'Screen Sharing',
-    desc: 'Stream desktop, browser tabs, or games in HD',
+    desc: 'Stream desktop, browser tabs, or games',
   },
   {
     icon: <Gamepad2 className="w-4 h-4 text-amber-500" />,

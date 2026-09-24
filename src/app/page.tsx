@@ -140,7 +140,10 @@ export default function HomePage() {
         />
 
         {/* 07. Simple Flow (How it works) */}
-        <HowItWorks />
+        <HowItWorks
+          onCreateRoom={() => handleOpenCreate('hls')}
+          onJoinRoom={handleOpenJoin}
+        />
 
         {/* FAQ */}
         <FaqSection />

@@ -114,7 +114,7 @@ Unlike traditional watch party tools that route high-bandwidth media through cos
 | **HLS Stream** | Adaptive bitrate `.m3u8` streams | Auto-bitrate switching, custom `.vtt` / `.srt` subtitle parser |
 | **Local File** | Play directly from your hard drive | Drag & drop, 0s upload time, zero server bandwidth |
 | **YouTube Party** | Synchronized YouTube videos | Live timestamp polling, scrubbing, speed control, universal fullscreen |
-| **Screen Share** | 60 FPS display / window / tab share | Native system audio capture, low-latency WebRTC track pipeline |
+| **Screen Share** | HD display / window / tab share | Native system audio capture, low-latency WebRTC track pipeline |
 | **Movie Trivia** | Multiplayer quiz game | Live leaderboard, timer countdowns, interactive question bank |
 
 ---

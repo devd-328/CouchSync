@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Play } from 'lucide-react';
+import { CouchSyncMark } from '@/components/brand/CouchSyncLogo';
 
 interface SiteHeaderProps {
   currentPage?: 'home' | 'how-it-works' | 'features' | 'about';
@@ -19,21 +20,15 @@ export function SiteHeader({ currentPage, badgeText }: SiteHeaderProps) {
   return (
     <header className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between border-b border-black/6 gap-4">
       {/* Brand logo & title */}
-      <Link href="/" className="flex items-center gap-3 group">
-        <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-xs border border-orange-200/80 shrink-0 bg-orange-50 group-hover:scale-105 transition">
-          <Image
-            src="/icon.png"
-            alt="CouchSync Live Logo"
-            width={40}
-            height={40}
-            className="w-full h-full object-cover"
-            priority
-          />
-        </div>
+      <Link href="/" className="flex items-center gap-2 group">
+        <CouchSyncMark size={36} className="group-hover:scale-105 transition" />
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-black tracking-tight text-gray-950 group-hover:text-[#EA580C] transition">
-              CouchSync Live
+            <span className="text-xl font-black tracking-tight text-gray-950 group-hover:text-[#FF5722] transition">
+              Couch<span className="text-[#FF5722]">Sync</span>
+            </span>
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-linear-to-r from-[#FF5722] to-[#E64A19] text-white shadow-xs">
+              LIVE
             </span>
             {badgeText && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-[#EA580C] border border-orange-200">

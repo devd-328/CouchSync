@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description: siteDescription,
   icons: {
     icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icon.png', sizes: '512x512', type: 'image/png' },
       { url: '/icon.png', sizes: '192x192', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' },
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/icon.png',
+    shortcut: '/icon.svg',
   },
   openGraph: {
     title: 'CouchSync Live — Synchronized Watch Party & P2P Video Calls',
