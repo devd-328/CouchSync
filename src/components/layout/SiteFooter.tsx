@@ -53,7 +53,7 @@ export function SiteFooter() {
           <CouchSyncLogo markSize={24} showBadge={true} theme="light" />
         </div>
         <p className="font-medium text-gray-400">
-          CouchSync Live — Watch Movies Together in Real-Time Sync · WebRTC P2P
+          CouchSync Live | Watch Movies Together in Real-Time Sync · WebRTC P2P
         </p>
       </div>
     </footer>

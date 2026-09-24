@@ -12,7 +12,7 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'About — CouchSync',
+  title: 'About | CouchSync Live',
   description: 'The story behind CouchSync: bringing friends and long-distance loved ones together for cozy movie nights without accounts, ads, or fees.',
 };
 
@@ -36,7 +36,7 @@ export default function AboutPage() {
               Why CouchSync Live Exists
             </h1>
             <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
-              A real-time cinema lounge built so friends, partners, and movie lovers can watch together across any distance — without servers, accounts, or friction.
+              A real-time cinema lounge built so friends, partners, and movie lovers can watch together across any distance, without servers, accounts, or friction.
             </p>
           </div>
 
@@ -103,7 +103,7 @@ export default function AboutPage() {
               </div>
               <div className="space-y-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
                 <p>
-                  Most video call tools feel like boring Monday morning office meetings — bright white backgrounds, sterile borders, and loud notification pings that ruin the mood of a film.
+                  Most video call tools feel like boring Monday morning office meetings: bright white backgrounds, sterile borders, and loud notification pings that ruin the mood of a film.
                 </p>
                 <p>
                   We designed CouchSync Live as an homage to the neon-lit midnight movie theater experience: obsidian glass panels, soft ambient lighting that complements the film, and smart sound controls that automatically soften movie dialogue whenever a friend speaks so nobody has to shout.

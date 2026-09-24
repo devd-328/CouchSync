@@ -22,7 +22,7 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'How It Works — CouchSync',
+  title: 'How It Works | CouchSync Live',
   description: 'Learn how to host virtual movie nights with friends: 1-click room setup, syncing local movie files or YouTube, video calling, and controls.',
 };
 
@@ -204,7 +204,7 @@ export default function HowItWorksPage() {
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                    CouchSync Live never passes your video or voice calls through a middleman server. All video and audio feeds are encrypted and sent directly between you and your friends. Your data stays on your own devices — nothing is recorded, tracked, or uploaded.
+                    CouchSync Live never passes your video or voice calls through a middleman server. All video and audio feeds are encrypted and sent directly between you and your friends. Your data stays on your own devices: nothing is recorded, tracked, or uploaded.
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-500">
                     <div className="flex items-center gap-1.5 text-[#EA580C]">

@@ -3,13 +3,24 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://couchsync.live';
+const siteTitle = "CouchSync Live | Watch Together, Even When You're Apart";
 const siteDescription =
-  'Host synchronized watch parties with friends in real-time sync. Watch local movies from your PC, stream YouTube, or share your screen with peer-to-peer (P2P) video calls, live chat, and interactive movie trivia — 100% free with no sign-up.';
+  'Host a synchronized watch party with friends. Watch local movies, stream YouTube, or share your screen with P2P video calls, live chat and movie trivia. Free, no sign-up.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'CouchSync Live — Synchronized Watch Party & P2P Video Calls',
+  title: siteTitle,
   description: siteDescription,
+  keywords: [
+    'synchronized watch party',
+    'watch movies together',
+    'P2P video call',
+    'real-time sync',
+    'movie trivia',
+    'watch party free',
+    'screen share with friends',
+    'co-watch YouTube',
+  ],
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -23,25 +34,25 @@ export const metadata: Metadata = {
     shortcut: '/icon.svg',
   },
   openGraph: {
-    title: 'CouchSync Live — Synchronized Watch Party & P2P Video Calls',
-    description: siteDescription,
-    url: siteUrl,
+    type: 'website',
     siteName: 'CouchSync Live',
+    url: siteUrl,
+    title: siteTitle,
+    description: siteDescription,
     images: [
       {
-        url: '/og-image.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'CouchSync Live — Synchronized Watch Party with P2P Video Calls & Movie Trivia',
+        alt: siteTitle,
       },
     ],
-    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CouchSync Live — Synchronized Watch Party & P2P Video Calls',
+    title: siteTitle,
     description: siteDescription,
-    images: ['/og-image.png'],
+    images: ['/twitter-image'],
   },
 };
 
@@ -53,6 +64,7 @@ const jsonLd = {
   operatingSystem: 'Any',
   url: siteUrl,
   description: siteDescription,
+  image: `${siteUrl}/opengraph-image`,
   offers: {
     '@type': 'Offer',
     price: '0',

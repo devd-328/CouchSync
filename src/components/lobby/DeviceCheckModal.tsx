@@ -178,7 +178,7 @@ export function DeviceCheckModal({
             className="w-full py-3 rounded-xl bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>Looks Good — Continue</span>
+            <span>Looks Good - Continue</span>
           </button>
         </div>
       </div>

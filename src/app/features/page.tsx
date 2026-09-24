@@ -21,7 +21,7 @@ import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'Features — CouchSync',
+  title: 'Features | CouchSync Live',
   description: 'Explore CouchSync features: perfect video sync, local movie file player, YouTube watch parties, screen share, video & voice calls, and movie trivia.',
 };
 
