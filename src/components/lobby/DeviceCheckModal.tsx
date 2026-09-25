@@ -5,6 +5,7 @@ import { X, Mic, MicOff, Video, VideoOff, CheckCircle2, User, AlertCircle } from
 import { DeviceCheck } from './DeviceCheck';
 import { STORAGE_KEYS } from '@/config/constants';
 import { isValidNickname } from '@/lib/session';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface DeviceCheckModalProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ export function DeviceCheckModal({
   onSaveName,
   isMandatory = false,
 }: DeviceCheckModalProps) {
+  const modalRef = useModalBehavior({ isOpen, onClose });
   const [nameInput, setNameInput] = useState(userName || '');
 
   useEffect(() => {
@@ -70,7 +72,10 @@ export function DeviceCheckModal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="min-h-full flex items-center justify-center p-3 sm:p-4">
-        <div className="relative w-full max-w-115 rounded-3xl p-5 sm:p-6 border border-black/10 shadow-2xl bg-white text-gray-950 my-auto">
+        <div
+          ref={modalRef}
+          className="relative w-full max-w-115 rounded-3xl p-5 sm:p-6 border border-black/10 shadow-2xl bg-white text-gray-950 my-auto"
+        >
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-gray-100">
             <div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Film, Tv, MonitorUp, Gamepad2, Dices, Play, CheckCircle2, User } from 'lucide-react';
 import { MediaSourceType } from '@/types/sync';
 import { isValidNickname } from '@/lib/session';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ export function CreateRoomModal({
   defaultMode = 'hls',
   onSubmit,
 }: CreateRoomModalProps) {
+  const modalRef = useModalBehavior({ isOpen, onClose });
   const [roomName, setRoomName] = useState('Neon Premiere');
   const [selectedMode, setSelectedMode] = useState<MediaSourceType>(defaultMode);
   const [nameInput, setNameInput] = useState(userName);
@@ -82,6 +84,7 @@ export function CreateRoomModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div
+        ref={modalRef}
         className="relative w-full max-w-lg rounded-3xl bg-white border border-black/8 p-6 sm:p-8 shadow-2xl overflow-hidden"
         role="dialog"
         aria-modal="true"

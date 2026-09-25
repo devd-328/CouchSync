@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { ThemeMode } from '@/types/sync';
 import { isValidNickname } from '@/lib/session';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface RoomSettingsModalProps {
   isOpen: boolean;
@@ -69,6 +70,7 @@ export function RoomSettingsModal({
   isMicOn,
   isCamOn,
 }: RoomSettingsModalProps) {
+  const modalRef = useModalBehavior({ isOpen, onClose });
   const [nicknameInput, setNicknameInput] = useState(userName);
   const [nameSaved, setNameSaved] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -100,11 +102,11 @@ export function RoomSettingsModal({
   return (
     <div
       className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
     >
-      <div className="w-full max-w-lg rounded-3xl bg-white border border-black/10 p-5 sm:p-7 flex flex-col gap-4 shadow-2xl my-auto relative animate-in fade-in zoom-in-95 duration-200 text-gray-950 font-sans">
+      <div
+        ref={modalRef}
+        className="w-full max-w-lg rounded-3xl bg-white border border-black/10 p-5 sm:p-7 flex flex-col gap-4 shadow-2xl my-auto relative animate-in fade-in zoom-in-95 duration-200 text-gray-950 font-sans"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-black/8 pb-3.5">
           <div className="flex items-center gap-2.5">

@@ -20,7 +20,6 @@ import {
   FolderOpen,
 } from 'lucide-react';
 import { ControlMode, ThemeMode, MediaSourceType, RoomLayoutMode } from '@/types/sync';
-import { ThemeSelector } from './ThemeSelector';
 
 interface RoomHeaderProps {
   roomName: string;
@@ -281,9 +280,6 @@ export function RoomHeader({
             </button>
           ))}
         </div>
-
-        {/* Ambient Theater Theme Selector */}
-        <ThemeSelector currentTheme={currentTheme} onSelectTheme={onSelectTheme} />
 
         {/* In-Room Participant Counter */}
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 border border-gray-200 text-xs text-gray-800 font-semibold">

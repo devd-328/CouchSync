@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Radio, ArrowRight, History, Trash2, User, Link2 } from 'lucide-react';
 import { RecentRoom, isValidNickname } from '@/lib/session';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface JoinRoomModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export function JoinRoomModal({
   onRemoveRecent,
   onSubmit,
 }: JoinRoomModalProps) {
+  const modalRef = useModalBehavior({ isOpen, onClose });
   const [joinInput, setJoinInput] = useState('');
   const [nameInput, setNameInput] = useState(userName);
   const [joinError, setJoinError] = useState('');
@@ -82,6 +84,7 @@ export function JoinRoomModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div
+        ref={modalRef}
         className="relative w-full max-w-lg rounded-3xl bg-white border border-black/8 p-6 sm:p-8 shadow-2xl overflow-hidden"
         role="dialog"
         aria-modal="true"

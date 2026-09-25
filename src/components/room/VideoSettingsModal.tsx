@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Film, FolderOpen, Upload, X, Check, Globe, Sparkles, HardDrive, AlertCircle } from 'lucide-react';
 import { VideoMedia } from '@/types/sync';
 import { SAMPLE_VIDEOS } from '@/lib/sample-media';
+import { useModalBehavior } from '@/hooks/useModalBehavior';
 
 interface VideoSettingsModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export function VideoSettingsModal({
   onClose,
   onSelectVideo,
 }: VideoSettingsModalProps) {
+  const modalRef = useModalBehavior({ isOpen, onClose });
   const [customUrl, setCustomUrl] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -80,11 +82,11 @@ export function VideoSettingsModal({
   return (
     <div
       className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
     >
-      <div className="w-full max-w-xl rounded-3xl bg-white border border-black/10 p-5 sm:p-7 flex flex-col gap-4 shadow-2xl my-auto relative animate-in fade-in zoom-in-95 duration-200 text-gray-950 font-sans">
+      <div
+        ref={modalRef}
+        className="w-full max-w-xl rounded-3xl bg-white border border-black/10 p-5 sm:p-7 flex flex-col gap-4 shadow-2xl my-auto relative animate-in fade-in zoom-in-95 duration-200 text-gray-950 font-sans"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-black/8 pb-3.5">
           <div className="flex items-center gap-2.5">
