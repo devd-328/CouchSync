@@ -14,6 +14,9 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 export const metadata: Metadata = {
   title: 'About | CouchSync Live',
   description: 'The story behind CouchSync: bringing friends and long-distance loved ones together for cozy movie nights without accounts, ads, or fees.',
+  alternates: {
+    canonical: 'https://couchsync.live/about',
+  },
 };
 
 export default function AboutPage() {

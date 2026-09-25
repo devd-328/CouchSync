@@ -24,6 +24,9 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 export const metadata: Metadata = {
   title: 'How It Works | CouchSync Live',
   description: 'Learn how to host virtual movie nights with friends: 1-click room setup, syncing local movie files or YouTube, video calling, and controls.',
+  alternates: {
+    canonical: 'https://couchsync.live/how-it-works',
+  },
 };
 
 const STEPS = [

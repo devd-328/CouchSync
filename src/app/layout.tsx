@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: siteTitle,
   description: siteDescription,
+  alternates: {
+    canonical: siteUrl,
+  },
   keywords: [
     'synchronized watch party',
     'watch movies together',
