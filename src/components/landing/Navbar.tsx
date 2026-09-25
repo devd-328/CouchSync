@@ -37,25 +37,31 @@ export function Navbar({ onCreateRoom, onJoinRoom }: NavbarProps) {
         {/* Center Nav Links */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-gray-700">
           <Link
-            href="#features"
+            href="/features"
             className="hover:text-[#FF5722] transition"
           >
             Features
           </Link>
           <Link
-            href="#modes"
+            href="/#modes"
             className="hover:text-[#FF5722] transition"
           >
             Activities
           </Link>
           <Link
-            href="#how-it-works"
+            href="/how-it-works"
             className="hover:text-[#FF5722] transition"
           >
             How it works
           </Link>
           <Link
-            href="#faq"
+            href="/about"
+            className="hover:text-[#FF5722] transition"
+          >
+            About
+          </Link>
+          <Link
+            href="/#faq"
             className="hover:text-[#FF5722] transition"
           >
             FAQ
@@ -96,28 +102,35 @@ export function Navbar({ onCreateRoom, onJoinRoom }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="lg:hidden mt-3 p-5 rounded-2xl bg-white/95 border border-black/8 shadow-xl flex flex-col gap-3">
           <Link
-            href="#features"
+            href="/features"
             onClick={() => setMobileMenuOpen(false)}
             className="py-2 text-sm font-medium text-gray-700 hover:text-[#FF5722]"
           >
             Features
           </Link>
           <Link
-            href="#modes"
+            href="/#modes"
             onClick={() => setMobileMenuOpen(false)}
             className="py-2 text-sm font-medium text-gray-700 hover:text-[#FF5722]"
           >
             Activities
           </Link>
           <Link
-            href="#how-it-works"
+            href="/how-it-works"
             onClick={() => setMobileMenuOpen(false)}
             className="py-2 text-sm font-medium text-gray-700 hover:text-[#FF5722]"
           >
             How it works
           </Link>
           <Link
-            href="#faq"
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            className="py-2 text-sm font-medium text-gray-700 hover:text-[#FF5722]"
+          >
+            About
+          </Link>
+          <Link
+            href="/#faq"
             onClick={() => setMobileMenuOpen(false)}
             className="py-2 text-sm font-medium text-gray-700 hover:text-[#FF5722]"
           >

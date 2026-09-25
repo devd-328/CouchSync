@@ -12,19 +12,19 @@ export function SiteFooter() {
           Home
         </Link>
         <span className="text-gray-300">•</span>
-        <Link href="#how-it-works" className="hover:text-[#FF5722] transition">
-          How It Works
-        </Link>
-        <span className="text-gray-300">•</span>
-        <Link href="#features" className="hover:text-[#FF5722] transition">
+        <Link href="/features" className="hover:text-[#FF5722] transition">
           Features
         </Link>
         <span className="text-gray-300">•</span>
-        <Link href="#modes" className="hover:text-[#FF5722] transition">
+        <Link href="/#modes" className="hover:text-[#FF5722] transition">
           Activities
         </Link>
         <span className="text-gray-300">•</span>
-        <Link href="#faq" className="hover:text-[#FF5722] transition">
+        <Link href="/how-it-works" className="hover:text-[#FF5722] transition">
+          How It Works
+        </Link>
+        <span className="text-gray-300">•</span>
+        <Link href="/#faq" className="hover:text-[#FF5722] transition">
           FAQ
         </Link>
         <span className="text-gray-300">•</span>
