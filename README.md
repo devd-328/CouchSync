@@ -19,8 +19,7 @@
   <a href="#-architecture"><b>Architecture</b></a> •
   <a href="#-quick-start"><b>Quick Start</b></a> •
   <a href="#-media-sources"><b>Media Sources</b></a> •
-  <a href="#-keyboard-shortcuts"><b>Hotkeys</b></a> •
-  <a href="#-cinema-themes"><b>Themes</b></a>
+  <a href="#-keyboard-shortcuts"><b>Hotkeys</b></a>
 </p>
 
 </div>
@@ -70,12 +69,12 @@ Unlike traditional watch party tools that route high-bandwidth media through cos
   </tr>
   <tr>
     <td width="50%">
-      <h3>🎨 Ambient Cinema Themes</h3>
-      <p>4 custom-tailored cinema themes (<b>Obsidian</b>, <b>Cyberpunk Neon</b>, <b>Retro Warm</b>, and <b>OLED Pure Black</b>) with glassmorphism UI.</p>
-    </td>
-    <td width="50%">
       <h3>📂 Zero-Upload Local Video Play</h3>
       <p>Drag and drop any local movie file (<code>.mp4</code>, <code>.mkv</code>, <code>.webm</code>) to play directly from your PC with $0 cloud storage.</p>
+    </td>
+    <td width="50%">
+      <h3>🔒 100% Private & Account-Free</h3>
+      <p>No account sign-ups, subscriptions, or server video storage. Direct peer-to-peer streaming with instant room links.</p>
     </td>
   </tr>
 </table>
@@ -130,15 +129,6 @@ Unlike traditional watch party tools that route high-bandwidth media through cos
 | <kbd>←</kbd> / <kbd>→</kbd> | Seek backward / forward 5 seconds |
 | <kbd>↑</kbd> / <kbd>↓</kbd> | Adjust volume ±10% |
 | <kbd>T</kbd> | Push-to-Talk (hold to speak) |
-
----
-
-## 🎨 Cinema Themes
-
-- 🌌 **Obsidian** *(Default)* — Deep midnight navy with cyan neon accents
-- ⚡ **Cyberpunk Neon** — High-contrast electric purple and hot pink aesthetic
-- 🎞️ **Retro Cinema** — Warm amber and golden lounge tones reminiscent of 70s cinema
-- 🖤 **OLED Pure Black** — True `#000000` background optimized for OLED displays and battery savings
 
 ---
 

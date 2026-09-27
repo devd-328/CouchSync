@@ -23,50 +23,6 @@
   --accent-emerald: #00E676;
 }
 
-/* Ambient Theater Themes */
-.theme-obsidian {
-  --bg-base: #090B10;
-  --bg-surface: #111520;
-  --bg-surface-glass: rgba(17, 21, 32, 0.94);
-  --border-glass: rgba(255, 255, 255, 0.12);
-  --accent-cyan: #00F2FE;
-  --accent-violet: #7F00FF;
-  --accent-emerald: #00E676;
-  background-color: #090B10 !important;
-  color: #F3F4F6 !important;
-}
-
-.theme-cyberpunk {
-  --bg-base: #08091A;
-  --bg-surface: #13112E;
-  --bg-surface-glass: rgba(19, 17, 46, 0.94);
-  --border-glass: rgba(255, 255, 255, 0.14);
-  --accent-cyan: #00F0FF;
-  --accent-violet: #FF007F;
-  background-color: #08091A !important;
-  color: #F3F4F6 !important;
-}
-
-.theme-retro {
-  --bg-base: #140C0A;
-  --bg-surface: #241410;
-  --bg-surface-glass: rgba(36, 20, 16, 0.94);
-  --border-glass: rgba(255, 255, 255, 0.14);
-  --accent-cyan: #FFB300;
-  --accent-violet: #FF7043;
-  background-color: #140C0A !important;
-  color: #F3F4F6 !important;
-}
-
-.theme-oled {
-  --bg-base: #000000;
-  --bg-surface: #0A0A0A;
-  --bg-surface-glass: rgba(12, 12, 12, 0.96);
-  --border-glass: rgba(255, 255, 255, 0.16);
-  background-color: #000000 !important;
-  color: #F3F4F6 !important;
-}
-
 body {
   background-color: #090B10;
   color: #F3F4F6;

@@ -19,7 +19,7 @@ import {
   CheckCircle2,
   FolderOpen,
 } from 'lucide-react';
-import { ControlMode, ThemeMode, MediaSourceType, RoomLayoutMode } from '@/types/sync';
+import { ControlMode, MediaSourceType, RoomLayoutMode } from '@/types/sync';
 
 interface RoomHeaderProps {
   roomName: string;
@@ -27,12 +27,10 @@ interface RoomHeaderProps {
   participantsCount: number;
   isHost: boolean;
   controlMode: ControlMode;
-  currentTheme: ThemeMode;
   currentSource: MediaSourceType;
   currentLayout: RoomLayoutMode;
   isScreenSharing: boolean;
   onToggleControlMode: () => void;
-  onSelectTheme: (theme: ThemeMode) => void;
   onSelectSource: (source: MediaSourceType) => void;
   onSelectLayout: (layout: RoomLayoutMode) => void;
   onToggleScreenShare: () => void;
@@ -89,12 +87,10 @@ export function RoomHeader({
   participantsCount,
   isHost,
   controlMode,
-  currentTheme,
   currentSource,
   currentLayout,
   isScreenSharing,
   onToggleControlMode,
-  onSelectTheme,
   onSelectSource,
   onSelectLayout,
   onToggleScreenShare,
@@ -134,7 +130,7 @@ export function RoomHeader({
         </div>
       </div>
 
-      {/* Right: Permissions Control, Source Selector, Choose Movie Button, Layout, Theme, Members */}
+      {/* Right: Permissions Control, Source Selector, Choose Movie Button, Layout, Members */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Host Mode Control Toggle / Status */}
         {isHost ? (

@@ -48,6 +48,20 @@ export default function HomePage() {
       setUserName('');
     }
     setRecentRooms(getRecentRooms());
+
+    // Auto-open modal if navigated from marketing pages with ?action=create or ?action=join
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const action = params.get('action');
+      if (action === 'create') {
+        setSelectedCreateMode('hls');
+        setIsCreateOpen(true);
+        window.history.replaceState({}, '', window.location.pathname);
+      } else if (action === 'join') {
+        setIsJoinOpen(true);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
   }, []);
 
   /** Navigates with a brief 320ms fade curtain for smooth UX */
@@ -115,6 +129,7 @@ export default function HomePage() {
       <main className="w-full max-w-[1380px] mx-auto bg-[#FAF8F5] rounded-[28px] sm:rounded-[44px] shadow-[0_30px_90px_rgba(0,0,0,0.22)] border border-white/60 overflow-hidden flex flex-col justify-between">
         {/* 01. Navbar */}
         <Navbar
+          currentPage="home"
           onCreateRoom={() => handleOpenCreate('hls')}
           onJoinRoom={handleOpenJoin}
         />

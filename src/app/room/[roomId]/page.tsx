@@ -29,7 +29,6 @@ import {
   SyncMessage,
   VideoMedia,
   ControlMode,
-  ThemeMode,
   RoomPoll,
   MediaSourceType,
   RoomLayoutMode,
@@ -84,7 +83,6 @@ export default function RoomPage({
     setDismissedHints(dismissed);
   }, []);
   const [controlMode, setControlMode] = useState<ControlMode>('shared');
-  const [currentTheme, setCurrentTheme] = useState<ThemeMode>('obsidian');
   const [mediaSource, setMediaSource] = useState<MediaSourceType>('hls');
   const [youtubeVideoId, setYoutubeVideoId] = useState('M7lc1UVf-VE');
   const [youtubeVideoTitle, setYoutubeVideoTitle] = useState('YouTube Watch Party');
@@ -584,19 +582,17 @@ export default function RoomPage({
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-[#EA580C] via-[#F97316] to-[#FB923C] p-2 sm:p-3.5 lg:p-5 flex flex-col justify-between overflow-x-hidden text-gray-950 font-sans selection:bg-[#EA580C] selection:text-white">
       <div className="w-full max-w-[1680px] mx-auto bg-[#FAF8F5] rounded-[24px] sm:rounded-[36px] shadow-[0_25px_80px_rgba(0,0,0,0.22)] border border-white/70 p-3 sm:p-4.5 lg:p-6 flex flex-col justify-between min-h-[calc(100vh-2.5rem)]">
-        {/* Modular Header with Host Controls & Theme Selector */}
+        {/* Modular Header with Host Controls */}
         <RoomHeader
           roomName={roomName}
           roomId={roomId}
           participantsCount={participants.length}
           isHost={currentUser.isHost}
           controlMode={controlMode}
-          currentTheme={currentTheme}
           currentSource={mediaSource}
           currentLayout={roomLayout}
           isScreenSharing={isScreenSharing}
           onToggleControlMode={handleToggleControlMode}
-          onSelectTheme={setCurrentTheme}
           onSelectSource={handleSelectSource}
           onSelectLayout={setRoomLayout}
           onToggleScreenShare={handleToggleScreenShare}
@@ -934,8 +930,6 @@ export default function RoomPage({
         onToggleAudioDucking={() => setIsAudioDuckingEnabled(!isAudioDuckingEnabled)}
         onUpdateUserName={handleUpdateUserName}
         onOpenDeviceCheck={() => setShowDeviceCheckModal(true)}
-        currentTheme={currentTheme}
-        onSelectTheme={setCurrentTheme}
         isMicOn={!isMicMuted}
         isCamOn={!isCamOff}
       />

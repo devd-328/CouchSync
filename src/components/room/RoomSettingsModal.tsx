@@ -10,14 +10,12 @@ import {
   Video,
   Share2,
   Keyboard,
-  Palette,
   Check,
   Copy,
   Crown,
   Sparkles,
   ExternalLink,
 } from 'lucide-react';
-import { ThemeMode } from '@/types/sync';
 import { isValidNickname } from '@/lib/session';
 import { useModalBehavior } from '@/hooks/useModalBehavior';
 
@@ -32,18 +30,9 @@ interface RoomSettingsModalProps {
   onToggleAudioDucking: () => void;
   onUpdateUserName: (name: string) => void;
   onOpenDeviceCheck?: () => void;
-  currentTheme: ThemeMode;
-  onSelectTheme: (theme: ThemeMode) => void;
   isMicOn: boolean;
   isCamOn: boolean;
 }
-
-const THEMES: { id: ThemeMode; name: string; color: string; border: string }[] = [
-  { id: 'obsidian',  name: 'Obsidian Cinema', color: 'bg-black/90',        border: 'border-cyan-500/40' },
-  { id: 'cyberpunk', name: 'Neon Cyberpunk',  color: 'bg-indigo-950/80',   border: 'border-fuchsia-500/40' },
-  { id: 'retro',     name: 'Warm Lounge',     color: 'bg-amber-950/80',    border: 'border-amber-500/40' },
-  { id: 'oled',      name: 'Pure OLED Black', color: 'bg-black',           border: 'border-white/20' },
-];
 
 const SHORTCUTS = [
   { key: 'Space', desc: 'Play / Pause video' },
@@ -65,8 +54,6 @@ export function RoomSettingsModal({
   onToggleAudioDucking,
   onUpdateUserName,
   onOpenDeviceCheck,
-  currentTheme,
-  onSelectTheme,
   isMicOn,
   isCamOn,
 }: RoomSettingsModalProps) {
@@ -246,36 +233,6 @@ export function RoomSettingsModal({
                   </>
                 )}
               </button>
-            </div>
-
-            {/* Cinema Theme Selector */}
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-[#FF5722]" />
-                Theater Lighting Theme
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {THEMES.map((th) => {
-                  const isSelected = currentTheme === th.id;
-                  return (
-                    <button
-                      key={th.id}
-                      type="button"
-                      onClick={() => onSelectTheme(th.id)}
-                      className={`p-2.5 rounded-xl text-left border transition flex items-center gap-2 cursor-pointer ${th.color} ${
-                        isSelected
-                          ? `${th.border} ring-2 ring-orange-500 shadow-xs`
-                          : 'border-white/10 hover:border-white/30'
-                      }`}
-                    >
-                      <div className="w-3.5 h-3.5 rounded-full border border-white/40 shrink-0 flex items-center justify-center">
-                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-[#FF5722]" />}
-                      </div>
-                      <span className="text-xs font-bold text-white truncate">{th.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
           </div>
         )}

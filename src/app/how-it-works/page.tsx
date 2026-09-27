@@ -18,7 +18,7 @@ import {
   Sparkles,
   Radio,
 } from 'lucide-react';
-import { SiteHeader } from '@/components/layout/SiteHeader';
+import { Navbar } from '@/components/landing/Navbar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
@@ -112,13 +112,13 @@ export default function HowItWorksPage() {
     <div className="min-h-screen bg-linear-to-b from-[#EA580C] via-[#F97316] to-[#FB923C] p-2 sm:p-4 lg:p-6 flex flex-col justify-between overflow-x-hidden selection:bg-[#EA580C] selection:text-white">
       <div className="w-full max-w-[1580px] mx-auto bg-[#FAF8F5] rounded-[32px] sm:rounded-[44px] shadow-[0_25px_70px_rgba(0,0,0,0.22)] border border-white/60 p-4 sm:p-6 lg:p-8 flex flex-col justify-between min-h-[calc(100vh-2rem)]">
         {/* ── Top Header / Nav ─────────────────────────────────────────── */}
-        <SiteHeader currentPage="how-it-works" badgeText="Guide" />
+        <Navbar currentPage="how-it-works" />
 
         {/* ── Hero Section ──────────────────────────────────────────────── */}
         <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100 border border-orange-200 text-xs text-[#EA580C] font-bold shadow-2xs mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-[#FF5722] animate-pulse" />
+
               <span>Complete Architecture &amp; User Manual</span>
             </div>
 

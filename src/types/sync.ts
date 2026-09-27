@@ -1,5 +1,4 @@
 export type ControlMode = 'shared' | 'host-only';
-export type ThemeMode = 'obsidian' | 'cyberpunk' | 'retro' | 'oled';
 export type MediaSourceType = 'hls' | 'youtube' | 'screenshare' | 'trivia';
 export type RoomLayoutMode = 'cinema' | 'lounge' | 'focus';
 

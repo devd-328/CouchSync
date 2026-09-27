@@ -7,7 +7,6 @@ import {
   MonitorUp,
   Gamepad2,
   MessageSquare,
-  Palette,
   ShieldCheck,
   Lock,
   ArrowRight,
@@ -17,7 +16,7 @@ import {
   Tv,
   CheckCircle2,
 } from 'lucide-react';
-import { SiteHeader } from '@/components/layout/SiteHeader';
+import { Navbar } from '@/components/landing/Navbar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export default function FeaturesPage() {
     <div className="min-h-screen bg-linear-to-b from-[#EA580C] via-[#F97316] to-[#FB923C] p-2 sm:p-4 lg:p-6 flex flex-col justify-between overflow-x-hidden selection:bg-[#EA580C] selection:text-white">
       <div className="w-full max-w-[1580px] mx-auto bg-[#FAF8F5] rounded-[32px] sm:rounded-[44px] shadow-[0_25px_70px_rgba(0,0,0,0.22)] border border-white/60 p-4 sm:p-6 lg:p-8 flex flex-col justify-between min-h-[calc(100vh-2rem)]">
         {/* ── Top Header / Nav ─────────────────────────────────────────── */}
-        <SiteHeader currentPage="features" badgeText="Features" />
+        <Navbar currentPage="features" />
 
         {/* ── Hero Section ──────────────────────────────────────────────── */}
         <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
@@ -47,7 +46,7 @@ export default function FeaturesPage() {
               Engineered for Cinema Together
             </h1>
             <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
-              Everything you need for perfect movie nights with friends. Instant playback sync, direct private video calls, smart volume controls, and beautiful cinema lounge themes.
+              Everything you need for perfect movie nights with friends. Instant playback sync, direct private video calls, and smart volume controls.
             </p>
           </div>
 
@@ -59,7 +58,6 @@ export default function FeaturesPage() {
               { label: 'Screen Sharing', href: '#screenshare' },
               { label: 'Trivia & Polls', href: '#trivia-polls' },
               { label: 'Chat & Reactions', href: '#chat-reactions' },
-              { label: 'Cinema Themes', href: '#cinema-themes' },
             ].map((anchor, idx) => (
               <a
                 key={idx}
@@ -428,72 +426,6 @@ export default function FeaturesPage() {
                 </div>
               </div>
             </section>
-
-            {/* Feature 6: Cinema Themes */}
-            <section id="cinema-themes" className="scroll-mt-24">
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-black/8 shadow-2xs grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                {/* Supporting Visual: 4 Theme Cards */}
-                <div className="order-2 lg:order-1 lg:col-span-5 flex justify-center">
-                  <div className="w-full max-w-sm rounded-2xl bg-orange-50/60 border border-orange-200/80 p-5 shadow-xs space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-gray-900 flex items-center gap-1.5">
-                        <Palette className="w-3.5 h-3.5 text-[#FF5722]" /> Cinema Palettes
-                      </span>
-                      <span className="text-[10px] text-[#EA580C] font-mono font-bold bg-orange-100 px-2 py-0.5 rounded-full">Live Toggle</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="p-3 rounded-xl bg-gray-900 border border-black/10 flex flex-col gap-1 text-white shadow-2xs">
-                        <span className="text-xs font-bold text-cyan-300">Obsidian</span>
-                        <span className="text-[10px] text-gray-400">Deep cinema blue</span>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-indigo-950 border border-black/10 flex flex-col gap-1 text-white shadow-2xs">
-                        <span className="text-xs font-bold text-fuchsia-300">Cyberpunk</span>
-                        <span className="text-[10px] text-gray-400">Neon synthwave</span>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-amber-950 border border-black/10 flex flex-col gap-1 text-white shadow-2xs">
-                        <span className="text-xs font-bold text-amber-300">Retro</span>
-                        <span className="text-[10px] text-gray-400">Warm lounge</span>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-black border border-white/20 flex flex-col gap-1 text-white shadow-2xs">
-                        <span className="text-xs font-bold text-gray-200">OLED</span>
-                        <span className="text-[10px] text-gray-400">True pitch black</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="order-1 lg:order-2 lg:col-span-7 space-y-4">
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-orange-100 border border-orange-200 text-xs font-bold text-[#EA580C]">
-                    <Palette className="w-3.5 h-3.5 text-[#FF5722]" />
-                    <span>Atmospheric Viewing</span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Ambient Cinema Themes
-                  </h2>
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                    Tailor your lounge atmosphere to your environment and display technology. Switch seamlessly between Obsidian (deep space theater), Cyberpunk Neon (high-contrast synthwave), Retro Warmth (cozy 1970s projection room), and pure black OLED mode for maximum contrast and battery conservation.
-                  </p>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                    {[
-                      'One-click instant theme change',
-                      'Comfortable for nighttime movie watching',
-                      'Pitch-black OLED dark mode',
-                      'Soft ambient theater lighting',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2 text-xs text-gray-700">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </section>
-
           </div>
 
           {/* ── Bottom Call To Action (CTAs) ──────────────────────────────── */}
