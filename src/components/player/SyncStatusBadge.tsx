@@ -40,7 +40,7 @@ export function SyncStatusBadge({
     <div className="glass-pill px-3 py-1.5 rounded-full flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-950/30 border-emerald-500/30 shadow-[0_0_12px_rgba(0,230,118,0.15)]">
       <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#00E676] animate-pulse" />
       <span>
-        Synced with {partnerName} ({latencyMs}ms)
+        Synced with {partnerName} (<span className="font-mono tabular-nums">{latencyMs}ms</span>)
       </span>
       <Wifi className="w-3 h-3 text-emerald-400/80 ml-0.5" />
     </div>

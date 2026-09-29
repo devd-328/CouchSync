@@ -15,7 +15,7 @@ export function FinalCTA({ onCreateRoom, onJoinRoom }: FinalCTAProps) {
         {/* Subtle orange glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-40 bg-orange-400/10 rounded-full blur-3xl pointer-events-none" />
 
-        <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-gray-950 tracking-tight leading-tight">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-[42px] text-gray-950 tracking-tight leading-tight">
           Make a room. Invite your people. Press play.
         </h2>
         <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-lg mx-auto">

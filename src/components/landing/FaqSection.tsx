@@ -57,8 +57,8 @@ export function FaqSection() {
           <HelpCircle className="w-3.5 h-3.5 text-[#FF5722]" />
           <span>Got Questions?</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-950 tracking-tight">
-          Frequently Asked Questions
+        <h2 className="font-display text-2xl sm:text-4xl text-gray-950 tracking-tight">
+          Frequently asked questions
         </h2>
         <p className="mt-2 text-sm text-gray-600">
           Everything you need to know about CouchSync privacy, streaming, and synchronization.

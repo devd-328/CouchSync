@@ -116,7 +116,7 @@ export function RoomHeader({
           <div>
             <h1 className="text-sm sm:text-base font-black tracking-tight text-gray-950 flex items-center gap-2">
               <span suppressHydrationWarning>{roomName}</span>
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-mono font-semibold">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-mono tabular-nums font-semibold">
                 #{roomId}
               </span>
               {isHost && (

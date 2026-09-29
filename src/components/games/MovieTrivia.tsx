@@ -208,9 +208,9 @@ export function MovieTrivia({
 
         <div className="flex items-center gap-3">
           {/* Timer Display */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs font-mono font-bold text-white">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs font-mono tabular-nums font-bold text-white">
             <Timer className={`w-3.5 h-3.5 ${timeLeft <= 5 ? 'text-rose-400 animate-pulse' : 'text-amber-400'}`} />
-            <span className={timeLeft <= 5 ? 'text-rose-400' : ''}>{timeLeft}s</span>
+            <span className={`tabular-nums ${timeLeft <= 5 ? 'text-rose-400' : ''}`}>{timeLeft}s</span>
           </div>
 
           <button
@@ -298,7 +298,7 @@ export function MovieTrivia({
                 className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-xs text-gray-200 flex items-center gap-1.5"
               >
                 <span className="font-semibold text-amber-300">{data.name}:</span>
-                <span className="font-mono font-bold">{data.score} pts</span>
+                <span className="font-mono tabular-nums font-bold">{data.score} pts</span>
               </div>
             ))}
           </div>

@@ -71,7 +71,7 @@ export function HeroSection({ onCreateRoom, onJoinRoom }: HeroSectionProps) {
       {/* Top Text Block */}
       <div className="max-w-3xl mx-auto text-center">
         {/* Main Headline with inline coral waveform symbol */}
-        <h1 className="text-3xl sm:text-5xl lg:text-[46px] font-extrabold text-gray-950 tracking-tight leading-[1.18] sm:leading-[1.14]">
+        <h1 className="font-display text-3xl sm:text-5xl lg:text-[46px] text-gray-950 tracking-tight leading-[1.18] sm:leading-[1.14]">
           Watch{' '}
           <span
             className="inline-flex items-center mx-1 sm:mx-2 text-[#FF5722] tracking-tighter text-2xl sm:text-4xl lg:text-[38px] select-none align-middle font-light"
@@ -79,9 +79,9 @@ export function HeroSection({ onCreateRoom, onJoinRoom }: HeroSectionProps) {
           >
             ııllııııllıı
           </span>{' '}
-          Together.{' '}
+          together.{' '}
           <br className="hidden sm:inline" />
-          <span className="text-gray-900">Even When You&apos;re Apart.</span>
+          <span className="text-gray-900">Even when you&apos;re apart.</span>
         </h1>
 
         {/* Subtitle */}

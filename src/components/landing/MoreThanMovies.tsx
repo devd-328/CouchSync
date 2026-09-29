@@ -16,7 +16,7 @@ export function MoreThanMovies({ onSelectMode }: MoreThanMoviesProps) {
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF5722]" />
           <span>More ways to watch</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-950 tracking-tight">
+        <h2 className="font-display text-2xl sm:text-4xl text-gray-950 tracking-tight">
           More than just movies.
         </h2>
         <p className="mt-3 text-sm sm:text-base text-gray-700 font-medium">
@@ -43,8 +43,8 @@ export function MoreThanMovies({ onSelectMode }: MoreThanMoviesProps) {
               <Tv className="w-5 h-5" />
             </div>
 
-            <h3 className="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition">
-              YouTube Watch Parties
+            <h3 className="font-display text-base text-gray-900 group-hover:text-indigo-600 transition">
+              YouTube watch parties
             </h3>
             <p className="text-xs sm:text-sm text-gray-700 font-medium mt-1.5 leading-relaxed">
               Paste a link. Everyone watches in sync.
@@ -96,8 +96,8 @@ export function MoreThanMovies({ onSelectMode }: MoreThanMoviesProps) {
               <MonitorUp className="w-5 h-5" />
             </div>
 
-            <h3 className="text-base font-bold text-gray-900 group-hover:text-[#FF5722] transition">
-              Native Screen Sharing
+            <h3 className="font-display text-base text-gray-900 group-hover:text-[#FF5722] transition">
+              Native screen sharing
             </h3>
             <p className="text-xs sm:text-sm text-gray-700 font-medium mt-1.5 leading-relaxed">
               Share a tab, window, or your whole screen.
@@ -146,8 +146,8 @@ export function MoreThanMovies({ onSelectMode }: MoreThanMoviesProps) {
               <Gamepad2 className="w-5 h-5" />
             </div>
 
-            <h3 className="text-base font-bold text-gray-900 group-hover:text-amber-600 transition">
-              Movie Trivia &amp; Polls
+            <h3 className="font-display text-base text-gray-900 group-hover:text-amber-600 transition">
+              Movie trivia &amp; polls
             </h3>
             <p className="text-xs sm:text-sm text-gray-700 font-medium mt-1.5 leading-relaxed">
               Quiz your friends or run a quick poll.

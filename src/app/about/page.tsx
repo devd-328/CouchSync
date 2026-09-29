@@ -35,8 +35,8 @@ export default function AboutPage() {
               <span>Our Story &amp; Philosophy</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-gray-950 tracking-tight leading-tight">
-              Why CouchSync Live Exists
+            <h1 className="font-display text-3xl sm:text-5xl text-gray-950 tracking-tight leading-tight">
+              Why CouchSync Live exists
             </h1>
             <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
               A real-time cinema lounge built so friends, partners, and movie lovers can watch together across any distance, without servers, accounts, or friction.
@@ -53,8 +53,8 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#EA580C]">The Problem</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-950">
-                    Watching Together Across Distance
+                  <h2 className="font-display text-xl sm:text-2xl text-gray-950">
+                    Watching together across distance
                   </h2>
                 </div>
               </div>
@@ -76,8 +76,8 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">The Design</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-950">
-                    Direct Device-to-Device: 100% Private &amp; Free Forever
+                  <h2 className="font-display text-xl sm:text-2xl text-gray-950">
+                    Direct device-to-device: 100% private &amp; free forever
                   </h2>
                 </div>
               </div>
@@ -99,8 +99,8 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#EA580C]">The Atmosphere</span>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-950">
-                    Why The &quot;Cinema Lounge&quot; Aesthetic?
+                  <h2 className="font-display text-xl sm:text-2xl text-gray-950">
+                    Why the &quot;cinema lounge&quot; aesthetic?
                   </h2>
                 </div>
               </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
                 <Lock className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-950">No accounts, no trackers, no email spam</h3>
+                <h3 className="font-display text-sm sm:text-base text-gray-950">No accounts, no trackers, no email spam</h3>
                 <p className="text-xs text-gray-500">Start a room in 5 seconds. When the party ends, your session vanishes.</p>
               </div>
             </div>

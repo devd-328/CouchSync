@@ -42,8 +42,8 @@ export default function FeaturesPage() {
               <span>Platform Capabilities &amp; Architecture</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-gray-950 tracking-tight leading-tight">
-              Engineered for Cinema Together
+            <h1 className="font-display text-3xl sm:text-5xl text-gray-950 tracking-tight leading-tight">
+              Engineered for cinema together
             </h1>
             <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
               Everything you need for perfect movie nights with friends. Instant playback sync, direct private video calls, and smart volume controls.
@@ -80,8 +80,8 @@ export default function FeaturesPage() {
                     <Zap className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Instant Playback Sync</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Instant Playback Sync
+                  <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                    Instant playback sync
                   </h2>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     CouchSync Live keeps your play, pause, rewind, and speed controls in sync across all viewers with zero noticeable delay. Smart adjustments ensure you stay aligned without annoying skips or stutters. If a friend’s connection buffers, playback automatically pauses cleanly for everyone so no one gets left behind.
@@ -203,8 +203,8 @@ export default function FeaturesPage() {
                     <Camera className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Private Direct Calling</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Direct Video &amp; Smart Voice Auto-Quiet
+                  <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                    Direct video &amp; smart voice auto-quiet
                   </h2>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     Enjoy crystal-clear video and voice directly between you and your friends with full privacy. Our smart sound feature detects when someone speaks and gently softens the movie audio so you never have to shout over loud explosions or action scenes.
@@ -234,8 +234,8 @@ export default function FeaturesPage() {
                     <MonitorUp className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Smooth High Quality</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Smooth Screen Sharing
+                  <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                    Smooth screen sharing
                   </h2>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     Share your entire screen, a single app window, or a browser tab in high definition. Whether you want to watch movies from your personal drive, look through vacation photos, or co-stream games, CouchSync Live streams directly to your friends with zero time limits or watermarks.
@@ -331,8 +331,8 @@ export default function FeaturesPage() {
                     <Gamepad2 className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Interactive Mini-Games</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Movie Trivia &amp; In-Stream Polls
+                  <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                    Movie trivia &amp; in-stream polls
                   </h2>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     Keep energy high during intermissions or before film start times. Host multi-round cinema trivia competitions with synchronized countdown timers and real-time leaderboards. Resolve movie debates instantly by launching in-stream polls with live voting tallies.
@@ -362,8 +362,8 @@ export default function FeaturesPage() {
                     <MessageSquare className="w-3.5 h-3.5 text-[#FF5722]" />
                     <span>Social Interaction</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                    Live Chat &amp; Floating Reactions
+                  <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                    Live chat &amp; floating reactions
                   </h2>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                     Engage with your room without breaking cinematic immersion. Send timestamped chat messages that allow anyone to jump directly to key scene moments with a single click. Trigger animated emoji bursts (🍿, ❤️, 😂, 😱, 🔥, 👏) that gracefully float up over the cinema canvas.
@@ -431,8 +431,8 @@ export default function FeaturesPage() {
           {/* ── Bottom Call To Action (CTAs) ──────────────────────────────── */}
           <section aria-label="Start watching" className="bg-linear-to-r from-orange-50 via-white to-amber-50 rounded-3xl p-8 mt-16 text-center border border-orange-200/80 relative overflow-hidden shadow-2xs">
             <div className="relative z-10 max-w-xl mx-auto space-y-4">
-              <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                Ready to Try CouchSync Live?
+              <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                Ready to try CouchSync Live?
               </h2>
               <p className="text-xs sm:text-sm text-gray-600">
                 Host your movie night in seconds with crystal-clear private audio, instant playback sync, and zero accounts.

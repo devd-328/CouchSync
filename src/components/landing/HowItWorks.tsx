@@ -35,7 +35,7 @@ export function HowItWorks({ onCreateRoom, onJoinRoom }: HowItWorksProps) {
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF5722]" />
           <span>3 easy steps</span>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-950 tracking-tight">
+        <h2 className="font-display text-2xl sm:text-4xl text-gray-950 tracking-tight">
           How CouchSync works
         </h2>
         <p className="mt-3 text-sm sm:text-base text-gray-700 font-medium">
@@ -56,7 +56,7 @@ export function HowItWorks({ onCreateRoom, onJoinRoom }: HowItWorksProps) {
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-bold text-gray-900 leading-tight">
+              <h3 className="font-display text-sm text-gray-900 leading-tight">
                 {s.title}
               </h3>
               <p className="text-xs text-gray-700 mt-0.5 leading-snug font-medium">
@@ -86,7 +86,7 @@ export function HowItWorks({ onCreateRoom, onJoinRoom }: HowItWorksProps) {
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 transition-colors duration-300 group-hover/card:text-[#FF5722]">
+              <h3 className="font-display text-base sm:text-lg text-gray-900 transition-colors duration-300 group-hover/card:text-[#FF5722]">
                 {s.title}
               </h3>
               <p className="text-xs sm:text-sm text-gray-700 mt-2 leading-relaxed font-medium">

@@ -4,22 +4,22 @@ import { Film, Tv, MonitorUp, Gamepad2 } from 'lucide-react';
 const CAPABILITIES = [
   {
     icon: <Film className="w-4 h-4 text-[#FF5722]" />,
-    title: 'Movies & Streams',
+    title: 'Movies & streams',
     desc: 'HLS (.m3u8), MP4 links, local files & subtitles',
   },
   {
     icon: <Tv className="w-4 h-4 text-indigo-500" />,
-    title: 'YouTube Parties',
+    title: 'YouTube parties',
     desc: 'Paste any video link and watch together in sync',
   },
   {
     icon: <MonitorUp className="w-4 h-4 text-emerald-500" />,
-    title: 'Screen Sharing',
+    title: 'Screen sharing',
     desc: 'Stream desktop, browser tabs, or games',
   },
   {
     icon: <Gamepad2 className="w-4 h-4 text-amber-500" />,
-    title: 'Movie Trivia & Polls',
+    title: 'Movie trivia & polls',
     desc: 'Interactive multiplayer trivia during breaks',
   },
 ];
@@ -38,7 +38,7 @@ export function CapabilityStrip() {
                 {cap.icon}
               </div>
               <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-bold text-gray-900 tracking-tight truncate">
+                <div className="font-display text-xs sm:text-sm text-gray-900 tracking-tight truncate">
                   {cap.title}
                 </div>
                 <div className="text-[11px] text-gray-500 truncate mt-0.5 font-normal">

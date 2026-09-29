@@ -239,10 +239,10 @@ export function PlayerControls({
           </div>
 
           {/* Timestamp Display */}
-          <div className="text-gray-300 font-mono text-[11px] sm:text-xs">
-            <span>{formatTime(currentTime)}</span>
+          <div className="text-gray-300 font-mono tabular-nums text-[11px] sm:text-xs">
+            <span className="tabular-nums">{formatTime(currentTime)}</span>
             <span className="text-gray-500 mx-1">/</span>
-            <span className="text-gray-400">
+            <span className="text-gray-400 tabular-nums">
               {validDuration > 0 ? formatTime(validDuration) : '--:--'}
             </span>
           </div>

@@ -40,7 +40,7 @@ export function ProductShowcase() {
             <span>Watch in True Sync</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-950 tracking-tight leading-tight">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl text-gray-950 tracking-tight leading-tight">
             No more &ldquo;wait, what timestamp?&rdquo;
           </h2>
 
@@ -54,7 +54,7 @@ export function ProductShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Buffer guard</h3>
+                <h3 className="font-display text-sm text-gray-900">Buffer guard</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Everyone pauses if one friend lags.
                 </p>
@@ -66,7 +66,7 @@ export function ProductShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Instant seek</h3>
+                <h3 className="font-display text-sm text-gray-900">Instant seek</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Skip ahead and stay together.
                 </p>
@@ -78,7 +78,7 @@ export function ProductShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Subtitles</h3>
+                <h3 className="font-display text-sm text-gray-900">Subtitles</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Load .srt or .vtt files, sized your way.
                 </p>

@@ -118,7 +118,7 @@ export function SocialShowcase() {
             <span>Social Presence &amp; Chat</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-950 tracking-tight leading-tight">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl text-gray-950 tracking-tight leading-tight">
             Hang out like you&apos;re on the same couch.
           </h2>
 
@@ -132,7 +132,7 @@ export function SocialShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Peer-to-peer video &amp; voice</h3>
+                <h3 className="font-display text-sm text-gray-900">Peer-to-peer video &amp; voice</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Encrypted, straight between friends.
                 </p>
@@ -144,7 +144,7 @@ export function SocialShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Smart audio ducking</h3>
+                <h3 className="font-display text-sm text-gray-900">Smart audio ducking</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Movie dips when a friend talks.
                 </p>
@@ -156,7 +156,7 @@ export function SocialShowcase() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Live reactions &amp; chat</h3>
+                <h3 className="font-display text-sm text-gray-900">Live reactions &amp; chat</h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Emoji bursts that never block the screen.
                 </p>

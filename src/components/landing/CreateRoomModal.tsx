@@ -123,8 +123,8 @@ export function CreateRoomModal({
             <Film className="w-5 h-5" />
           </div>
           <div>
-            <h2 id="create-room-title" className="text-lg font-bold text-gray-950">
-              Create a Watch Room
+            <h2 id="create-room-title" className="font-display text-xl text-gray-950">
+              Create a watch room
             </h2>
             <p className="text-xs text-gray-500">
               Host a synchronized lounge and invite your friends

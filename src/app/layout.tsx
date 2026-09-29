@@ -1,6 +1,28 @@
 import type { Metadata } from 'next';
+import { Fraunces, Instrument_Sans, DM_Mono } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { cn } from '@/lib/utils';
 import './globals.css';
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  axes: ['opsz'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://couchsync.live';
 const siteTitle = 'CouchSync Live — Watch Movies Together in Real-Time Sync';
@@ -90,7 +112,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html
+      lang="en"
+      className={cn('h-full', fraunces.variable, instrumentSans.variable, dmMono.variable)}
+    >
       <head>
         <script
           type="application/ld+json"
@@ -99,7 +124,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-[#FAF8F5] text-gray-900 antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-900">
+      <body className="min-h-screen bg-[#FAF8F5] text-gray-900 antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-900 font-sans">
         {children}
         <SpeedInsights />
       </body>

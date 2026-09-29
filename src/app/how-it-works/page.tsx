@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     step: '01',
-    title: 'Create or Join a Room',
+    title: 'Create or join a room',
     badge: 'Step 1',
     color: 'cyan',
     icon: Clapperboard,
@@ -43,7 +43,7 @@ const STEPS = [
   },
   {
     step: '02',
-    title: 'Quick Camera & Mic Check',
+    title: 'Quick camera & mic check',
     badge: 'Step 2',
     color: 'emerald',
     icon: Camera,
@@ -54,7 +54,7 @@ const STEPS = [
   },
   {
     step: '03',
-    title: 'Invite Your Friends',
+    title: 'Invite your friends',
     badge: 'Step 3',
     color: 'violet',
     icon: Share2,
@@ -65,7 +65,7 @@ const STEPS = [
   },
   {
     step: '04',
-    title: 'Pick What to Watch',
+    title: 'Pick what to watch',
     badge: 'Step 4',
     color: 'amber',
     icon: Tv,
@@ -76,7 +76,7 @@ const STEPS = [
   },
   {
     step: '05',
-    title: 'Instant Playback Sync',
+    title: 'Instant playback sync',
     badge: 'Step 5',
     color: 'cyan',
     icon: Zap,
@@ -87,7 +87,7 @@ const STEPS = [
   },
   {
     step: '06',
-    title: 'Hangout, Chat & Mini-Games',
+    title: 'Hangout, chat & mini-games',
     badge: 'Step 6',
     color: 'rose',
     icon: Gamepad2,
@@ -122,8 +122,8 @@ export default function HowItWorksPage() {
               <span>Complete Architecture &amp; User Manual</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-gray-950 tracking-tight leading-tight">
-              How CouchSync Live Works
+            <h1 className="font-display text-3xl sm:text-5xl text-gray-950 tracking-tight leading-tight">
+              How CouchSync Live works
             </h1>
             <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
               Synchronized movie nights made effortless. From creating your first lounge to peer-to-peer audio ducking and hotkeys, here is the full walkthrough.
@@ -134,8 +134,8 @@ export default function HowItWorksPage() {
           <section aria-label="Step-by-step guide" className="space-y-6 mb-16">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FF5722] animate-pulse" />
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#EA580C]">
-                The 6-Step Watch Party Flow
+              <h2 className="font-display text-sm tracking-wide text-[#EA580C]">
+                The 6-step watch party flow
               </h2>
             </div>
 
@@ -162,7 +162,7 @@ export default function HowItWorksPage() {
                         </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-gray-950 group-hover:text-[#EA580C] transition">
+                      <h3 className="font-display text-lg text-gray-950 group-hover:text-[#EA580C] transition">
                         {item.title}
                       </h3>
                       <p className="text-xs font-semibold text-gray-500 mt-0.5 mb-3">
@@ -199,7 +199,7 @@ export default function HowItWorksPage() {
 
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                    <h2 className="text-lg sm:text-xl font-black text-gray-950 tracking-tight">
+                    <h2 className="font-display text-lg sm:text-xl text-gray-950 tracking-tight">
                       Works without an account. Works without a server.
                     </h2>
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
@@ -232,7 +232,7 @@ export default function HowItWorksPage() {
                   <Keyboard className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-base sm:text-lg font-bold text-gray-950">Keyboard Shortcuts</h2>
+                  <h2 className="font-display text-base sm:text-lg text-gray-950">Keyboard shortcuts</h2>
                   <p className="text-xs text-gray-500">Control your playback and lounge without touching the mouse</p>
                 </div>
               </div>
@@ -285,8 +285,8 @@ export default function HowItWorksPage() {
           {/* ── Bottom Call To Action (CTAs) ──────────────────────────────── */}
           <section aria-label="Start watching" className="bg-linear-to-r from-orange-50 via-white to-amber-50 rounded-3xl p-8 text-center border border-orange-200/80 relative overflow-hidden shadow-2xs">
             <div className="relative z-10 max-w-xl mx-auto space-y-4">
-              <h2 className="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-                Ready to Watch Together?
+              <h2 className="font-display text-2xl sm:text-3xl text-gray-950 tracking-tight">
+                Ready to watch together?
               </h2>
               <p className="text-xs sm:text-sm text-gray-600">
                 Host a room in 5 seconds. Share your link, choose a movie or YouTube video, and start your synchronized party now.
