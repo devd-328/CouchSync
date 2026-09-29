@@ -1,9 +1,42 @@
 import type { NextConfig } from "next";
 
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com https://va.vercel-scripts.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self' blob: data: https:",
+  "connect-src 'self' https: wss: blob: data: https://*.supabase.co wss://*.supabase.co https://*.youtube.com https://vitals.vercel-insights.com",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
+  "worker-src 'self' blob:",
+  "font-src 'self' data: https:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+];
+
+const contentSecurityPolicy = cspDirectives.join('; ');
+
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   devIndicators: false,
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.couchsync.live',
+          },
+        ],
+        destination: 'https://couchsync.live/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -11,11 +44,11 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'SAMEORIGIN',
           },
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'none'",
+            value: contentSecurityPolicy,
           },
           {
             key: 'X-Content-Type-Options',

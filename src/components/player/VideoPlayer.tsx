@@ -277,6 +277,41 @@ export function VideoPlayer({
     };
   }, [src, videoRef]);
 
+  // Pause native video when switching away from HLS mode to prevent background audio
+  useEffect(() => {
+    if (mediaSource !== 'hls' && videoRef.current && !videoRef.current.paused) {
+      videoRef.current.pause();
+    }
+  }, [mediaSource, videoRef]);
+
+  // Ensure video element is initialized when mediaSource is 'hls'
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src || mediaSource !== 'hls') return;
+
+    if (!hlsRef.current && !video.src) {
+      if (src.includes('.m3u8')) {
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 60,
+          });
+          hlsRef.current = hls;
+          hls.loadSource(src);
+          hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = src;
+          video.load();
+        }
+      } else {
+        video.srcObject = null;
+        video.src = src;
+        video.load();
+      }
+    }
+  }, [mediaSource, src, videoRef]);
+
   // Auto-hide controls after mouse inactivity
   const handleMouseMove = () => {
     setShowControls(true);
@@ -370,48 +405,46 @@ export function VideoPlayer({
         />
       )}
 
-      {/* 4. Native HLS / Local File Player Mode */}
-      {mediaSource === 'hls' && (
-        <>
-          {/* Interactive Drag & Drop Overlay */}
-          {isDraggingFile && (
-            <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border-3 border-dashed border-cyan-400 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
-              <div className="w-18 h-18 rounded-3xl bg-cyan-500/25 border border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_30px_rgba(0,242,254,0.5)] mb-4">
-                <Upload className="w-9 h-9 animate-bounce" />
-              </div>
-              <h3 className="text-xl font-bold text-white text-center">
-                Drop Movie File Here to Play
-              </h3>
-              <p className="text-xs text-cyan-200 mt-1.5 text-center max-w-sm">
-                Instant playback directly from your PC with zero upload time and $0 cloud cost
-              </p>
-              <span className="mt-3 text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
-                Supports .mp4 • .mkv • .webm
-              </span>
+      {/* 4. Native HLS / Local File Player Mode (Kept mounted to preserve HLS stream, decoders, and currentTime) */}
+      <div className={`w-full h-full ${mediaSource === 'hls' ? 'block' : 'hidden'}`}>
+        {/* Interactive Drag & Drop Overlay */}
+        {isDraggingFile && (
+          <div className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border-3 border-dashed border-cyan-400 animate-in fade-in zoom-in-95 duration-150 pointer-events-none">
+            <div className="w-18 h-18 rounded-3xl bg-cyan-500/25 border border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_30px_rgba(0,242,254,0.5)] mb-4">
+              <Upload className="w-9 h-9 animate-bounce" />
             </div>
-          )}
+            <h3 className="text-xl font-bold text-white text-center">
+              Drop Movie File Here to Play
+            </h3>
+            <p className="text-xs text-cyan-200 mt-1.5 text-center max-w-sm">
+              Instant playback directly from your PC with zero upload time and $0 cloud cost
+            </p>
+            <span className="mt-3 text-[10px] font-mono px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+              Supports .mp4 • .mkv • .webm
+            </span>
+          </div>
+        )}
 
-          {/* Native Video Element with Subtitle Track */}
-          <video
-            ref={videoRef}
-            poster={poster}
-            playsInline
-            preload="auto"
-            className="w-full h-full object-contain cursor-pointer"
-            onClick={handleCanvasClick}
-          >
-            {subtitleTrackUrl && (
-              <track
-                src={subtitleTrackUrl}
-                kind="subtitles"
-                srcLang="en"
-                label="Subtitles"
-                default
-              />
-            )}
-          </video>
-        </>
-      )}
+        {/* Native Video Element with Subtitle Track */}
+        <video
+          ref={videoRef}
+          poster={poster}
+          playsInline
+          preload="auto"
+          className="w-full h-full object-contain cursor-pointer"
+          onClick={handleCanvasClick}
+        >
+          {subtitleTrackUrl && (
+            <track
+              src={subtitleTrackUrl}
+              kind="subtitles"
+              srcLang="en"
+              label="Subtitles"
+              default
+            />
+          )}
+        </video>
+      </div>
 
       {/* Floating Reactions Overlay (Universal) */}
       <FloatingReactions reactions={reactions} />

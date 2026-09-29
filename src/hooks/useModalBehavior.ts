@@ -8,11 +8,7 @@ export interface UseModalBehaviorOptions<T extends HTMLElement = HTMLDivElement>
   ref?: React.RefObject<T | null>;
 }
 
-export type ModalBehaviorRef<T extends HTMLElement = HTMLDivElement> = React.RefObject<T | null> & {
-  modalRef: React.RefObject<T | null>;
-  cardRef: React.RefObject<T | null>;
-  overlayRef: React.RefObject<T | null>;
-};
+export type ModalBehaviorRef<T extends HTMLElement = HTMLDivElement> = React.RefObject<T | null>;
 
 let activeModalsCount = 0;
 let originalBodyOverflow: string | null = null;
@@ -54,19 +50,14 @@ export function useModalBehavior<T extends HTMLElement = HTMLDivElement>(
   isOpenOrOptions: boolean | UseModalBehaviorOptions<T>,
   onCloseArg?: () => void,
   passedRef?: React.RefObject<T | null>
-): ModalBehaviorRef<T> {
+): React.RefObject<T | null> {
   const isOptionsObject = typeof isOpenOrOptions === 'object' && isOpenOrOptions !== null;
   const isOpen = isOptionsObject ? isOpenOrOptions.isOpen : Boolean(isOpenOrOptions);
   const onClose = isOptionsObject ? isOpenOrOptions.onClose : onCloseArg || (() => {});
   const refOption = isOptionsObject ? isOpenOrOptions.ref : passedRef;
 
   const internalRef = useRef<T | null>(null);
-  const targetRef = (refOption || internalRef) as ModalBehaviorRef<T>;
-
-  // Provide aliases for destructuring flexibility
-  targetRef.modalRef = targetRef;
-  targetRef.cardRef = targetRef;
-  targetRef.overlayRef = targetRef;
+  const targetRef = refOption || internalRef;
 
   const onCloseRef = useRef(onClose);
   useEffect(() => {

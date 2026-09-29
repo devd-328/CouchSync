@@ -210,13 +210,17 @@ export default function RoomPage({
     saveUserSession({ isMicMuted, isCamOff });
   }, [isMicMuted, isCamOff, hasValidName]);
 
-  // Read initialMode from URL search param on mount (e.g. ?initialMode=youtube)
+  // Read initialMode and youtubeId from URL search param on mount (e.g. ?initialMode=youtube&youtubeId=dQw4w9WgXcQ)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const sp = new URLSearchParams(window.location.search);
       const initMode = sp.get('initialMode') as MediaSourceType | null;
       if (initMode && ['hls', 'youtube', 'screenshare', 'trivia'].includes(initMode)) {
         setMediaSource(initMode);
+      }
+      const initialYtId = sp.get('youtubeId');
+      if (initialYtId && initialYtId.trim()) {
+        setYoutubeVideoId(initialYtId.trim());
       }
     }
   }, []);
@@ -238,13 +242,45 @@ export default function RoomPage({
     });
   };
 
+  const wasPlayingBeforeTriviaRef = useRef(false);
+
   const handleSelectSource = (source: MediaSourceType) => {
+    const isReturningFromTrivia = mediaSource === 'trivia' && source === 'hls';
+
+    // When switching away from HLS, pause the movie so it doesn't play audio in the background
+    if (source !== 'hls') {
+      if (videoRef.current && !videoRef.current.paused) {
+        wasPlayingBeforeTriviaRef.current = true;
+        videoRef.current.pause();
+      }
+    }
+
     setMediaSource(source);
     broadcastMessage({
       type: 'media-source-change',
       source,
       senderId: currentUser.id,
     });
+
+    // When returning to cinema movie from trivia, resume playback cleanly
+    if (isReturningFromTrivia && canControl) {
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.play().catch(() => {});
+        }
+      }, 100);
+    }
+  };
+
+  const handleCloseTrivia = () => {
+    handleSelectSource('hls');
+    if (canControl) {
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.play().catch(() => {});
+        }
+      }, 100);
+    }
   };
 
   const handleChangeYouTubeVideo = (id: string, title?: string) => {
@@ -379,10 +415,16 @@ export default function RoomPage({
           handleRemoteAction(msg as PlaybackAction);
           setRemotePlaybackAction(msg as PlaybackAction);
         } else if (msg.type === 'media-source-change') {
+          if (msg.source !== 'hls' && videoRef.current && !videoRef.current.paused) {
+            videoRef.current.pause();
+          }
           setMediaSource(msg.source);
           if (msg.youtubeId) setYoutubeVideoId(msg.youtubeId);
           if (msg.youtubeTitle) setYoutubeVideoTitle(msg.youtubeTitle);
         } else if (msg.type === 'screenshare-start') {
+          if (videoRef.current && !videoRef.current.paused) {
+            videoRef.current.pause();
+          }
           setMediaSource('screenshare');
           setScreenPresenterId(msg.presenterId);
           setScreenPresenterName(msg.presenterName);
@@ -391,8 +433,16 @@ export default function RoomPage({
           setScreenPresenterId(null);
         } else if (msg.type.startsWith('trivia-')) {
           setRemoteTriviaAction(msg as TriviaAction);
-          if (msg.type === 'trivia-start') setMediaSource('trivia');
-          if (msg.type === 'trivia-end') setMediaSource('hls');
+          if (msg.type === 'trivia-start') {
+            if (videoRef.current && !videoRef.current.paused) {
+              wasPlayingBeforeTriviaRef.current = true;
+              videoRef.current.pause();
+            }
+            setMediaSource('trivia');
+          }
+          if (msg.type === 'trivia-end') {
+            setMediaSource('hls');
+          }
         } else if (msg.type === 'control-mode-change') {
           setControlMode(msg.mode);
         } else if (msg.type === 'poll-create') {
@@ -648,7 +698,7 @@ export default function RoomPage({
               onSendPlaybackAction={broadcastMessage}
               onChangeYouTubeVideo={handleChangeYouTubeVideo}
               onSendTriviaAction={handleSendTriviaAction}
-              onCloseTrivia={() => handleSelectSource('hls')}
+              onCloseTrivia={handleCloseTrivia}
               onOpenSelectMovie={() => setShowMoviePickerModal(true)}
               onSelectLocalFile={handleLocalFileSelect}
             />

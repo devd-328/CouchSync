@@ -87,7 +87,12 @@ export default function HomePage() {
     saveUserSession({ userName: name });
   };
 
-  const handleExecuteCreate = (roomName: string, mode: MediaSourceType, nick: string) => {
+  const handleExecuteCreate = (
+    roomName: string,
+    mode: MediaSourceType,
+    nick: string,
+    youtubeVideoId?: string
+  ) => {
     setIsCreateOpen(false);
     const newRoomId = generateId('room').replace('room-', '');
     const cleanName = roomName.trim() || 'Cosmic Cinema';
@@ -100,7 +105,8 @@ export default function HomePage() {
     });
 
     saveRecentRoom({ id: newRoomId, name: cleanName });
-    navigateWithFade(`/room/${newRoomId}?initialMode=${mode}`);
+    const ytQuery = youtubeVideoId ? `&youtubeId=${encodeURIComponent(youtubeVideoId)}` : '';
+    navigateWithFade(`/room/${newRoomId}?initialMode=${mode}${ytQuery}`);
   };
 
   const handleExecuteJoin = (roomId: string, nick: string) => {

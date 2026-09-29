@@ -5,6 +5,7 @@ import { X, Film, Tv, MonitorUp, Gamepad2, Dices, Play, CheckCircle2, User } fro
 import { MediaSourceType } from '@/types/sync';
 import { isValidNickname } from '@/lib/session';
 import { useModalBehavior } from '@/hooks/useModalBehavior';
+import { extractYouTubeId } from '@/components/player/YouTubePlayer';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -12,8 +13,10 @@ interface CreateRoomModalProps {
   userName: string;
   onSaveUserName: (name: string) => void;
   defaultMode?: MediaSourceType;
-  onSubmit: (roomName: string, mode: MediaSourceType, userName: string) => void;
+  onSubmit: (roomName: string, mode: MediaSourceType, userName: string, youtubeVideoId?: string) => void;
 }
+
+const SAMPLE_YOUTUBE_URL = 'https://www.youtube.com/watch?v=M7lc1UVf-VE';
 
 const RANDOM_ROOM_NAMES = [
   'Neon Premiere',
@@ -46,6 +49,7 @@ export function CreateRoomModal({
   const [selectedMode, setSelectedMode] = useState<MediaSourceType>(defaultMode);
   const [nameInput, setNameInput] = useState(userName);
   const [nameError, setNameError] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
 
   useEffect(() => {
     setNameInput(userName);
@@ -60,10 +64,17 @@ export function CreateRoomModal({
       const rand = RANDOM_ROOM_NAMES[Math.floor(Math.random() * RANDOM_ROOM_NAMES.length)];
       setRoomName(rand);
       setNameError('');
+      setYoutubeUrl('');
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const isYouTubeMode = selectedMode === 'youtube';
+  const extractedYouTubeId = isYouTubeMode ? (extractYouTubeId(youtubeUrl) || undefined) : undefined;
+  const isYouTubeEmpty = !youtubeUrl.trim();
+  const isYouTubeInvalid = isYouTubeMode && (isYouTubeEmpty || !extractedYouTubeId);
+  const isSubmitDisabled = isYouTubeInvalid;
 
   const handleRandomize = () => {
     const rand = RANDOM_ROOM_NAMES[Math.floor(Math.random() * RANDOM_ROOM_NAMES.length)];
@@ -77,8 +88,11 @@ export function CreateRoomModal({
       setNameError('Nickname must be between 3 and 25 characters');
       return;
     }
+    if (isYouTubeInvalid) {
+      return;
+    }
     onSaveUserName(cleanNick);
-    onSubmit(roomName.trim() || 'Cosmic Cinema', selectedMode, cleanNick);
+    onSubmit(roomName.trim() || 'Cosmic Cinema', selectedMode, cleanNick, extractedYouTubeId);
   };
 
   return (
@@ -204,11 +218,58 @@ export function CreateRoomModal({
             </div>
           </div>
 
+          {/* YouTube Video Link Field (renders ONLY when selectedMode === 'youtube') */}
+          {selectedMode === 'youtube' && (
+            <div className="p-3.5 rounded-2xl bg-orange-50/70 border border-orange-200/80 space-y-2 animate-in fade-in slide-in-from-top-1 duration-150">
+              <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                YouTube Video Link or ID
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=... or shorts link"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] transition"
+                />
+              </div>
+
+              {/* Validation error message: show only when non-empty but invalid */}
+              {!isYouTubeEmpty && !extractedYouTubeId && (
+                <p className="text-xs text-rose-500 font-medium">
+                  Please enter a valid YouTube link or 11-character video ID
+                </p>
+              )}
+
+              {/* Sample video button */}
+              <div className="flex items-center justify-between pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => setYoutubeUrl(SAMPLE_YOUTUBE_URL)}
+                  className="text-[11px] font-semibold text-[#FF5722] hover:text-[#E64A19] underline underline-offset-2 transition cursor-pointer"
+                >
+                  Use a sample video instead
+                </button>
+                {extractedYouTubeId && (
+                  <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Ready to sync
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Submit button */}
           <div className="pt-3">
             <button
               type="submit"
-              className="w-full py-3.5 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white font-bold text-sm shadow-[0_6px_20px_rgba(255,87,34,0.3)] transition transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              disabled={isSubmitDisabled}
+              className={`w-full py-3.5 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white font-bold text-sm shadow-[0_6px_20px_rgba(255,87,34,0.3)] transition transform flex items-center justify-center gap-2 ${
+                isSubmitDisabled
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:from-[#F4511E] hover:to-[#FF5722] hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+              }`}
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Launch Room</span>

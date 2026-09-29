@@ -3,24 +3,25 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://couchsync.live';
-const siteTitle = "CouchSync Live | Watch Together, Even When You're Apart";
+const siteTitle = 'CouchSync Live — Watch Movies Together in Real-Time Sync';
 const siteDescription =
-  'Host a synchronized watch party with friends. Watch local movies, stream YouTube, or share your screen with P2P video calls, live chat and movie trivia. Free, no sign-up.';
+  'Host a synchronized watch party to watch movies together online with P2P video call, live chat, and trivia. Free, no signup watch party in real-time sync.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: siteTitle,
   description: siteDescription,
   alternates: {
-    canonical: siteUrl,
+    canonical: 'https://couchsync.live',
   },
   keywords: [
+    'watch movies together online',
     'synchronized watch party',
-    'watch movies together',
-    'P2P video call',
+    'P2P video call while watching',
+    'no signup watch party',
+    'watch party with video chat',
     'real-time sync',
     'movie trivia',
-    'watch party free',
     'screen share with friends',
     'co-watch YouTube',
   ],
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'CouchSync Live',
-    url: siteUrl,
+    url: 'https://couchsync.live',
     title: siteTitle,
     description: siteDescription,
     images: [
@@ -65,7 +66,7 @@ const jsonLd = {
   name: 'CouchSync Live',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Any',
-  url: siteUrl,
+  url: 'https://couchsync.live',
   description: siteDescription,
   image: `${siteUrl}/opengraph-image`,
   offers: {
@@ -73,6 +74,14 @@ const jsonLd = {
     price: '0',
     priceCurrency: 'USD',
   },
+  featureList: [
+    'Real-time synchronized playback (<150ms drift)',
+    'P2P video and voice calling via WebRTC',
+    'Live chat with emoji reactions',
+    'Interactive movie trivia',
+    'Screen sharing',
+    'Cinema-style themes',
+  ],
 };
 
 export default function RootLayout({

@@ -174,6 +174,13 @@ export function MovieTrivia({
 
   const timerPercentage = (timeLeft / 15) * 100;
 
+  const handleReturnToMovie = () => {
+    if (isHost) {
+      onSendTriviaAction({ type: 'trivia-end' });
+    }
+    onCloseTrivia();
+  };
+
   return (
     <div className="relative w-full h-full min-h-105 flex flex-col justify-between bg-linear-to-b from-[#0F1424] via-[#0A0D18] to-[#0F1424] rounded-2xl p-6 border border-white/10 shadow-2xl overflow-hidden">
       {/* Ambient background glows */}
@@ -207,8 +214,8 @@ export function MovieTrivia({
           </div>
 
           <button
-            onClick={onCloseTrivia}
-            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 hover:text-white transition flex items-center gap-1.5"
+            onClick={handleReturnToMovie}
+            className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer"
           >
             <Clapperboard className="w-3.5 h-3.5 text-cyan-400" />
             <span>Return to Movie</span>

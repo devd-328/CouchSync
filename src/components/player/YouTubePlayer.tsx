@@ -15,6 +15,7 @@ import {
   Minimize2,
   Gauge,
   Check,
+  AlertCircle,
 } from 'lucide-react';
 import { PlaybackAction, ControlMode } from '@/types/sync';
 import { formatTime } from '@/lib/formatters';
@@ -31,15 +32,26 @@ interface YouTubePlayerProps {
   onToggleFullscreen?: () => void;
 }
 
-// Helper to extract YouTube ID from any format
+// Helper to extract YouTube ID from any format (standard, shorts, live, mobile, embed, youtu.be, or raw 11-char ID)
 export function extractYouTubeId(input: string): string | null {
+  if (!input) return null;
   const trimmed = input.trim();
   if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
     return trimmed;
   }
-  const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = trimmed.match(regExp);
-  return match ? match[1] : null;
+  // Match standard, embed, shorts, live, and youtu.be
+  const match = trimmed.match(
+    /(?:https?:\/\/)?(?:(?:www|m)\.)?(?:youtube\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i
+  );
+  if (match && match[1]) {
+    return match[1];
+  }
+  // Fallback for query parameters anywhere (e.g. ?feature=shared&v=ID)
+  const paramMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (paramMatch && paramMatch[1]) {
+    return paramMatch[1];
+  }
+  return null;
 }
 
 declare global {
@@ -49,6 +61,7 @@ declare global {
         elementId: string | HTMLElement,
         options: {
           videoId?: string;
+          host?: string;
           playerVars?: Record<string, unknown>;
           events?: {
             onReady?: (event: { target: YTPlayerInstance }) => void;
@@ -106,8 +119,9 @@ export function YouTubePlayer({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [playerError, setPlayerError] = useState<string | null>(null);
 
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
@@ -129,9 +143,21 @@ export function YouTubePlayer({
     }
   }, []);
 
-  // 1. Initialize YouTube IFrame API
+  // 1. Initialize YouTube IFrame API or switch video
   useEffect(() => {
     let isCancelled = false;
+    setPlayerError(null);
+
+    // If player already exists and is ready, smoothly switch videos via API
+    if (ytPlayerRef.current && typeof ytPlayerRef.current.loadVideoById === 'function') {
+      try {
+        ytPlayerRef.current.loadVideoById(videoId);
+        setIsPlaying(true);
+        return;
+      } catch (err) {
+        console.warn('Error switching YouTube video via loadVideoById:', err);
+      }
+    }
 
     function initYT() {
       if (isCancelled) return;
@@ -141,32 +167,26 @@ export function YouTubePlayer({
         const el = document.getElementById(containerElementId.current);
         if (!el) return;
 
-        if (ytPlayerRef.current) {
-          try {
-            ytPlayerRef.current.destroy();
-          } catch {
-            // ignore
-          }
-          ytPlayerRef.current = null;
-        }
-
         const player = new window.YT.Player(el, {
           videoId,
+          host: 'https://www.youtube.com',
           playerVars: {
             enablejsapi: 1,
             autoplay: 1,
-            controls: 0,
+            controls: 1,
             rel: 0,
             modestbranding: 1,
             iv_load_policy: 3,
             playsinline: 1,
             origin: typeof window !== 'undefined' ? window.location.origin : '',
+            widget_referrer: typeof window !== 'undefined' ? window.location.origin : '',
           },
           events: {
             onReady: (event) => {
               if (isCancelled) return;
               ytPlayerRef.current = event.target;
               setIsPlayerReady(true);
+              setPlayerError(null);
               try {
                 const d = event.target.getDuration();
                 if (typeof d === 'number' && !isNaN(d) && d > 0) {
@@ -175,7 +195,7 @@ export function YouTubePlayer({
                 event.target.playVideo();
                 setIsPlaying(true);
               } catch {
-                // ignore
+                // Autoplay blocked by browser policy
               }
             },
             onStateChange: (event) => {
@@ -196,6 +216,22 @@ export function YouTubePlayer({
               } else if (event.data === 0) {
                 setIsPlaying(false);
               }
+            },
+            onError: (event) => {
+              if (isCancelled) return;
+              let msg = 'Failed to load YouTube video.';
+              if (event.data === 150 || event.data === 101) {
+                msg =
+                  'The owner of this video has disabled playback outside of YouTube. Please choose another video.';
+              } else if (event.data === 100) {
+                msg = 'This YouTube video was not found, was marked private, or was removed.';
+              } else if (event.data === 2) {
+                msg = 'Invalid YouTube video ID or link parameters.';
+              } else if (event.data === 5) {
+                msg = 'The requested video cannot be played in an HTML5 embedded player.';
+              }
+              setPlayerError(msg);
+              setIsPlaying(false);
             },
           },
         });
@@ -236,6 +272,12 @@ export function YouTubePlayer({
 
     return () => {
       isCancelled = true;
+    };
+  }, [videoId]);
+
+  // Clean up player instance on component unmount
+  useEffect(() => {
+    return () => {
       if (ytPlayerRef.current) {
         try {
           ytPlayerRef.current.destroy();
@@ -245,7 +287,7 @@ export function YouTubePlayer({
         ytPlayerRef.current = null;
       }
     };
-  }, [videoId]);
+  }, []);
 
   // 2. Poll live playback position and duration
   useEffect(() => {
@@ -466,10 +508,10 @@ export function YouTubePlayer({
         <div id={containerElementId.current} className="w-full h-full" />
 
         {/* Fallback iframe before JS API attaches or if blocked */}
-        {!isPlayerReady && (
+        {!isPlayerReady && !playerError && (
           <iframe
             ref={iframeRef}
-            src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3`}
+            src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&origin=${typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : ''}`}
             title={videoTitle || 'YouTube Watch Party'}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -477,12 +519,49 @@ export function YouTubePlayer({
           />
         )}
 
-        {/* Click layer to play/pause */}
-        <div
-          onClick={handlePlayPause}
-          className="absolute inset-0 cursor-pointer z-10"
-          title={canControlPlayback ? 'Click to play/pause (Space)' : 'Host controls playback'}
-        />
+        {/* Video Player Error State (e.g. Embedding disabled by owner / Video private) */}
+        {playerError && (
+          <div className="absolute inset-0 z-30 bg-gray-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mb-4 text-rose-400 shadow-xl shadow-rose-950/40">
+              <AlertCircle className="w-7 h-7" />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-2">Video Cannot Be Played Here</h3>
+            <p className="text-gray-300 text-sm max-w-md leading-relaxed mb-6">
+              {playerError}
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowUrlModal(true)}
+                className="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-semibold text-sm transition shadow-lg shadow-orange-950/30 cursor-pointer"
+              >
+                Choose Another Video
+              </button>
+              <a
+                href={`https://www.youtube.com/watch?v=${videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-200 hover:text-white font-medium text-sm transition flex items-center gap-1.5 border border-white/15"
+              >
+                <span>Watch on YouTube</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* Center Big Play Button (When Paused) */}
+        {!isPlaying && isPlayerReady && !playerError && (
+          <div
+            onClick={handlePlayPause}
+            className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer bg-black/40 hover:bg-black/30 transition group pointer-events-auto"
+            title={canControlPlayback ? 'Click to Play' : 'Host controls playback'}
+          >
+            <div className="w-18 h-18 rounded-full bg-rose-600/90 hover:bg-rose-500 border border-rose-400/40 backdrop-blur-md flex items-center justify-center text-white shadow-[0_0_30px_rgba(244,63,94,0.4)] transition transform group-hover:scale-110">
+              <Play className="w-9 h-9 fill-current ml-1" />
+            </div>
+          </div>
+        )}
 
         {/* Lock Toast Notification */}
         {showLockToast && (
