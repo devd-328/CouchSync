@@ -8,14 +8,30 @@ import { TestimonialsWall } from '@/components/feedback/TestimonialsWall';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Feedback & Reviews | CouchSync Live',
-  description:
-    'Share your experience, leave a review, or send feedback to help shape the future of CouchSync Live.',
-  alternates: {
-    canonical: 'https://couchsync.live/feedback',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const title = 'Feedback & Reviews | CouchSync Live';
+  const description =
+    'Share your experience, leave a review, or send feedback to help shape the future of CouchSync Live.';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: 'https://couchsync.live/feedback',
+    },
+    openGraph: {
+      title,
+      description,
+      url: 'https://couchsync.live/feedback',
+      siteName: 'CouchSync Live',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
 export default function FeedbackPage() {
   return (
