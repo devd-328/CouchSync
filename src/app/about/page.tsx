@@ -7,6 +7,8 @@ import {
   Film,
   Sparkles,
   Lock,
+  Code,
+  ExternalLink,
 } from 'lucide-react';
 import { Navbar } from '@/components/landing/Navbar';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -111,6 +113,37 @@ export default function AboutPage() {
                 <p>
                   We designed CouchSync Live as an homage to the neon-lit midnight movie theater experience: sleek dark glass panels, soft ambient lighting that complements the film, and smart sound controls that automatically soften movie dialogue whenever a friend speaks so nobody has to shout.
                 </p>
+              </div>
+            </article>
+
+            {/* Section 4: About the Developer */}
+            <article className="bg-white card-hover rounded-3xl p-6 sm:p-8 border border-black/8 shadow-2xs hover:shadow-md hover:border-orange-300 transition relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-2xl bg-orange-100 border border-orange-200 text-[#EA580C]">
+                  <Code className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#EA580C]">The Creator</span>
+                  <h2 className="font-display text-xl sm:text-2xl text-gray-950">
+                    About the Developer
+                  </h2>
+                </div>
+              </div>
+              <div className="space-y-4 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                <p>
+                  CouchSync Live was architected and built by Dev Das, a full-stack engineer passionate about peer-to-peer real-time systems, modern frontend architecture, and crafting fluid digital experiences.
+                </p>
+                <div className="pt-1">
+                  <a
+                    href="https://devdas.tech"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(255,87,34,0.3)] transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  >
+                    <span>Visit Portfolio &amp; Projects</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </div>
             </article>
           </div>
