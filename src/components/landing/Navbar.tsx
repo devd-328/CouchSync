@@ -7,7 +7,7 @@ import { Menu, X } from 'lucide-react';
 import { CouchSyncMark } from '@/components/brand/CouchSyncLogo';
 
 interface NavbarProps {
-  currentPage?: 'home' | 'how-it-works' | 'features' | 'about';
+  currentPage?: 'home' | 'how-it-works' | 'features' | 'about' | 'feedback';
   onCreateRoom?: () => void;
   onJoinRoom?: () => void;
 }
@@ -74,10 +74,14 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
             About
           </Link>
           <Link
-            href="/#faq"
-            className="px-3 py-1.5 rounded-full text-gray-700 hover:text-[#FF5722] transition"
+            href="/feedback"
+            className={`px-3 py-1.5 rounded-full transition ${
+              currentPage === 'feedback'
+                ? 'bg-white text-[#EA580C] border border-black/8 shadow-2xs font-bold'
+                : 'text-gray-700 hover:text-[#FF5722]'
+            }`}
           >
-            FAQ
+            Feedback
           </Link>
           {onJoinRoom ? (
             <button
@@ -174,11 +178,15 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
             About
           </Link>
           <Link
-            href="/#faq"
+            href="/feedback"
             onClick={() => setMobileMenuOpen(false)}
-            className="py-2 px-3 text-sm font-medium text-gray-700 hover:text-[#FF5722] transition rounded-xl"
+            className={`py-2 px-3 text-sm font-medium transition rounded-xl ${
+              currentPage === 'feedback'
+                ? 'bg-orange-50 text-[#EA580C] font-bold border border-orange-200/60'
+                : 'text-gray-700 hover:text-[#FF5722]'
+            }`}
           >
-            FAQ
+            Feedback
           </Link>
           <div className="pt-2 border-t border-black/6 flex flex-col gap-2">
             {onJoinRoom ? (
