@@ -46,6 +46,12 @@ const CULL = 1.6;
 
 const WHEEL_UNITS = 220;
 const DRAG_UNITS = 180;
+const TOUCH_UNITS = 110;
+const FLICK_SPEED = 0.9;
+const GESTURE_LOCK_DISTANCE = 10;
+const SAMPLE_MAX_AGE = 100;
+const MOMENTUM_FRICTION = 0.95;
+const MOMENTUM_STOP_VELOCITY = 0.3;
 const DRAG_THRESHOLD = 5;
 const SETTLE = 200;
 const EASE = 0.14;
@@ -239,6 +245,7 @@ export function WorksWheel({
   );
 
   const prevItem = React.useCallback(() => {
+    if (target.current < 1) return;
     to(Math.max(1, Math.round(target.current) - 1));
   }, [to]);
 
@@ -289,6 +296,7 @@ export function WorksWheel({
   }, []);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
     if (!event.isPrimary) return;
     window.clearTimeout(didDragTimeout.current);
     didDrag.current = false;
@@ -302,6 +310,7 @@ export function WorksWheel({
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
     if (pointerIdRef.current !== event.pointerId) return;
     if (dragX.current === null || dragY.current === null) return;
 
@@ -331,6 +340,7 @@ export function WorksWheel({
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
     if (pointerIdRef.current !== null && event.pointerId !== pointerIdRef.current) return;
 
     try {
@@ -353,6 +363,7 @@ export function WorksWheel({
   };
 
   const handlePointerCancel = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") return;
     if (pointerIdRef.current !== null && event.pointerId !== pointerIdRef.current) return;
 
     try {
@@ -373,6 +384,189 @@ export function WorksWheel({
       didDrag.current = false;
     }, 150);
   };
+
+  // Touch gesture tracking for mobile devices
+  const touchStartRef = React.useRef<{ x: number; y: number } | null>(null);
+  const touchLastRef = React.useRef<{ x: number; y: number } | null>(null);
+  const turnedVerticallyRef = React.useRef<boolean>(false);
+  const verticalTurnDistRef = React.useRef<number>(0);
+  const gestureModeRef = React.useRef<"undecided" | "wheel" | "page">("undecided");
+  const samplesRef = React.useRef<{ y: number; t: number }[]>([]);
+  const momentumFrameRef = React.useRef<number>(0);
+
+  React.useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (momentumFrameRef.current) {
+        cancelAnimationFrame(momentumFrameRef.current);
+        momentumFrameRef.current = 0;
+      }
+      if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        const now = performance.now();
+        touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+        touchLastRef.current = { x: touch.clientX, y: touch.clientY };
+        turnedVerticallyRef.current = false;
+        verticalTurnDistRef.current = 0;
+        gestureModeRef.current = "undecided";
+        samplesRef.current = [{ y: touch.clientY, t: now }];
+      }
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length === 0 || !touchLastRef.current || !touchStartRef.current) return;
+      const touch = event.touches[0];
+      const currentX = touch.clientX;
+      const currentY = touch.clientY;
+      const now = performance.now();
+
+      samplesRef.current.push({ y: currentY, t: now });
+      samplesRef.current = samplesRef.current.filter((s) => now - s.t <= SAMPLE_MAX_AGE);
+
+      const stepY = touchLastRef.current.y - currentY;
+      touchLastRef.current = { x: currentX, y: currentY };
+
+      const totalDist = Math.hypot(
+        currentX - touchStartRef.current.x,
+        currentY - touchStartRef.current.y,
+      );
+      if (totalDist > 8) {
+        didDrag.current = true;
+      }
+
+      if (gestureModeRef.current === "undecided" && totalDist >= GESTURE_LOCK_DISTANCE) {
+        let speed = 0;
+        if (samplesRef.current.length >= 2) {
+          const first = samplesRef.current[0];
+          const lastSample = samplesRef.current[samplesRef.current.length - 1];
+          const dt = lastSample.t - first.t;
+          if (dt > 0) {
+            speed = Math.abs(lastSample.y - first.y) / dt;
+          }
+        }
+        gestureModeRef.current = speed >= FLICK_SPEED ? "page" : "wheel";
+      }
+
+      if (gestureModeRef.current === "page") {
+        if (stepY !== 0) {
+          window.scrollBy(0, stepY);
+        }
+      } else if (gestureModeRef.current === "wheel") {
+        if (
+          (stepY > 0 && target.current < last + 1) ||
+          (stepY < 0 && target.current > 0)
+        ) {
+          event.preventDefault();
+          verticalTurnDistRef.current += Math.abs(stepY);
+          if (verticalTurnDistRef.current > 8) {
+            turnedVerticallyRef.current = true;
+          }
+          to(target.current + stepY / TOUCH_UNITS);
+        } else {
+          if (stepY !== 0) {
+            window.scrollBy(0, stepY);
+          }
+        }
+      }
+    };
+
+    const onTouchEnd = () => {
+      if (gestureModeRef.current === "page") {
+        const now = performance.now();
+        const recent = samplesRef.current.filter((s) => now - s.t <= SAMPLE_MAX_AGE);
+        if (recent.length >= 2) {
+          const first = recent[0];
+          const lastSample = recent[recent.length - 1];
+          const dt = lastSample.t - first.t;
+          if (dt > 0) {
+            const vy = (first.y - lastSample.y) / dt;
+            let v = vy * (1000 / 60);
+            if (Math.abs(v) >= MOMENTUM_STOP_VELOCITY) {
+              const step = () => {
+                if (Math.abs(v) < MOMENTUM_STOP_VELOCITY) {
+                  momentumFrameRef.current = 0;
+                  return;
+                }
+                window.scrollBy(0, v);
+                v *= MOMENTUM_FRICTION;
+                momentumFrameRef.current = requestAnimationFrame(step);
+              };
+              momentumFrameRef.current = requestAnimationFrame(step);
+            }
+          }
+        }
+      } else {
+        snapToNearest();
+
+        if (touchStartRef.current && touchLastRef.current) {
+          const dx = touchLastRef.current.x - touchStartRef.current.x;
+          const dy = touchLastRef.current.y - touchStartRef.current.y;
+
+          if (
+            !turnedVerticallyRef.current &&
+            Math.abs(dx) >= 40 &&
+            Math.abs(dx) > Math.abs(dy) * 1.5
+          ) {
+            if (dx < 0) {
+              nextItem();
+            } else if (dx > 0) {
+              prevItem();
+            }
+          }
+        }
+      }
+
+      window.clearTimeout(didDragTimeout.current);
+      didDragTimeout.current = window.setTimeout(() => {
+        didDrag.current = false;
+      }, 150);
+
+      touchStartRef.current = null;
+      touchLastRef.current = null;
+      turnedVerticallyRef.current = false;
+      verticalTurnDistRef.current = 0;
+      gestureModeRef.current = "undecided";
+      samplesRef.current = [];
+    };
+
+    const onTouchCancel = () => {
+      if (momentumFrameRef.current) {
+        cancelAnimationFrame(momentumFrameRef.current);
+        momentumFrameRef.current = 0;
+      }
+      touchStartRef.current = null;
+      touchLastRef.current = null;
+      turnedVerticallyRef.current = false;
+      verticalTurnDistRef.current = 0;
+      gestureModeRef.current = "undecided";
+      samplesRef.current = [];
+      snapToNearest();
+
+      window.clearTimeout(didDragTimeout.current);
+      didDragTimeout.current = window.setTimeout(() => {
+        didDrag.current = false;
+      }, 150);
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchcancel", onTouchCancel, { passive: true });
+
+    return () => {
+      if (momentumFrameRef.current) {
+        cancelAnimationFrame(momentumFrameRef.current);
+        momentumFrameRef.current = 0;
+      }
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchCancel);
+      window.clearTimeout(didDragTimeout.current);
+    };
+  }, [nextItem, prevItem, to, last, snapToNearest]);
 
   const handleCardClick = (e: React.MouseEvent, index: number, item: WorksWheelItem) => {
     if (didDrag.current) {
@@ -425,7 +619,7 @@ export function WorksWheel({
         role="listbox"
         aria-label={label}
         aria-activedescendant={`works-wheel-${active}`}
-        className="focus-visible:outline-orange-500 absolute inset-0 cursor-grab touch-pan-y outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 active:cursor-grabbing [transform-style:preserve-3d]"
+        className="focus-visible:outline-orange-500 absolute inset-0 cursor-grab touch-none outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 active:cursor-grabbing [transform-style:preserve-3d]"
         style={{
           perspective: `${metrics.depth}px`,
           WebkitPerspective: `${metrics.depth}px`,
@@ -475,13 +669,13 @@ export function WorksWheel({
                     src={item.image}
                     alt={item.title}
                     draggable={false}
-                    loading="lazy"
+                    loading="eager"
                     decoding="async"
                     onError={(e) => {
                       const target = e.currentTarget;
                       if (!target.dataset.hasFallback) {
                         target.dataset.hasFallback = 'true';
-                        target.src = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=85';
+                        target.src = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=640&q=85';
                       }
                     }}
                     className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -544,7 +738,7 @@ export function WorksWheel({
         <div className="flex flex-col items-center">
           <span>{label}</span>
           <span className="text-xs sm:text-sm font-normal text-orange-400/90 tracking-normal mt-1 opacity-80">
-            {isCoarse ? "Swipe to explore" : "Scroll or drag to explore"}
+            {isCoarse ? "Swipe up or down to explore" : "Scroll or drag to explore"}
           </span>
         </div>
       </div>
