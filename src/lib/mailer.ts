@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 export interface FeedbackNotificationPayload {
   type: 'testimonial' | 'contact';
   rating?: number | null;
+  subject?: string | null;
   message: string;
   nickname?: string | null;
   email?: string | null;
@@ -35,21 +36,48 @@ export async function sendFeedbackNotification(
       },
     });
 
+    // Create a dynamic, human-like subject line to avoid spam filters
+    let emailSubject = '';
+    const cleanSubject = payload.subject?.trim();
+
+    if (payload.type === 'contact') {
+      if (cleanSubject) {
+        emailSubject = `[CouchSync Contact] ${cleanSubject}`;
+      } else {
+        const snippet = payload.message.slice(0, 45).replace(/[\r\n]+/g, ' ');
+        const sender = payload.email ? payload.email.split('@')[0] : 'Visitor';
+        emailSubject = `[CouchSync Contact] Message from ${sender}: "${snippet}..."`;
+      }
+    } else {
+      const starRating = payload.rating ? `${payload.rating}★` : '';
+      const author = payload.nickname?.trim() || 'Anonymous';
+      emailSubject = `[CouchSync Review] ${starRating} Testimonial from ${author}`;
+    }
+
     const lines: string[] = [
-      `Type: ${payload.type}`,
+      `Type: ${payload.type.toUpperCase()}`,
+      ...(cleanSubject ? [`Subject: ${cleanSubject}`] : []),
       ...(payload.rating != null ? [`Rating: ${payload.rating} / 5`] : []),
-      `Nickname: ${payload.nickname || 'None provided'}`,
-      `Email: ${payload.email || 'None provided'}`,
+      `From: ${payload.nickname || payload.email || 'Anonymous'}`,
+      `Reply-To Email: ${payload.email || 'None provided'}`,
       '',
-      '--- Message ---',
+      '--- Message Content ---',
       payload.message,
+      '',
+      '--------------------------------',
+      'Sent via CouchSync Live Feedback Form (https://couchsync.live)',
     ];
 
     const info = await transporter.sendMail({
-      from: `"CouchSync Notifications" <${user}>`,
+      from: `"CouchSync Live" <${user}>`,
       to,
-      subject: `New CouchSync ${payload.type} submission`,
+      replyTo: payload.email?.trim() || undefined,
+      subject: emailSubject,
       text: lines.join('\n'),
+      headers: {
+        'X-Mailer': 'CouchSync Mailer v1.0',
+        'X-Entity-Ref-ID': `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      },
     });
 
     return { sent: true, messageId: info.messageId };

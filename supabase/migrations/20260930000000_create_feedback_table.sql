@@ -8,6 +8,7 @@ create table if not exists public.feedback (
     message text not null check (char_length(message) between 10 and 500),
     nickname text check (char_length(nickname) <= 60),
     email text,
+    subject text check (char_length(subject) <= 100),
     show_publicly boolean not null default false,
     approved boolean not null default false,
     created_at timestamptz not null default now()

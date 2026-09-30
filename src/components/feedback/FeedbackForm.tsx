@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Star, Send, CheckCircle2, MessageSquare, Mail, Sparkles } from 'lucide-react';
+import { Star, Send, CheckCircle2, MessageSquare, Mail, Sparkles, Heart } from 'lucide-react';
 
 export function FeedbackForm() {
   const [activeTab, setActiveTab] = useState<'testimonial' | 'contact'>('testimonial');
@@ -20,6 +20,7 @@ export function FeedbackForm() {
   // Contact state
   const [contactMessage, setContactMessage] = useState('');
   const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
 
   // Status & error handling
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,15 +63,42 @@ export function FeedbackForm() {
       return;
     }
 
+    if (activeTab === 'contact') {
+      const trimmedEmail = email.trim();
+      const trimmedSubject = subject.trim();
+
+      if (!trimmedEmail) {
+        setErrorMessage('Please provide your email address so we can reply to you.');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedEmail)) {
+        setErrorMessage('Please provide a valid email address.');
+        return;
+      }
+
+      if (!trimmedSubject) {
+        setErrorMessage('Please provide a subject for your message.');
+        return;
+      }
+
+      if (trimmedSubject.length < 3) {
+        setErrorMessage('Subject must be at least 3 characters long.');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
       const payload = {
         type: activeTab,
         rating: activeTab === 'testimonial' ? rating : null,
+        subject: activeTab === 'contact' ? subject.trim() : null,
         message: trimmedMessage,
         nickname: activeTab === 'testimonial' ? nickname.trim() || null : null,
-        email: activeTab === 'contact' ? email.trim() || null : null,
+        email: activeTab === 'contact' ? email.trim() : null,
         show_publicly: activeTab === 'testimonial' ? showPublicly : false,
         hp,
       };
@@ -105,6 +133,7 @@ export function FeedbackForm() {
       } else {
         setContactMessage('');
         setEmail('');
+        setSubject('');
       }
     } catch {
       setErrorMessage('Network error occurred. Please check your connection and try again.');
@@ -131,13 +160,12 @@ export function FeedbackForm() {
             setActiveTab('testimonial');
             setErrorMessage(null);
           }}
-          className={`flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
-            activeTab === 'testimonial'
-              ? 'bg-white text-gray-950 shadow-2xs'
-              : 'text-gray-600 hover:text-gray-950'
-          }`}
+          className={`flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer ${activeTab === 'testimonial'
+            ? 'bg-white text-gray-950 shadow-2xs'
+            : 'text-gray-600 hover:text-gray-950'
+            }`}
         >
-          <Sparkles className="w-4 h-4 text-[#FF5722]" />
+          <Heart className="w-4 h-4 text-[#FF5722]" />
           <span>Leave a Review</span>
         </button>
 
@@ -147,11 +175,10 @@ export function FeedbackForm() {
             setActiveTab('contact');
             setErrorMessage(null);
           }}
-          className={`flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
-            activeTab === 'contact'
-              ? 'bg-white text-gray-950 shadow-2xs'
-              : 'text-gray-600 hover:text-gray-950'
-          }`}
+          className={`flex-1 py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer ${activeTab === 'contact'
+            ? 'bg-white text-gray-950 shadow-2xs'
+            : 'text-gray-600 hover:text-gray-950'
+            }`}
         >
           <Mail className="w-4 h-4 text-[#FF5722]" />
           <span>Contact Us</span>
@@ -243,11 +270,10 @@ export function FeedbackForm() {
                           className="p-1 rounded-lg hover:bg-orange-50 transition cursor-pointer focus:outline-none"
                         >
                           <Star
-                            className={`w-7 h-7 sm:w-8 sm:h-8 transition ${
-                              isFilled
-                                ? 'text-[#F59E0B] fill-[#F59E0B]'
-                                : 'text-gray-300 hover:text-amber-300'
-                            }`}
+                            className={`w-7 h-7 sm:w-8 sm:h-8 transition ${isFilled
+                              ? 'text-[#F59E0B] fill-[#F59E0B]'
+                              : 'text-gray-300 hover:text-amber-300'
+                              }`}
                           />
                         </button>
                       );
@@ -281,22 +307,44 @@ export function FeedbackForm() {
 
             {/* ── Contact Specific Fields ───────────────────────────── */}
             {activeTab === 'contact' && (
-              <div>
-                <label
-                  htmlFor="feedback-email"
-                  className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1.5"
-                >
-                  Your Email <span className="text-gray-400 font-normal">(Optional, if you would like a reply)</span>
-                </label>
-                <input
-                  id="feedback-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
-                />
-              </div>
+              <>
+                <div>
+                  <label
+                    htmlFor="feedback-email"
+                    className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1.5"
+                  >
+                    Your Email <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    id="feedback-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="feedback-subject"
+                    className="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1.5"
+                  >
+                    Subject <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    id="feedback-subject"
+                    type="text"
+                    required
+                    maxLength={100}
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="e.g. Bug report, Feature request, Question..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#FF5722] focus:bg-white transition"
+                  />
+                </div>
+              </>
             )}
 
             {/* ── Message Textarea (Shared) ─────────────────────────── */}
@@ -310,13 +358,12 @@ export function FeedbackForm() {
                   <span className="text-rose-500">*</span>
                 </label>
                 <span
-                  className={`text-[11px] font-medium ${
-                    currentMsgLength > 480
-                      ? 'text-rose-500'
-                      : currentMsgLength >= 10
+                  className={`text-[11px] font-medium ${currentMsgLength > 480
+                    ? 'text-rose-500'
+                    : currentMsgLength >= 10
                       ? 'text-gray-500'
                       : 'text-amber-600'
-                  }`}
+                    }`}
                 >
                   {currentMsgLength} / 500 {currentMsgLength > 0 && currentMsgLength < 10 && '(min 10)'}
                 </span>
@@ -375,11 +422,10 @@ export function FeedbackForm() {
               <button
                 type="submit"
                 disabled={isSubmitting || isCooldownActive}
-                className={`w-full py-3.5 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white font-bold text-xs sm:text-sm shadow-[0_6px_20px_rgba(255,87,34,0.3)] transition transform flex items-center justify-center gap-2 ${
-                  isSubmitting || isCooldownActive
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:from-[#F4511E] hover:to-[#FF5722] hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
-                }`}
+                className={`w-full py-3.5 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white font-bold text-xs sm:text-sm shadow-[0_6px_20px_rgba(255,87,34,0.3)] transition transform flex items-center justify-center gap-2 ${isSubmitting || isCooldownActive
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:from-[#F4511E] hover:to-[#FF5722] hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+                  }`}
               >
                 {isSubmitting ? (
                   <span>Submitting...</span>

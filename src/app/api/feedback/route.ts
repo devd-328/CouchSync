@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const {
       type,
       rating,
+      subject,
       message,
       nickname,
       email,
@@ -87,9 +88,25 @@ export async function POST(request: NextRequest) {
       trimmedNickname = nickname.trim();
     }
 
-    // 6. Validate 'email' (optional, basic email format check if provided)
+    // 6. Validate 'email' (required for contact, optional for testimonial)
     let trimmedEmail: string | null = null;
-    if (email !== undefined && email !== null && email !== '') {
+    if (type === 'contact') {
+      if (!email || typeof email !== 'string' || !email.trim()) {
+        return NextResponse.json(
+          { error: 'Email is required so we can reply to you.' },
+          { status: 400 }
+        );
+      }
+      const cleanEmail = email.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanEmail)) {
+        return NextResponse.json(
+          { error: 'Please provide a valid email address.' },
+          { status: 400 }
+        );
+      }
+      trimmedEmail = cleanEmail;
+    } else if (email !== undefined && email !== null && email !== '') {
       if (typeof email !== 'string') {
         return NextResponse.json(
           { error: 'Invalid email format.' },
@@ -107,7 +124,30 @@ export async function POST(request: NextRequest) {
       trimmedEmail = cleanEmail;
     }
 
-    // 7. Rate limiting: 60-second cooldown per client IP
+    // 7. Validate 'subject' (required for contact, max 100 chars, min 3 chars)
+    let trimmedSubject: string | null = null;
+    if (type === 'contact') {
+      if (!subject || typeof subject !== 'string' || !subject.trim()) {
+        return NextResponse.json(
+          { error: 'Subject is required for contact messages.' },
+          { status: 400 }
+        );
+      }
+      const cleanSubject = subject.trim();
+      if (cleanSubject.length < 3 || cleanSubject.length > 100) {
+        return NextResponse.json(
+          { error: 'Subject must be between 3 and 100 characters.' },
+          { status: 400 }
+        );
+      }
+      trimmedSubject = cleanSubject;
+    } else if (subject !== undefined && subject !== null && subject !== '') {
+      if (typeof subject === 'string') {
+        trimmedSubject = subject.trim().slice(0, 100);
+      }
+    }
+
+    // 8. Rate limiting: 60-second cooldown per client IP
     const forwarded = request.headers.get('x-forwarded-for');
     const clientIp = forwarded
       ? forwarded.split(',')[0].trim()
@@ -135,7 +175,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 8. Insert into Supabase 'feedback' table
+    // 9. Insert into Supabase 'feedback' table
     if (!supabase) {
       console.error('[API/feedback] Supabase is not configured.');
       return NextResponse.json(
@@ -144,14 +184,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { error: dbError } = await supabase.from('feedback').insert({
+    const insertPayload: Record<string, unknown> = {
       type,
       rating: validatedRating,
       message: trimmedMessage,
       nickname: trimmedNickname,
       email: trimmedEmail,
       show_publicly: Boolean(show_publicly),
-    });
+    };
+
+    if (trimmedSubject) {
+      insertPayload.subject = trimmedSubject;
+    }
+
+    let { error: dbError } = await supabase.from('feedback').insert(insertPayload);
+
+    // If the 'subject' column doesn't exist yet in the database, retry without it
+    if (dbError && dbError.code === '42703' && trimmedSubject) {
+      console.warn(
+        '[API/feedback] "subject" column does not exist on "feedback" table. Inserting without subject column.'
+      );
+      const fallbackPayload = { ...insertPayload };
+      delete fallbackPayload.subject;
+      const fallbackResult = await supabase.from('feedback').insert(fallbackPayload);
+      dbError = fallbackResult.error;
+    }
 
     if (dbError) {
       console.error('[API/feedback] Database insert error:', dbError);
@@ -164,11 +221,12 @@ export async function POST(request: NextRequest) {
     // Mark successful submission timestamp for rate limiting
     rateLimitMap.set(clientIp, now);
 
-    // 9. Dispatch email notification in background (never blocks or fails the request)
+    // 10. Dispatch email notification in background (never blocks or fails the request)
     try {
       await sendFeedbackNotification({
         type,
         rating: validatedRating,
+        subject: trimmedSubject,
         message: trimmedMessage,
         nickname: trimmedNickname,
         email: trimmedEmail,
