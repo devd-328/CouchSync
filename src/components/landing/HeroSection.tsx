@@ -3,6 +3,7 @@
 import React from 'react';
 import { MediaSourceType } from '@/types/sync';
 import { WorksWheel, type WorksWheelItem } from '@/components/ui/works-wheel';
+import { useRoomModals } from '@/components/landing/RoomModalsProvider';
 
 interface HeroWheelItem extends WorksWheelItem {
   mode: MediaSourceType;
@@ -60,12 +61,8 @@ const HERO_WATCH_EXPERIENCES: HeroWheelItem[] = [
   },
 ];
 
-interface HeroSectionProps {
-  onCreateRoom: (mode?: MediaSourceType) => void;
-  onJoinRoom: () => void;
-}
-
-export function HeroSection({ onCreateRoom, onJoinRoom }: HeroSectionProps) {
+export function HeroSection() {
+  const { openCreateRoom, openJoinRoom } = useRoomModals();
   return (
     <section className="relative z-10 w-full pt-8 sm:pt-14 pb-10 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8 overflow-x-clip">
       {/* Top Text Block */}
@@ -92,14 +89,14 @@ export function HeroSection({ onCreateRoom, onJoinRoom }: HeroSectionProps) {
         {/* Dual CTAs: Create a Room & Join a Room */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-3.5">
           <button
-            onClick={() => onCreateRoom('hls')}
+            onClick={() => openCreateRoom('hls')}
             type="button"
             className="w-full sm:w-auto px-7 py-3 rounded-full bg-[#111827] hover:bg-black text-white text-sm font-bold shadow-lg hover:shadow-xl transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             Create a Room
           </button>
           <button
-            onClick={onJoinRoom}
+            onClick={openJoinRoom}
             type="button"
             className="w-full sm:w-auto px-6 py-3 rounded-full bg-white hover:bg-orange-50/60 text-gray-900 text-sm font-semibold border border-black/10 shadow-xs hover:border-orange-300 transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
@@ -117,7 +114,7 @@ export function HeroSection({ onCreateRoom, onJoinRoom }: HeroSectionProps) {
             action="Launch Party"
             onSelect={(item) => {
               const heroItem = item as HeroWheelItem;
-              onCreateRoom(heroItem.mode || 'hls');
+              openCreateRoom(heroItem.mode || 'hls');
             }}
             className="size-full border-none shadow-none"
           />

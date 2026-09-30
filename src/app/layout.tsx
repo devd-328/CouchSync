@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Fraunces, Instrument_Sans, DM_Mono } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { RoomModalsProvider } from '@/components/landing/RoomModalsProvider';
 import { cn } from '@/lib/utils';
 import './globals.css';
 
@@ -125,7 +126,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#FAF8F5] text-gray-900 antialiased flex flex-col selection:bg-orange-500/20 selection:text-orange-900 font-sans">
-        {children}
+        <RoomModalsProvider>
+          {children}
+        </RoomModalsProvider>
         <SpeedInsights />
       </body>
     </html>

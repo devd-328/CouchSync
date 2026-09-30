@@ -16,10 +16,6 @@ export function SiteFooter() {
           Features
         </Link>
         <span className="text-gray-300">•</span>
-        <Link href="/#modes" className="hover:text-[#FF5722] transition">
-          Activities
-        </Link>
-        <span className="text-gray-300">•</span>
         <Link href="/how-it-works" className="hover:text-[#FF5722] transition">
           How It Works
         </Link>

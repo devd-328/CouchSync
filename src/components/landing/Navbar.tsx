@@ -1,19 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { CouchSyncMark } from '@/components/brand/CouchSyncLogo';
+import { useRoomModals } from '@/components/landing/RoomModalsProvider';
 
 interface NavbarProps {
   currentPage?: 'home' | 'how-it-works' | 'features' | 'about' | 'feedback';
-  onCreateRoom?: () => void;
-  onJoinRoom?: () => void;
 }
 
-export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
+export function Navbar({ currentPage }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { openCreateRoom, openJoinRoom } = useRoomModals();
 
   return (
     <header className="relative z-30 w-full px-3 sm:px-8 pt-3 sm:pt-6">
@@ -48,12 +47,6 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
             Features
           </Link>
           <Link
-            href="/#modes"
-            className="px-3 py-1.5 rounded-full text-gray-700 hover:text-[#FF5722] transition"
-          >
-            Activities
-          </Link>
-          <Link
             href="/how-it-works"
             className={`px-3 py-1.5 rounded-full transition ${
               currentPage === 'how-it-works'
@@ -83,44 +76,25 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
           >
             Feedback
           </Link>
-          {onJoinRoom ? (
-            <button
-              type="button"
-              onClick={onJoinRoom}
-              className="px-3 py-1.5 rounded-full text-gray-700 hover:text-[#FF5722] transition cursor-pointer font-medium"
-            >
-              Join Room
-            </button>
-          ) : (
-            <Link
-              href="/?action=join"
-              className="px-3 py-1.5 rounded-full text-gray-700 hover:text-[#FF5722] transition cursor-pointer font-medium"
-            >
-              Join Room
-            </Link>
-          )}
+          <button
+            type="button"
+            onClick={openJoinRoom}
+            className="px-3 py-1.5 rounded-full text-gray-700 hover:text-[#FF5722] transition cursor-pointer font-medium"
+          >
+            Join Room
+          </button>
         </nav>
 
         {/* Right CTA Area: Orange Gradient Pill Button */}
         <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
-          {onCreateRoom ? (
-            <button
-              onClick={onCreateRoom}
-              type="button"
-              className="whitespace-nowrap shrink-0 px-3.5 sm:px-7 py-2 sm:py-2.5 min-h-[44px] inline-flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(255,87,34,0.3)] sm:shadow-[0_6px_20px_rgba(255,87,34,0.35)] transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            >
-              <span className="sm:hidden">Launch</span>
-              <span className="hidden sm:inline">Launch Room</span>
-            </button>
-          ) : (
-            <Link
-              href="/?action=create"
-              className="whitespace-nowrap shrink-0 px-3.5 sm:px-7 py-2 sm:py-2.5 min-h-[44px] inline-flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(255,87,34,0.3)] sm:shadow-[0_6px_20px_rgba(255,87,34,0.35)] transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            >
-              <span className="sm:hidden">Launch</span>
-              <span className="hidden sm:inline">Launch Room</span>
-            </Link>
-          )}
+          <button
+            onClick={() => openCreateRoom()}
+            type="button"
+            className="whitespace-nowrap shrink-0 px-3.5 sm:px-7 py-2 sm:py-2.5 min-h-[44px] inline-flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] hover:from-[#F4511E] hover:to-[#FF5722] text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(255,87,34,0.3)] sm:shadow-[0_6px_20px_rgba(255,87,34,0.35)] transition transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span className="sm:hidden">Launch</span>
+            <span className="hidden sm:inline">Launch Room</span>
+          </button>
 
           {/* Mobile hamburger - min 44x44px tap target */}
           <button
@@ -147,13 +121,6 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
             }`}
           >
             Features
-          </Link>
-          <Link
-            href="/#modes"
-            onClick={() => setMobileMenuOpen(false)}
-            className="py-2 px-3 text-sm font-medium text-gray-700 hover:text-[#FF5722] transition rounded-xl"
-          >
-            Activities
           </Link>
           <Link
             href="/how-it-works"
@@ -189,47 +156,27 @@ export function Navbar({ currentPage, onCreateRoom, onJoinRoom }: NavbarProps) {
             Feedback
           </Link>
           <div className="pt-2 border-t border-black/6 flex flex-col gap-2">
-            {onJoinRoom ? (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onJoinRoom();
-                }}
-                type="button"
-                className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full border border-gray-300 text-sm font-semibold text-gray-800 hover:bg-gray-50 cursor-pointer"
-              >
-                Join Room with Code
-              </button>
-            ) : (
-              <Link
-                href="/?action=join"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full border border-gray-300 text-sm font-semibold text-gray-800 hover:bg-gray-50 cursor-pointer"
-              >
-                Join Room with Code
-              </Link>
-            )}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openJoinRoom();
+              }}
+              type="button"
+              className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full border border-gray-300 text-sm font-semibold text-gray-800 hover:bg-gray-50 cursor-pointer"
+            >
+              Join Room with Code
+            </button>
 
-            {onCreateRoom ? (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onCreateRoom();
-                }}
-                type="button"
-                className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white text-sm font-bold shadow-md cursor-pointer"
-              >
-                Launch Room
-              </button>
-            ) : (
-              <Link
-                href="/?action=create"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white text-sm font-bold shadow-md cursor-pointer"
-              >
-                Launch Room
-              </Link>
-            )}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openCreateRoom();
+              }}
+              type="button"
+              className="w-full py-2.5 min-h-[44px] flex items-center justify-center rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white text-sm font-bold shadow-md cursor-pointer"
+            >
+              Launch Room
+            </button>
           </div>
         </div>
       )}

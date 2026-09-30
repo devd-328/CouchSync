@@ -1,10 +1,8 @@
+'use client';
+
 import React from 'react';
 import { PlusCircle, UserPlus, Play } from 'lucide-react';
-
-interface HowItWorksProps {
-  onCreateRoom?: () => void;
-  onJoinRoom?: () => void;
-}
+import { useRoomModals } from '@/components/landing/RoomModalsProvider';
 
 const STEPS = [
   {
@@ -27,7 +25,8 @@ const STEPS = [
   },
 ];
 
-export function HowItWorks({ onCreateRoom, onJoinRoom }: HowItWorksProps) {
+export function HowItWorks() {
+  const { openCreateRoom, openJoinRoom } = useRoomModals();
   return (
     <section id="how-it-works" className="relative z-10 w-full max-w-6xl mx-auto py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-t border-black/6">
       <div className="max-w-2xl mx-auto text-center mb-10 sm:mb-12">
@@ -101,20 +100,18 @@ export function HowItWorks({ onCreateRoom, onJoinRoom }: HowItWorksProps) {
       <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
         <button
           type="button"
-          onClick={onCreateRoom}
+          onClick={() => openCreateRoom('hls')}
           className="w-full sm:w-auto px-7 py-3 rounded-full bg-linear-to-r from-[#FF5722] to-[#FF7043] text-white font-bold text-sm shadow-[0_10px_25px_-5px_rgba(255,87,34,0.35)] hover:shadow-[0_14px_30px_-5px_rgba(255,87,34,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer text-center"
         >
           Create a room
         </button>
-        {onJoinRoom && (
-          <button
-            type="button"
-            onClick={onJoinRoom}
-            className="text-xs sm:text-sm font-semibold text-gray-600 hover:text-[#FF5722] transition-colors py-1.5 px-3 cursor-pointer"
-          >
-            Have a code? <span className="underline decoration-orange-300 underline-offset-4 font-bold text-gray-800 hover:text-[#FF5722]">Join a room</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={openJoinRoom}
+          className="text-xs sm:text-sm font-semibold text-gray-600 hover:text-[#FF5722] transition-colors py-1.5 px-3 cursor-pointer"
+        >
+          Have a code? <span className="underline decoration-orange-300 underline-offset-4 font-bold text-gray-800 hover:text-[#FF5722]">Join a room</span>
+        </button>
       </div>
     </section>
   );

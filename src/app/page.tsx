@@ -1,19 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { generateId } from '@/lib/formatters';
-import {
-  loadUserSession,
-  saveUserSession,
-  getRecentRooms,
-  saveRecentRoom,
-  removeRecentRoom,
-  RecentRoom,
-  isValidNickname,
-} from '@/lib/session';
-import { DEFAULT_VIDEO } from '@/lib/sample-media';
-import { MediaSourceType } from '@/types/sync';
+import React from 'react';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { Navbar } from '@/components/landing/Navbar';
 import { HeroSection } from '@/components/landing/HeroSection';
@@ -24,127 +11,20 @@ import { MoreThanMovies } from '@/components/landing/MoreThanMovies';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { FaqSection } from '@/components/landing/FaqSection';
 import { FinalCTA } from '@/components/landing/FinalCTA';
-import { CreateRoomModal } from '@/components/landing/CreateRoomModal';
-import { JoinRoomModal } from '@/components/landing/JoinRoomModal';
+import { useRoomModals } from '@/components/landing/RoomModalsProvider';
 
 export default function HomePage() {
-  const router = useRouter();
-
-  // User state
-  const [userName, setUserName] = useState('');
-  const [recentRooms, setRecentRooms] = useState<RecentRoom[]>([]);
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  // Modal dialog states
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isJoinOpen, setIsJoinOpen] = useState(false);
-  const [selectedCreateMode, setSelectedCreateMode] = useState<MediaSourceType>('hls');
-
-  useEffect(() => {
-    const session = loadUserSession();
-    if (session.userName && isValidNickname(session.userName)) {
-      setUserName(session.userName);
-    } else {
-      setUserName('');
-    }
-    setRecentRooms(getRecentRooms());
-
-    // Auto-open modal if navigated from marketing pages with ?action=create or ?action=join
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const action = params.get('action');
-      if (action === 'create') {
-        setSelectedCreateMode('hls');
-        setIsCreateOpen(true);
-        window.history.replaceState({}, '', window.location.pathname);
-      } else if (action === 'join') {
-        setIsJoinOpen(true);
-        window.history.replaceState({}, '', window.location.pathname);
-      }
-    }
-  }, []);
-
-  /** Navigates with a brief 320ms fade curtain for smooth UX */
-  const navigateWithFade = useCallback(
-    (href: string) => {
-      setIsNavigating(true);
-      setTimeout(() => router.push(href), 320);
-    },
-    [router]
-  );
-
-  const handleOpenCreate = (mode: MediaSourceType = 'hls') => {
-    setSelectedCreateMode(mode);
-    setIsCreateOpen(true);
-  };
-
-  const handleOpenJoin = () => {
-    setIsJoinOpen(true);
-  };
-
-  const handleSaveUserName = (name: string) => {
-    setUserName(name);
-    saveUserSession({ userName: name });
-  };
-
-  const handleExecuteCreate = (
-    roomName: string,
-    mode: MediaSourceType,
-    nick: string,
-    youtubeVideoId?: string
-  ) => {
-    setIsCreateOpen(false);
-    const newRoomId = generateId('room').replace('room-', '');
-    const cleanName = roomName.trim() || 'Cosmic Cinema';
-
-    saveUserSession({
-      userName: nick,
-      roomName: cleanName,
-      video: DEFAULT_VIDEO,
-      isHost: true,
-    });
-
-    saveRecentRoom({ id: newRoomId, name: cleanName });
-    const ytQuery = youtubeVideoId ? `&youtubeId=${encodeURIComponent(youtubeVideoId)}` : '';
-    navigateWithFade(`/room/${newRoomId}?initialMode=${mode}${ytQuery}`);
-  };
-
-  const handleExecuteJoin = (roomId: string, nick: string) => {
-    setIsJoinOpen(false);
-    saveUserSession({
-      userName: nick,
-      isHost: false,
-    });
-
-    saveRecentRoom({ id: roomId, name: `Room ${roomId}` });
-    navigateWithFade(`/room/${roomId}`);
-  };
-
-  const handleRemoveRecent = (id: string) => {
-    removeRecentRoom(id);
-    setRecentRooms(getRecentRooms());
-  };
+  const { openCreateRoom } = useRoomModals();
 
   return (
-    <div
-      className={`min-h-screen w-full bg-linear-to-b from-[#EA580C] via-[#F97316] to-[#FB923C] p-2 sm:p-5 lg:p-8 flex flex-col justify-between overflow-x-hidden${
-        isNavigating ? ' page-navigating' : ''
-      }`}
-    >
+    <div className="min-h-screen w-full bg-linear-to-b from-[#EA580C] via-[#F97316] to-[#FB923C] p-2 sm:p-5 lg:p-8 flex flex-col justify-between overflow-x-hidden">
       {/* Main White/Cream Canvas Card matching ChatNest frame */}
       <main className="w-full max-w-[1380px] mx-auto bg-[#FAF8F5] rounded-[28px] sm:rounded-[44px] shadow-[0_30px_90px_rgba(0,0,0,0.22)] border border-white/60 overflow-hidden flex flex-col justify-between">
         {/* 01. Navbar */}
-        <Navbar
-          currentPage="home"
-          onCreateRoom={() => handleOpenCreate('hls')}
-          onJoinRoom={handleOpenJoin}
-        />
+        <Navbar currentPage="home" />
 
         {/* 02. Hero Section with Hand Holding Phone + 4 Floating Cards */}
-        <HeroSection
-          onCreateRoom={(mode) => handleOpenCreate(mode || 'hls')}
-          onJoinRoom={handleOpenJoin}
-        />
+        <HeroSection />
 
         {/* 03. Capability Strip */}
         <CapabilityStrip />
@@ -157,47 +37,21 @@ export default function HomePage() {
 
         {/* 06. More than movies */}
         <MoreThanMovies
-          onSelectMode={(mode) => handleOpenCreate(mode)}
+          onSelectMode={(mode) => openCreateRoom(mode)}
         />
 
         {/* 07. Simple Flow (How it works) */}
-        <HowItWorks
-          onCreateRoom={() => handleOpenCreate('hls')}
-          onJoinRoom={handleOpenJoin}
-        />
+        <HowItWorks />
 
         {/* FAQ */}
         <FaqSection />
 
         {/* 08. Final CTA */}
-        <FinalCTA
-          onCreateRoom={() => handleOpenCreate('hls')}
-          onJoinRoom={handleOpenJoin}
-        />
+        <FinalCTA />
 
         {/* 09. Footer */}
         <SiteFooter />
       </main>
-
-      {/* Interactive Room Action Modals */}
-      <CreateRoomModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        userName={userName}
-        onSaveUserName={handleSaveUserName}
-        defaultMode={selectedCreateMode}
-        onSubmit={handleExecuteCreate}
-      />
-
-      <JoinRoomModal
-        isOpen={isJoinOpen}
-        onClose={() => setIsJoinOpen(false)}
-        userName={userName}
-        onSaveUserName={handleSaveUserName}
-        recentRooms={recentRooms}
-        onRemoveRecent={handleRemoveRecent}
-        onSubmit={handleExecuteJoin}
-      />
     </div>
   );
 }
