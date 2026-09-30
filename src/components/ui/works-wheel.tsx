@@ -44,10 +44,11 @@ const RING_R = 1.14; // ring radius
 const BOW = 1.82;
 const CULL = 1.6;
 
-const WHEEL_UNITS = 900;
-const DRAG_UNITS = 400;
-const SETTLE = 140;
-const EASE = 0.12;
+const WHEEL_UNITS = 220;
+const DRAG_UNITS = 180;
+const DRAG_THRESHOLD = 5;
+const SETTLE = 200;
+const EASE = 0.14;
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
@@ -92,11 +93,27 @@ export function WorksWheel({
 
   const turn = React.useRef(0);
   const target = React.useRef(0);
+  const settling = React.useRef<number>(0);
   const [active, setActive] = React.useState(0);
   const [stage, setStage] = React.useState<Stage>({ w: 0, h: 0 });
 
   const count = items.length;
   const last = Math.max(count - 1, 0);
+
+  // Coarse-pointer (touch) detection for hint text
+  const [isCoarse, setIsCoarse] = React.useState(false);
+  React.useEffect(() => {
+    const query = window.matchMedia("(pointer: coarse)");
+    const read = () => setIsCoarse(query.matches);
+    read();
+    if (query.addEventListener) {
+      query.addEventListener("change", read);
+      return () => query.removeEventListener("change", read);
+    } else {
+      query.addListener(read);
+      return () => query.removeListener(read);
+    }
+  }, []);
 
   // Reduced motion preference
   const [reduced, setReduced] = React.useState(false);
@@ -128,10 +145,10 @@ export function WorksWheel({
     const isTablet = w >= 640 && w < 1024;
 
     // Adapt card width ratio according to screen size
-    const cardMaxWFactor = isMobile ? 0.65 : isTablet ? 0.44 : 0.34;
-    const cardHFactor = isMobile ? 0.42 : 0.38;
+    const cardMaxWFactor = isMobile ? 0.62 : isTablet ? 0.44 : 0.34;
+    const cardHFactor = isMobile ? 0.40 : 0.38;
 
-    const cardW = Math.min(h * cardHFactor * CARD_RATIO, w * cardMaxWFactor) || 200;
+    const cardW = Math.min(h * cardHFactor * CARD_RATIO, w * cardMaxWFactor) || 180;
     const cardH = cardW / CARD_RATIO;
     const drumR = cardH * DRUM;
     const ringR = cardH * RING_R;
@@ -153,6 +170,16 @@ export function WorksWheel({
       isMobile,
     };
   }, [stage, count]);
+
+  const snapToNearest = React.useCallback(() => {
+    if (target.current > 1) {
+      target.current = clamp(Math.round(target.current), 1, last + 1);
+    } else if (target.current > 0.4) {
+      target.current = 1;
+    } else {
+      target.current = 0;
+    }
+  }, [last]);
 
   // RequestAnimationFrame rendering loop
   React.useEffect(() => {
@@ -219,13 +246,14 @@ export function WorksWheel({
     to(Math.min(last + 1, Math.round(target.current) + 1));
   }, [to, last]);
 
-  // Native wheel listener with bounds check to allow smooth page scroll
+  // Native wheel listener with smooth scrolling sensitivity & auto-snap
   React.useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
     const onWheel = (event: WheelEvent) => {
-      // Only prevent page scroll when turning between items
-      const next = target.current + event.deltaY / WHEEL_UNITS;
+      const delta = Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY), 100);
+      const next = target.current + delta / WHEEL_UNITS;
+
       if (
         (event.deltaY > 0 && target.current < last + 1) ||
         (event.deltaY < 0 && target.current > 0)
@@ -235,24 +263,122 @@ export function WorksWheel({
       to(next);
 
       window.clearTimeout(settling.current);
-      settling.current = window.setTimeout(
-        () => to(Math.round(target.current)),
-        SETTLE,
-      );
+      settling.current = window.setTimeout(snapToNearest, SETTLE);
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       el.removeEventListener("wheel", onWheel);
       window.clearTimeout(settling.current);
     };
-  }, [to, last]);
+  }, [to, last, snapToNearest]);
 
-  // Pointer drag for mouse and touch
+  // Gesture and drag tracking
   const dragY = React.useRef<number | null>(null);
   const dragX = React.useRef<number | null>(null);
-  const settling = React.useRef<number>(0);
+  const startX = React.useRef<number>(0);
+  const startY = React.useRef<number>(0);
+  const pointerIdRef = React.useRef<number | null>(null);
+  const isDraggingRef = React.useRef<boolean>(false);
+  const didDrag = React.useRef<boolean>(false);
+  const didDragTimeout = React.useRef<number>(0);
+
+  React.useEffect(() => {
+    return () => {
+      window.clearTimeout(didDragTimeout.current);
+    };
+  }, []);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!event.isPrimary) return;
+    window.clearTimeout(didDragTimeout.current);
+    didDrag.current = false;
+    isDraggingRef.current = false;
+
+    startX.current = event.clientX;
+    startY.current = event.clientY;
+    dragX.current = event.clientX;
+    dragY.current = event.clientY;
+    pointerIdRef.current = event.pointerId;
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== event.pointerId) return;
+    if (dragX.current === null || dragY.current === null) return;
+
+    const diffX = event.clientX - startX.current;
+    const diffY = event.clientY - startY.current;
+    const dist = Math.hypot(diffX, diffY);
+
+    if (!isDraggingRef.current) {
+      if (dist >= DRAG_THRESHOLD) {
+        isDraggingRef.current = true;
+        didDrag.current = true;
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {}
+      }
+    }
+
+    if (isDraggingRef.current) {
+      const stepX = dragX.current - event.clientX;
+      const stepY = dragY.current - event.clientY;
+      const delta = Math.abs(diffX) > Math.abs(diffY) ? stepX : stepY;
+
+      to(target.current + delta / DRAG_UNITS);
+      dragX.current = event.clientX;
+      dragY.current = event.clientY;
+    }
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== null && event.pointerId !== pointerIdRef.current) return;
+
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {}
+
+    dragY.current = null;
+    dragX.current = null;
+    pointerIdRef.current = null;
+    isDraggingRef.current = false;
+
+    snapToNearest();
+
+    window.clearTimeout(didDragTimeout.current);
+    didDragTimeout.current = window.setTimeout(() => {
+      didDrag.current = false;
+    }, 150);
+  };
+
+  const handlePointerCancel = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== null && event.pointerId !== pointerIdRef.current) return;
+
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {}
+
+    dragY.current = null;
+    dragX.current = null;
+    pointerIdRef.current = null;
+    isDraggingRef.current = false;
+
+    snapToNearest();
+
+    window.clearTimeout(didDragTimeout.current);
+    didDragTimeout.current = window.setTimeout(() => {
+      didDrag.current = false;
+    }, 150);
+  };
 
   const handleCardClick = (e: React.MouseEvent, index: number, item: WorksWheelItem) => {
+    if (didDrag.current) {
+      e.preventDefault();
+      return;
+    }
     // If clicking a non-active card, bring it to the front
     if (index !== active) {
       e.preventDefault();
@@ -304,24 +430,10 @@ export function WorksWheel({
           perspective: `${metrics.depth}px`,
           WebkitPerspective: `${metrics.depth}px`,
         }}
-        onPointerDown={(event) => {
-          dragY.current = event.clientY;
-          dragX.current = event.clientX;
-          event.currentTarget.setPointerCapture(event.pointerId);
-        }}
-        onPointerMove={(event) => {
-          if (dragY.current === null) return;
-          const deltaY = dragY.current - event.clientY;
-          to(target.current + deltaY / DRAG_UNITS);
-          dragY.current = event.clientY;
-        }}
-        onPointerUp={() => {
-          dragY.current = null;
-          dragX.current = null;
-          if (target.current > 1) to(Math.round(target.current));
-          else if (target.current > 0.5) to(1);
-          else to(0);
-        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         onKeyDown={(event) => {
           if (event.key === "ArrowDown" || event.key === "ArrowRight") {
             nextItem();
@@ -432,7 +544,7 @@ export function WorksWheel({
         <div className="flex flex-col items-center">
           <span>{label}</span>
           <span className="text-xs sm:text-sm font-normal text-orange-400/90 tracking-normal mt-1 opacity-80">
-            Scroll or drag to explore
+            {isCoarse ? "Swipe to explore" : "Scroll or drag to explore"}
           </span>
         </div>
       </div>
