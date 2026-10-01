@@ -37,6 +37,16 @@ export function Navbar({ currentPage }: NavbarProps) {
         {/* Center Nav Links */}
         <nav className="hidden lg:flex items-center gap-1 sm:gap-2 text-sm font-medium text-gray-700">
           <Link
+            href="/"
+            className={`px-3 py-1.5 rounded-full transition ${
+              currentPage === 'home'
+                ? 'bg-white text-[#EA580C] border border-black/8 shadow-2xs font-bold'
+                : 'text-gray-700 hover:text-[#FF5722]'
+            }`}
+          >
+            Home
+          </Link>
+          <Link
             href="/features"
             className={`px-3 py-1.5 rounded-full transition ${
               currentPage === 'features'
@@ -111,6 +121,17 @@ export function Navbar({ currentPage }: NavbarProps) {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden mt-3 p-5 rounded-2xl bg-white/95 border border-black/8 shadow-xl flex flex-col gap-3">
+          <Link
+            href="/"
+            onClick={() => setMobileMenuOpen(false)}
+            className={`py-2 px-3 text-sm font-medium transition rounded-xl ${
+              currentPage === 'home'
+                ? 'bg-orange-50 text-[#EA580C] font-bold border border-orange-200/60'
+                : 'text-gray-700 hover:text-[#FF5722]'
+            }`}
+          >
+            Home
+          </Link>
           <Link
             href="/features"
             onClick={() => setMobileMenuOpen(false)}

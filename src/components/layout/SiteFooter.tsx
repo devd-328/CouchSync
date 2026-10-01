@@ -20,10 +20,6 @@ export function SiteFooter() {
           How It Works
         </Link>
         <span className="text-gray-300">•</span>
-        <Link href="/#faq" className="hover:text-[#FF5722] transition">
-          FAQ
-        </Link>
-        <span className="text-gray-300">•</span>
         <Link href="/about" className="hover:text-[#FF5722] transition">
           About
         </Link>
