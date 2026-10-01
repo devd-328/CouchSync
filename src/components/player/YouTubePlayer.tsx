@@ -18,6 +18,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { PlaybackAction, ControlMode } from '@/types/sync';
+import { SYNC_CONFIG } from '@/config/constants';
 import { formatTime } from '@/lib/formatters';
 
 interface YouTubePlayerProps {
@@ -30,6 +31,8 @@ interface YouTubePlayerProps {
   remoteAction: PlaybackAction | null;
   onChangeVideo: (id: string, title?: string) => void;
   onToggleFullscreen?: () => void;
+  isHost?: boolean;
+  userId?: string;
 }
 
 // Helper to extract YouTube ID from any format (standard, shorts, live, mobile, embed, youtu.be, or raw 11-char ID)
@@ -114,12 +117,30 @@ export function YouTubePlayer({
   remoteAction,
   onChangeVideo,
   onToggleFullscreen,
+  isHost,
+  userId,
 }: YouTubePlayerProps) {
   const containerElementId = useRef(`yt-player-${Math.random().toString(36).substring(2, 9)}`);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [playerError, setPlayerError] = useState<string | null>(null);
+
+  // Echo prevention and closure-guard refs
+  const expectedStateRef = useRef<number | null>(null);
+  const localIntentRef = useRef<{ target: 1 | 2; ts: number } | null>(null);
+  const lastControlTsRef = useRef<number>(0);
+  const isUnmountedRef = useRef<boolean>(false);
+  const playerCreatedRef = useRef<boolean>(false);
+  const pendingVideoIdRef = useRef<string | null>(null);
+  const canControlRef = useRef(canControlPlayback);
+  const sendRef = useRef(onSendAction);
+  const lastHandledTsRef = useRef(remoteAction?.ts ?? 0);
+  const userIdRef = useRef(userId);
+
+  canControlRef.current = canControlPlayback;
+  sendRef.current = onSendAction;
+  userIdRef.current = userId;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -132,6 +153,19 @@ export function YouTubePlayer({
   const [newUrlInput, setNewUrlInput] = useState('');
   const [inputError, setInputError] = useState('');
   const [showLockToast, setShowLockToast] = useState(false);
+  const [isScrubbing, setIsScrubbing] = useState(false);
+  const [scrubTime, setScrubTime] = useState(0);
+
+  // Apply remote play/pause state without triggering echo bounces
+  const applyRemoteState = useCallback((player: YTPlayerInstance, target: 1 | 2) => {
+    if (player.getPlayerState() === target) return;
+    expectedStateRef.current = target;
+    setTimeout(() => {
+      if (expectedStateRef.current === target) expectedStateRef.current = null;
+    }, 1500);
+    if (target === 1) player.playVideo();
+    else player.pauseVideo();
+  }, []);
 
   // PostMessage fallback for direct iframe control if YT.Player isn't ready
   const postToYT = useCallback((command: string, args: unknown[] = []) => {
@@ -151,21 +185,26 @@ export function YouTubePlayer({
     // If player already exists and is ready, smoothly switch videos via API
     if (ytPlayerRef.current && typeof ytPlayerRef.current.loadVideoById === 'function') {
       try {
+        expectedStateRef.current = null;
+        pendingVideoIdRef.current = null;
         ytPlayerRef.current.loadVideoById(videoId);
-        setIsPlaying(true);
         return;
       } catch (err) {
         console.warn('Error switching YouTube video via loadVideoById:', err);
       }
+    } else {
+      pendingVideoIdRef.current = videoId;
     }
 
     function initYT() {
-      if (isCancelled) return;
+      if (isCancelled || isUnmountedRef.current || playerCreatedRef.current) return;
       if (!window.YT || !window.YT.Player) return;
 
       try {
         const el = document.getElementById(containerElementId.current);
         if (!el) return;
+
+        playerCreatedRef.current = true;
 
         const player = new window.YT.Player(el, {
           videoId,
@@ -173,7 +212,9 @@ export function YouTubePlayer({
           playerVars: {
             enablejsapi: 1,
             autoplay: 1,
-            controls: 1,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
             rel: 0,
             modestbranding: 1,
             iv_load_policy: 3,
@@ -183,25 +224,34 @@ export function YouTubePlayer({
           },
           events: {
             onReady: (event) => {
-              if (isCancelled) return;
+              if (isUnmountedRef.current) return;
               ytPlayerRef.current = event.target;
               setIsPlayerReady(true);
               setPlayerError(null);
+              const targetVideoId = pendingVideoIdRef.current || videoId;
+              pendingVideoIdRef.current = null;
+              if (targetVideoId !== videoId) {
+                try {
+                  event.target.loadVideoById(targetVideoId);
+                } catch {
+                  // ignore
+                }
+              }
               try {
                 const d = event.target.getDuration();
                 if (typeof d === 'number' && !isNaN(d) && d > 0) {
                   setDuration(d);
                 }
                 event.target.playVideo();
-                setIsPlaying(true);
               } catch {
                 // Autoplay blocked by browser policy
               }
             },
             onStateChange: (event) => {
-              if (isCancelled) return;
+              if (isUnmountedRef.current) return;
+              const state = event.data;
               // 1 = PLAYING, 2 = PAUSED, 0 = ENDED, 3 = BUFFERING
-              if (event.data === 1) {
+              if (state === 1) {
                 setIsPlaying(true);
                 try {
                   const d = event.target.getDuration();
@@ -211,14 +261,34 @@ export function YouTubePlayer({
                 } catch {
                   // ignore
                 }
-              } else if (event.data === 2) {
+              } else if (state === 2 || state === 0) {
                 setIsPlaying(false);
-              } else if (event.data === 0) {
-                setIsPlaying(false);
+              }
+
+              // Suppress echo from remote actions
+              if (expectedStateRef.current === state) {
+                expectedStateRef.current = null;
+                return;
+              }
+
+              const intent = localIntentRef.current;
+              if (
+                intent &&
+                state === intent.target &&
+                Date.now() - intent.ts < 8000 &&
+                canControlRef.current
+              ) {
+                localIntentRef.current = null;
+                sendRef.current({
+                  type: state === 1 ? 'play' : 'pause',
+                  time: event.target.getCurrentTime(),
+                  senderId: userIdRef.current || 'local',
+                  ts: Date.now(),
+                });
               }
             },
             onError: (event) => {
-              if (isCancelled) return;
+              if (isUnmountedRef.current) return;
               let msg = 'Failed to load YouTube video.';
               if (event.data === 150 || event.data === 101) {
                 msg =
@@ -277,7 +347,9 @@ export function YouTubePlayer({
 
   // Clean up player instance on component unmount
   useEffect(() => {
+    isUnmountedRef.current = false;
     return () => {
+      isUnmountedRef.current = true;
       if (ytPlayerRef.current) {
         try {
           ytPlayerRef.current.destroy();
@@ -314,79 +386,108 @@ export function YouTubePlayer({
 
   // 3. Handle remote actions from partners
   useEffect(() => {
-    if (!remoteAction) return;
+    const a = remoteAction;
+    if (!a || (userId && a.senderId === userId)) return;
+    localIntentRef.current = null;
 
     const player = ytPlayerRef.current;
+    if (!player || !isPlayerReady || typeof player.getPlayerState !== 'function') return;
+    if (a.ts === lastHandledTsRef.current) return;
+    lastHandledTsRef.current = a.ts;
 
-    if (remoteAction.type === 'play') {
-      setIsPlaying(true);
-      if (player?.playVideo) {
-        player.playVideo();
-        const current = player.getCurrentTime?.() ?? currentTime;
-        if (Math.abs(current - remoteAction.time) > 1.5) {
-          player.seekTo(remoteAction.time, true);
-          setCurrentTime(remoteAction.time);
-        }
-      } else {
-        postToYT('playVideo');
-        if (Math.abs(currentTime - remoteAction.time) > 1.5) {
-          postToYT('seekTo', [remoteAction.time, true]);
-          setCurrentTime(remoteAction.time);
-        }
+    const now = player.getCurrentTime();
+    const tolerance = SYNC_CONFIG.DRIFT_TOLERANCE_SECONDS;
+
+    if (a.type === 'play') {
+      if (Math.abs(now - a.time) > tolerance) {
+        player.seekTo(a.time, true);
+        setCurrentTime(a.time);
       }
-    } else if (remoteAction.type === 'pause') {
-      setIsPlaying(false);
-      if (player?.pauseVideo) {
-        player.pauseVideo();
-        player.seekTo(remoteAction.time, true);
-      } else {
-        postToYT('pauseVideo');
-        postToYT('seekTo', [remoteAction.time, true]);
+      applyRemoteState(player, 1);
+    } else if (a.type === 'pause') {
+      applyRemoteState(player, 2);
+      player.seekTo(a.time, true);
+      setCurrentTime(a.time);
+    } else if (a.type === 'seek') {
+      player.seekTo(a.time, true);
+      setCurrentTime(a.time);
+    } else if (a.type === 'speed') {
+      setPlaybackSpeed(a.speed);
+      player.setPlaybackRate(a.speed);
+    } else if (a.type === 'heartbeat') {
+      if (isHost) return;
+      if (a.ts < lastControlTsRef.current) return;
+      const st = player.getPlayerState();
+      // Do not seek YouTube guests while buffering (st === 3)
+      if (st !== 3 && Math.abs(now - a.time) > tolerance) {
+        player.seekTo(a.time, true);
+        setCurrentTime(a.time);
       }
-      setCurrentTime(remoteAction.time);
-    } else if (remoteAction.type === 'seek') {
-      if (player?.seekTo) {
-        player.seekTo(remoteAction.time, true);
-      } else {
-        postToYT('seekTo', [remoteAction.time, true]);
+      if (a.speed && Math.abs(player.getPlaybackRate() - a.speed) > 0.05) {
+        player.setPlaybackRate(a.speed);
+        setPlaybackSpeed(a.speed);
       }
-      setCurrentTime(remoteAction.time);
-    } else if (remoteAction.type === 'speed') {
-      setPlaybackSpeed(remoteAction.speed);
-      if (player?.setPlaybackRate) {
-        player.setPlaybackRate(remoteAction.speed);
+      // states: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 video cued
+      if (a.isPlaying && (st === 2 || st === 0 || st === -1 || st === 5)) {
+        applyRemoteState(player, 1);
+      } else if (!a.isPlaying && (st === 1 || st === 3)) {
+        applyRemoteState(player, 2);
       }
     }
-  }, [remoteAction, postToYT, currentTime]);
+  }, [remoteAction, isPlayerReady, userId, isHost, applyRemoteState]);
+
+  // 4. Host Heartbeat Broadcast Loop
+  useEffect(() => {
+    if (!isHost) return;
+    const interval = setInterval(() => {
+      const player = ytPlayerRef.current;
+      if (!player || typeof player.getCurrentTime !== 'function') return;
+      const state = player.getPlayerState();
+      sendRef.current({
+        type: 'heartbeat',
+        time: player.getCurrentTime(),
+        isPlaying: state === 1 || state === 3,
+        speed: player.getPlaybackRate(),
+        senderId: userId || 'local',
+        ts: Date.now(),
+      });
+    }, SYNC_CONFIG.HEARTBEAT_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [isHost, userId]);
 
   const handlePlayPause = () => {
+    const player = ytPlayerRef.current;
+    const st = player?.getPlayerState?.();
+
     if (!canControlPlayback) {
+      // Allow locked guests to start playback locally without broadcasting when host is already playing
+      const isHostCurrentlyPlaying =
+        remoteAction?.type === 'play' ||
+        (remoteAction?.type === 'heartbeat' && remoteAction?.isPlaying);
+      if (isHostCurrentlyPlaying && (st === 2 || st === 0 || st === -1 || st === 5)) {
+        if (player?.playVideo) player.playVideo();
+        else postToYT('playVideo');
+        return;
+      }
+
       setShowLockToast(true);
       setTimeout(() => setShowLockToast(false), 2500);
       return;
     }
 
-    const player = ytPlayerRef.current;
-    if (isPlaying) {
+    lastControlTsRef.current = Date.now();
+    const pausing = st === 1 || st === 3;
+    localIntentRef.current = {
+      target: pausing ? 2 : 1,
+      ts: Date.now(),
+    };
+    if (pausing) {
       if (player?.pauseVideo) player.pauseVideo();
       else postToYT('pauseVideo');
-      setIsPlaying(false);
-      onSendAction({
-        type: 'pause',
-        time: currentTime,
-        senderId: 'local',
-        ts: Date.now(),
-      });
     } else {
       if (player?.playVideo) player.playVideo();
       else postToYT('playVideo');
-      setIsPlaying(true);
-      onSendAction({
-        type: 'play',
-        time: currentTime,
-        senderId: 'local',
-        ts: Date.now(),
-      });
     }
   };
 
@@ -396,6 +497,7 @@ export function YouTubePlayer({
       setTimeout(() => setShowLockToast(false), 2500);
       return;
     }
+    lastControlTsRef.current = Date.now();
     const safeTime = Math.max(0, Math.min(duration > 0 ? duration : 3600, newTime));
     setCurrentTime(safeTime);
 
@@ -406,10 +508,10 @@ export function YouTubePlayer({
       postToYT('seekTo', [safeTime, true]);
     }
 
-    onSendAction({
+    sendRef.current({
       type: 'seek',
       time: safeTime,
-      senderId: 'local',
+      senderId: userId || 'local',
       ts: Date.now(),
     });
   };
@@ -421,8 +523,47 @@ export function YouTubePlayer({
       return;
     }
     const maxDur = duration > 0 ? duration : 3600;
-    const target = Math.max(0, Math.min(maxDur, currentTime + deltaSeconds));
+    const live = ytPlayerRef.current?.getCurrentTime?.() ?? currentTime;
+    const target = Math.max(0, Math.min(maxDur, live + deltaSeconds));
     handleSeek(target);
+  };
+
+  // Support custom events from global keyboard handler with live handlersRef
+  const handlersRef = useRef({
+    togglePlay: () => {},
+    skip: (_d: number) => {},
+  });
+
+  handlersRef.current = {
+    togglePlay: handlePlayPause,
+    skip: handleSkip,
+  };
+
+  useEffect(() => {
+    const onToggle = () => handlersRef.current.togglePlay();
+
+    const onSeekRel = (e: Event) => {
+      const delta = (e as CustomEvent<{ delta: number }>).detail?.delta;
+      if (typeof delta === 'number') {
+        handlersRef.current.skip(delta);
+      }
+    };
+
+    window.addEventListener('couchsync:toggle-play-youtube', onToggle);
+    window.addEventListener('couchsync:seek-youtube', onSeekRel);
+
+    return () => {
+      window.removeEventListener('couchsync:toggle-play-youtube', onToggle);
+      window.removeEventListener('couchsync:seek-youtube', onSeekRel);
+    };
+  }, []);
+
+  const commitScrub = () => {
+    if (!isScrubbing) return;
+    setIsScrubbing(false);
+    if (Math.abs(scrubTime - currentTime) > 0.5) {
+      handleSeek(scrubTime);
+    }
   };
 
   const handleSpeedChange = (speed: number) => {
@@ -435,10 +576,10 @@ export function YouTubePlayer({
       player.setPlaybackRate(speed);
     }
 
-    onSendAction({
+    sendRef.current({
       type: 'speed',
       speed,
-      senderId: 'local',
+      senderId: userId || 'local',
       ts: Date.now(),
     });
   };
@@ -499,7 +640,8 @@ export function YouTubePlayer({
   };
 
   const validDuration = isFinite(duration) && duration > 0 ? duration : 0;
-  const progressPercent = validDuration > 0 ? (currentTime / validDuration) * 100 : 0;
+  const displayTime = isScrubbing ? scrubTime : currentTime;
+  const progressPercent = validDuration > 0 ? (displayTime / validDuration) * 100 : 0;
 
   return (
     <div className="relative w-full h-full flex flex-col bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
@@ -507,17 +649,23 @@ export function YouTubePlayer({
       <div className="relative flex-1 w-full h-full min-h-90 bg-black">
         <div id={containerElementId.current} className="w-full h-full" />
 
-        {/* Fallback iframe before JS API attaches or if blocked */}
+        {/* Fallback iframe before JS API attaches or if blocked (autoplay=0 to prevent double audio) */}
         {!isPlayerReady && !playerError && (
           <iframe
             ref={iframeRef}
-            src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&origin=${typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : ''}`}
+            src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&controls=0&rel=0&modestbranding=1&iv_load_policy=3&origin=${typeof window !== 'undefined' ? encodeURIComponent(window.location.origin) : ''}`}
             title={videoTitle || 'YouTube Watch Party'}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="absolute inset-0 w-full h-full border-0 pointer-events-none"
           />
         )}
+
+        {/* Full-surface click shield: captures all video surface clicks to route through handlePlayPause */}
+        <div
+          className="absolute inset-0 z-[5] cursor-pointer"
+          onClick={handlePlayPause}
+        />
 
         {/* Video Player Error State (e.g. Embedding disabled by owner / Video private) */}
         {playerError && (
@@ -612,9 +760,26 @@ export function YouTubePlayer({
             max={validDuration || 100}
             step={0.5}
             disabled={!canControlPlayback}
-            value={currentTime}
-            onChange={(e) => canControlPlayback && handleSeek(parseFloat(e.target.value))}
-            className={`absolute inset-0 w-full h-full opacity-0 ${canControlPlayback ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+            value={displayTime}
+            onPointerDown={() => {
+              if (canControlPlayback) {
+                setIsScrubbing(true);
+                setScrubTime(currentTime);
+              }
+            }}
+            onChange={(e) => {
+              if (!canControlPlayback) return;
+              const v = parseFloat(e.target.value);
+              if (isScrubbing) {
+                setScrubTime(v);
+              } else {
+                handleSeek(v);
+              }
+            }}
+            onPointerUp={commitScrub}
+            onPointerCancel={commitScrub}
+            onBlur={commitScrub}
+            className={`absolute inset-0 w-full h-full opacity-0 touch-none ${canControlPlayback ? 'cursor-pointer' : 'cursor-not-allowed'}`}
           />
           {/* Playhead thumb dot */}
           <div
@@ -629,7 +794,10 @@ export function YouTubePlayer({
             {/* Play/Pause Button */}
             <button
               type="button"
-              onClick={handlePlayPause}
+              onClick={(e) => {
+                e.currentTarget.blur();
+                handlePlayPause();
+              }}
               disabled={!canControlPlayback}
               aria-label={isPlaying ? 'Pause' : 'Play'}
               className={`p-2 rounded-xl transition cursor-pointer ${
@@ -728,7 +896,7 @@ export function YouTubePlayer({
 
             {/* Timestamp Display */}
             <div className="text-gray-300 font-mono text-[11px] sm:text-xs shrink-0">
-              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(displayTime)}</span>
               <span className="text-gray-500 mx-1">/</span>
               <span className="text-gray-400">
                 {validDuration > 0 ? formatTime(validDuration) : '--:--'}

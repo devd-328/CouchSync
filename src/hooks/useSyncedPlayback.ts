@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { PlaybackAction } from '@/types/sync';
+import { PlaybackAction, MediaSourceType } from '@/types/sync';
 import { SYNC_CONFIG } from '@/config/constants';
 
 interface UseSyncedPlaybackOptions {
@@ -9,6 +9,7 @@ interface UseSyncedPlaybackOptions {
   isHost: boolean;
   onBroadcastAction: (action: PlaybackAction) => void;
   videoSrc?: string;
+  mediaSource?: MediaSourceType;
 }
 
 export function useSyncedPlayback({
@@ -16,10 +17,13 @@ export function useSyncedPlayback({
   isHost,
   onBroadcastAction,
   videoSrc,
+  mediaSource = 'hls',
 }: UseSyncedPlaybackOptions) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const broadcastActionRef = useRef(onBroadcastAction);
   broadcastActionRef.current = onBroadcastAction;
+  const mediaSourceRef = useRef(mediaSource);
+  mediaSourceRef.current = mediaSource;
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -32,6 +36,22 @@ export function useSyncedPlayback({
 
   // Echo prevention lock
   const isHandlingRemoteAction = useRef<boolean>(false);
+  const resumeAfterBufferRef = useRef<boolean>(false);
+  const bufferTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearBufferTimeout = () => {
+    if (bufferTimeoutRef.current) {
+      clearTimeout(bufferTimeoutRef.current);
+      bufferTimeoutRef.current = null;
+    }
+  };
+
+  // Clean up buffer failsafe timer on unmount
+  useEffect(() => {
+    return () => {
+      clearBufferTimeout();
+    };
+  }, []);
 
   // Reset playback position and duration when video source changes (e.g. choosing local file)
   const prevSrcRef = useRef(videoSrc);
@@ -43,6 +63,8 @@ export function useSyncedPlayback({
       setIsPlaying(false);
       setIsBuffering(false);
       isHandlingRemoteAction.current = false;
+      resumeAfterBufferRef.current = false;
+      clearBufferTimeout();
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
       }
@@ -52,6 +74,7 @@ export function useSyncedPlayback({
   // 1. Play Handler
   const handleLocalPlay = useCallback(() => {
     setIsPlaying(true);
+    if (mediaSourceRef.current && mediaSourceRef.current !== 'hls') return;
     if (isHandlingRemoteAction.current) return;
     if (!videoRef.current) return;
 
@@ -67,6 +90,9 @@ export function useSyncedPlayback({
   // 2. Pause Handler
   const handleLocalPause = useCallback(() => {
     setIsPlaying(false);
+    resumeAfterBufferRef.current = false;
+    clearBufferTimeout();
+    if (mediaSourceRef.current && mediaSourceRef.current !== 'hls') return;
     if (isHandlingRemoteAction.current) return;
     if (!videoRef.current) return;
 
@@ -82,6 +108,7 @@ export function useSyncedPlayback({
   // 3. Seek Handler
   const handleLocalSeek = useCallback((targetTime: number) => {
     if (!videoRef.current) return;
+    if (mediaSourceRef.current && mediaSourceRef.current !== 'hls') return;
 
     isHandlingRemoteAction.current = false;
     videoRef.current.currentTime = targetTime;
@@ -134,6 +161,7 @@ export function useSyncedPlayback({
   // 6. Incoming Remote Sync Event Dispatcher
   const handleRemoteAction = useCallback((action: PlaybackAction) => {
     if (action.senderId === userId) return;
+    if (mediaSourceRef.current && mediaSourceRef.current !== 'hls') return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -149,7 +177,6 @@ export function useSyncedPlayback({
           video.currentTime = action.time;
         }
         video.play().catch(() => {});
-        setIsPlaying(true);
         setPartnerStatus('In Sync');
         setTimeout(() => {
           isHandlingRemoteAction.current = false;
@@ -195,11 +222,24 @@ export function useSyncedPlayback({
         setIsPartnerBuffering(true);
         setPartnerStatus('Partner buffering...');
         if (!video.paused) {
+          resumeAfterBufferRef.current = true;
           isHandlingRemoteAction.current = true;
           video.pause();
           setTimeout(() => {
             isHandlingRemoteAction.current = false;
-          }, 100);
+          }, SYNC_CONFIG.REMOTE_LOCKOUT_MS);
+
+          clearBufferTimeout();
+          bufferTimeoutRef.current = setTimeout(() => {
+            if (resumeAfterBufferRef.current && videoRef.current && videoRef.current.paused) {
+              resumeAfterBufferRef.current = false;
+              isHandlingRemoteAction.current = true;
+              videoRef.current.play().catch(() => {});
+              setTimeout(() => {
+                isHandlingRemoteAction.current = false;
+              }, SYNC_CONFIG.REMOTE_LOCKOUT_MS);
+            }
+          }, 8000);
         }
         break;
       }
@@ -207,10 +247,9 @@ export function useSyncedPlayback({
       case 'ready': {
         setIsPartnerBuffering(false);
         setPartnerStatus('In Sync');
-        if (Math.abs(video.currentTime - action.time) > tolerance) {
-          video.currentTime = action.time;
-        }
-        if (isPlaying && video.paused) {
+        clearBufferTimeout();
+        if (resumeAfterBufferRef.current && video.paused) {
+          resumeAfterBufferRef.current = false;
           isHandlingRemoteAction.current = true;
           video.play().catch(() => {});
           setTimeout(() => {
@@ -221,6 +260,7 @@ export function useSyncedPlayback({
       }
 
       case 'heartbeat': {
+        if (isHost) break;
         if (Math.abs(video.currentTime - action.time) > tolerance) {
           isHandlingRemoteAction.current = true;
           video.currentTime = action.time;
@@ -229,11 +269,18 @@ export function useSyncedPlayback({
           }, SYNC_CONFIG.REMOTE_LOCKOUT_MS);
         }
         if (action.isPlaying && video.paused && !isPartnerBuffering) {
+          isHandlingRemoteAction.current = true;
           video.play().catch(() => {});
-          setIsPlaying(true);
+          setTimeout(() => {
+            isHandlingRemoteAction.current = false;
+          }, SYNC_CONFIG.REMOTE_LOCKOUT_MS);
         } else if (!action.isPlaying && !video.paused) {
+          isHandlingRemoteAction.current = true;
           video.pause();
           setIsPlaying(false);
+          setTimeout(() => {
+            isHandlingRemoteAction.current = false;
+          }, SYNC_CONFIG.REMOTE_LOCKOUT_MS);
         }
         if (action.speed && Math.abs(video.playbackRate - action.speed) > 0.05) {
           video.playbackRate = action.speed;
@@ -243,17 +290,18 @@ export function useSyncedPlayback({
         break;
       }
     }
-  }, [userId, isPlaying, isPartnerBuffering]);
+  }, [userId, isHost, isPartnerBuffering]);
 
-  // Periodic heartbeat broadcast
+  // Periodic heartbeat broadcast (Host only)
   useEffect(() => {
     const heartbeatTimer = setInterval(() => {
       if (!videoRef.current) return;
-      if (isHost || isPlaying) {
+      if (mediaSourceRef.current && mediaSourceRef.current !== 'hls') return;
+      if (isHost) {
         broadcastActionRef.current({
           type: 'heartbeat',
           time: videoRef.current.currentTime,
-          isPlaying: !videoRef.current.paused,
+          isPlaying: !videoRef.current.paused || resumeAfterBufferRef.current,
           speed: videoRef.current.playbackRate,
           senderId: userId,
           ts: Date.now(),
@@ -262,7 +310,7 @@ export function useSyncedPlayback({
     }, SYNC_CONFIG.HEARTBEAT_INTERVAL_MS);
 
     return () => clearInterval(heartbeatTimer);
-  }, [isHost, isPlaying, userId]);
+  }, [isHost, userId]);
 
   // Native video event listeners
   useEffect(() => {
@@ -389,10 +437,8 @@ export function useSyncedPlayback({
       if (!video) return;
       if (video.paused) {
         video.play().catch(() => {});
-        setIsPlaying(true);
       } else {
         video.pause();
-        setIsPlaying(false);
       }
     },
     handleRemoteAction,

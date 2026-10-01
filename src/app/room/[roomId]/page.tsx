@@ -167,7 +167,17 @@ export default function RoomPage({
     isHost: currentUser.isHost,
     onBroadcastAction: broadcastMessage,
     videoSrc: currentVideo.src,
+    mediaSource,
   });
+
+  // Reset remote playback action whenever media source changes to prevent cross-source action leakage
+  const prevMediaSourceRef = useRef(mediaSource);
+  useEffect(() => {
+    if (prevMediaSourceRef.current !== mediaSource) {
+      prevMediaSourceRef.current = mediaSource;
+      setRemotePlaybackAction(null);
+    }
+  }, [mediaSource]);
 
   // 2. WebRTC Call Hook
   const {
@@ -366,7 +376,14 @@ export default function RoomPage({
   useKeyboardShortcuts({
     isEnabled: true,
     isPushToTalkActive,
-    onTogglePlay: () => canControl && togglePlayPause(),
+    onTogglePlay: () => {
+      if (!canControl) return;
+      if (mediaSource === 'youtube') {
+        window.dispatchEvent(new CustomEvent('couchsync:toggle-play-youtube'));
+      } else {
+        togglePlayPause();
+      }
+    },
     onToggleFullscreen: () => {
       if (!document.fullscreenElement) {
         const target = document.getElementById('theater-container') || videoRef.current;
@@ -380,7 +397,10 @@ export default function RoomPage({
     onToggleMic: toggleMic,
     onToggleCam: toggleCamera,
     onSeekRelative: (delta) => {
-      if (canControl) {
+      if (!canControl) return;
+      if (mediaSource === 'youtube') {
+        window.dispatchEvent(new CustomEvent('couchsync:seek-youtube', { detail: { delta } }));
+      } else {
         const maxLimit = isFinite(duration) && duration > 0 ? duration : Infinity;
         seekTo(Math.max(0, Math.min(maxLimit, currentTime + delta)));
       }

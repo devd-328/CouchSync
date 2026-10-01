@@ -142,7 +142,7 @@ export function VideoPlayer({
   screenStream = null,
   screenPresenterName = 'Presenter',
   isLocalScreenPresenter = false,
-  currentUserId = 'user-1',
+  currentUserId = '',
   currentUserName = 'Alex',
   participants = [],
   remoteStreams = new Map(),
@@ -380,6 +380,8 @@ export function VideoPlayer({
           remoteAction={remotePlaybackAction}
           onChangeVideo={onChangeYouTubeVideo || (() => {})}
           onToggleFullscreen={toggleFullscreen}
+          isHost={isHost}
+          userId={currentUserId}
         />
       )}
 

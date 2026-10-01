@@ -57,6 +57,9 @@ export function useKeyboardShortcuts({
       switch (e.code) {
         case 'Space':
           e.preventDefault();
+          if (e.target instanceof HTMLElement && e.target.tagName === 'BUTTON') {
+            e.target.blur();
+          }
           onTogglePlay();
           break;
         case 'KeyF':
