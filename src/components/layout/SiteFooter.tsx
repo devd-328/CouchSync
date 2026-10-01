@@ -33,6 +33,18 @@ export function SiteFooter() {
         </Link>
       </div>
 
+      {/* Use Cases Links */}
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-gray-500">
+        <span className="font-semibold text-gray-700">Use cases:</span>
+        <Link href="/watch-youtube-together" className="hover:text-[#FF5722] transition">
+          Watch YouTube Together
+        </Link>
+        <span className="text-gray-300">•</span>
+        <Link href="/long-distance-movie-night" className="hover:text-[#FF5722] transition">
+          Long Distance Movie Night
+        </Link>
+      </div>
+
       {/* Trust Badges */}
       <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[11px] text-gray-500">
         <div className="flex items-center gap-1.5 text-emerald-700">
