@@ -27,6 +27,14 @@ export function SiteFooter() {
         <Link href="/about" className="hover:text-[#FF5722] transition">
           About
         </Link>
+        <span className="text-gray-300">•</span>
+        <Link href="/privacy" className="hover:text-[#FF5722] transition">
+          Privacy
+        </Link>
+        <span className="text-gray-300">•</span>
+        <Link href="/terms" className="hover:text-[#FF5722] transition">
+          Terms
+        </Link>
       </div>
 
       {/* Trust Badges */}

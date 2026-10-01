@@ -98,3 +98,9 @@ export const SOURCE_COLORS: Record<
     icon: 'text-amber-400',
   },
 };
+
+export const LEGAL_CONFIG = {
+  LAST_UPDATED: '2026-10-01',
+  CONTACT_EMAIL: 'devdas.tech10@gmail.com',
+  MIN_AGE: 13,
+};
