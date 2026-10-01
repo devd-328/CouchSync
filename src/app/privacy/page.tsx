@@ -36,7 +36,7 @@ const sections: LegalSection[] = [
     heading: 'What we do not collect',
     body: (
       <p>
-        We do not run user accounts, we do not keep a database of rooms or participants, and we do not store chat messages, call audio, call video, or the contents of any file you play.
+        We do not run user accounts, we do not keep a database of rooms or participants, and we do not store chat messages, call audio, call video, or the contents of any file you play. The only information we receive directly is what you choose to send us through the feedback form, described below.
       </p>
     ),
   },
@@ -111,7 +111,7 @@ const sections: LegalSection[] = [
     heading: 'Feedback and contact messages',
     body: (
       <p>
-        If you send us feedback or a bug report, we receive the message you wrote and the email address you provide (if any). We use it only to read, respond to, and improve CouchSync Live. If you submit a testimonial, it may be shown publicly on the site after we approve it, along with the name you provide.
+        If you send us feedback or a bug report through the feedback form, we receive the details you enter, such as your message and any name or email address you choose to provide. The form sends them to us by email, and they are not added to any database on the site. We use them only to read, respond to, and improve CouchSync Live, and we keep them only as long as we need them for that purpose. If you include an email address, we may use it to reply to you.
       </p>
     ),
   },
