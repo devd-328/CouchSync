@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { Zap, CheckCircle2 } from 'lucide-react';
 
 export function ProductShowcase() {
@@ -20,15 +19,21 @@ export function ProductShowcase() {
               </div>
             </div>
 
-            {/* Real player crop at natural size without transform scale */}
-            <div className="relative aspect-[16/10] w-full bg-[#0B0D14] rounded-2xl sm:rounded-[28px] overflow-hidden border border-black/6 shadow-inner">
-              <Image
-                src="/landing/player-crop.png"
-                alt="CouchSync synchronized video player interface"
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover rounded-2xl sm:rounded-[28px]"
-              />
+            {/* Synchronized video player demo */}
+            <div className="relative aspect-video w-full bg-[#0B0D14] rounded-2xl sm:rounded-[28px] overflow-hidden border border-black/6 shadow-inner flex items-center justify-center">
+              <video
+                src="/landing/couchsync-live-demo.mp4"
+                poster="/landing/player-crop.png"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                preload="auto"
+                className="w-full h-full object-cover rounded-2xl sm:rounded-[28px]"
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
